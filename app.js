@@ -4,6 +4,7 @@ const app = express();
 const Listing = require("./models/listing"); // Import the Listing model
 const path = require("path");
 const methodOverride = require("method-override");
+const ejsMate = require("ejs-mate"); // Import ejs-mate for layout support
 
 const mongo_url = "mongodb://127.0.0.1:27017/RoomRover";
 
@@ -20,6 +21,8 @@ app.set("view engine", "ejs"); // Set EJS as the view engine
 app.set("views", path.join(__dirname, "views")); // Set the views directory
 app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-encoded data
 app.use(methodOverride("_method"));
+app.engine("ejs", ejsMate); // Use ejs-mate for EJS layout support
+app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

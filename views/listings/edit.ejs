@@ -1,59 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RoomRover</title>
-  </head>
-  <body>
-    <h3>Edit Listing</h3>
-    <form method="post" action="/listings/<%= listing._id %>?_method=PUT">
-      <input
-        type="text"
-        name="listing[title]"
-        value="<%= listing.title %>"
-        placeholder="Enter Title"
-      />
-      <br /><br />
-      <input
-        type="text"
-        name="listing[description]"
-        value="<%= listing.description %>"
-        placeholder="Enter Description"
-      />
-      <br /><br />
-      <input
-        type="text"
-        name="listing[image]"
-        value="<%= listing.image %>"
-        placeholder="Enter Image URL/Link"
-      />
-      <br /><br />
-      <input
-        type="number"
-        name="listing[price]"
-        value="<%= listing.price %>"
-        placeholder="Enter Price"
-      />
-      <br /><br />
-      <input
-        type="text"
-        name="listing[location]"
-        value="<%= listing.location %>"
-        placeholder="Enter Location"
-      />
-      <br /><br />
-      <input
-        type="text"
-        name="listing[country]"
-        value="<%= listing.country %>"
-        placeholder="Enter Country"
-      />
-      <br /><br />
-      <button type="submit">Update Listing</button>
-      <button type="button" onclick="window.location.href='/listings'">
-        Cancel
-      </button>
-    </form>
-  </body>
-</html>
+<% layout("layouts/boilerplate") %>
+<body>
+  <h3>Edit Listing</h3>
+  <form method="post" action="/listings/<%= listing._id %>?_method=PUT">
+    <input
+      type="text"
+      name="listing[title]"
+      value="<%= listing.title %>"
+      placeholder="Enter Title"
+    />
+    <br /><br />
+    <input
+      type="text"
+      name="listing[description]"
+      value="<%= listing.description %>"
+      placeholder="Enter Description"
+    />
+    <br /><br />
+    <input
+      type="text"
+      name="listing[image]"
+      value="<%= listing.image %>"
+      placeholder="Enter Image URL/Link"
+    />
+    <br /><br />
+    <input
+      type="number"
+      name="listing[price]"
+      value="<%= listing.price %>"
+      placeholder="Enter Price"
+    />
+    <br /><br />
+    <input
+      type="text"
+      name="listing[location]"
+      value="<%= listing.location %>"
+      placeholder="Enter Location"
+    />
+    <br /><br />
+    <input
+      type="text"
+      name="listing[country]"
+      value="<%= listing.country %>"
+      placeholder="Enter Country"
+    />
+    <br /><br />
+    <button type="submit">Update Listing</button>
+    <button type="button" onclick="window.location.href='/listings'">
+      Cancel
+    </button>
+  </form>
+</body>
