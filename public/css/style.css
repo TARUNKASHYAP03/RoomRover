@@ -12,3 +12,37 @@
 .nav-link {
     color: #222222 !important;
 }
+
+/* footer */
+
+.f-info-links a{
+    color: #222222 !important;
+    text-decoration: none !important;
+}
+
+.f-info-links a:hover{
+    text-decoration: underline !important;
+}
+
+.f-info-links, .f-info-social,.f-info-brand{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.f-info-social i{
+    font-size: 1.4rem;
+    margin-right: 1rem;
+}
+
+.f-info{
+    text-align: center;
+    height: 7rem;
+    background-color: #ebebeb;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: space-evenly;
+}
