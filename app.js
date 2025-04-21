@@ -3,10 +3,9 @@ const mongoose = require("mongoose");
 const app = express();
 const Listing = require("./models/listing"); // Import the Listing model
 const path = require("path");
+const methodOverride = require("method-override");
 
 const mongo_url = "mongodb://127.0.0.1:27017/RoomRover";
-
-
 
 main()
   .then(() => console.log("Connected to DB"))
@@ -20,6 +19,7 @@ async function main() {
 app.set("view engine", "ejs"); // Set EJS as the view engine
 app.set("views", path.join(__dirname, "views")); // Set the views directory
 app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-encoded data
+app.use(methodOverride("_method"));
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -36,7 +36,6 @@ app.get("/listings/new", (req, res) => {
   res.render("listings/new.ejs"); // Corrected path
 });
 
-
 // show route to render a single listing
 app.get("/listings/:id", async (req, res) => {
   let { id } = req.params;
@@ -51,6 +50,26 @@ app.post("/listings", async (req, res) => {
   res.redirect("/listings"); // Redirect to the listings page after saving
 });
 
+// Edit route to render the form for editing a listing
+app.get("/listings/:id/edit", async (req, res) => {
+  let { id } = req.params;
+  const listing = await Listing.findById(id); // Find the listing by ID
+  res.render("listings/edit.ejs", { listing }); // Corrected path
+});
+
+// Update route to handle form submission and update a listing
+app.put("/listings/:id", async (req, res) => {
+  let { id } = req.params;
+  await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+  res.redirect(`/listings/${id}`);
+});
+
+// Delete route to handle deleting a listing
+app.delete("/listings/:id", async (req, res) => {
+  let { id } = req.params;
+  await Listing.findByIdAndDelete(id); // Find the listing by ID and delete it
+  res.redirect("/listings"); // Redirect to the listings page after deletion
+});
 
 // app.get("/testlisting", async (req, res) => {
 //   let sampleListing = new Listing({
