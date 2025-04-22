@@ -1,30 +1,130 @@
 <% layout("layouts/boilerplate") %>
-<body>
-  <h3>Create a New Listing</h3>
-  <form method="post" action="/listings">
-    <input type="text" name="listing[title]" placeholder="Enter Title" />
-    <br /><br />
-    <input
-      type="text"
-      name="listing[description]"
-      placeholder="Enter Description"
-    />
-    <br /><br />
-    <input
-      type="text"
-      name="listing[image]"
-      placeholder="Enter Image URL/Link"
-    />
-    <br /><br />
-    <input type="number" name="listing[price]" placeholder="Enter Price" />
-    <br /><br />
-    <input type="text" name="listing[location]" placeholder="Enter Location" />
-    <br /><br />
-    <input type="text" name="listing[country]" placeholder="Enter Country" />
-    <br /><br />
-    <button type="submit">Add Listing</button>
-    <button type="button" onclick="window.location.href='/listings'">
-      Cancel
-    </button>
-  </form>
+<body style="background-color: #eef2f7">
+  <div class="container my-3">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card shadow-lg border-0 rounded-4" style="background-color: #f8f9fa;">
+          <div class="card-body p-4">
+            <!-- Heading Section -->
+            <div class="text-center mb-3">
+              <h1 class="fw-bold mb-3">Create New Listing</h1>
+              <p class="text-muted fs-6">Fill in the details below to add a new listing.</p>
+            </div>
+
+            <form action="/listings" method="POST">
+              <!-- Title -->
+              <div class="mb-4">
+                <label for="title" class="form-label fw-semibold">Title</label>
+                <input
+                  type="text"
+                  name="listing[title]"
+                  id="title"
+                  required
+                  class="form-control form-control-lg"
+                  placeholder="Beautiful beachfront villa"
+                />
+              </div>
+
+              <!-- Description -->
+              <div class="mb-4">
+                <label for="description" class="form-label fw-semibold">Description</label>
+                <textarea
+                  name="listing[description]"
+                  id="description"
+                  required
+                  class="form-control"
+                  rows="5"
+                  placeholder="Describe your property in detail..."
+                ></textarea>
+              </div>
+
+              <!-- Price & Location -->
+              <div class="row mb-4">
+                <div class="col-md-6 mb-3 mb-md-0">
+                  <label for="price" class="form-label fw-semibold">Price per night (INR)</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0">₹</span>
+                    <input
+                      type="number"
+                      name="listing[price]"
+                      id="price"
+                      required
+                      min="0"
+                      class="form-control border-start-0"
+                      placeholder="2500"
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label for="location" class="form-label fw-semibold">Location</label>
+                  <input
+                    type="text"
+                    name="listing[location]"
+                    id="location"
+                    required
+                    class="form-control"
+                    placeholder="Goa"
+                  />
+                </div>
+              </div>
+
+              <!-- Country & Image -->
+              <div class="row mb-4">
+                <div class="col-md-6 mb-3 mb-md-0">
+                  <label for="country" class="form-label fw-semibold">Country</label>
+                  <input
+                    type="text"
+                    name="listing[country]"
+                    id="country"
+                    required
+                    class="form-control"
+                    placeholder="India"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label for="image_url" class="form-label fw-semibold">Image URL</label>
+                  <input
+                    type="url"
+                    name="listing[image][url]"
+                    id="image_url"
+                    class="form-control"
+                    placeholder="https://example.com/image.jpg"
+                  />
+                </div>
+              </div>
+
+              <!-- Form Actions -->
+              <div class="d-flex justify-content-end gap-3 mt-5">
+                <a href="/listings" class="btn btn-light border px-4">Cancel</a>
+                <button type="submit" class="btn btn-primary px-4">
+                  Add Listing
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Styling -->
+  <style>
+    .form-control:focus, .form-select:focus {
+      border-color: #0d6efd;
+      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    .form-label {
+      font-size: 0.95rem;
+      color: #343a40;
+    }
+
+    .card:hover {
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.08);
+    }
+
+    .input-group-text {
+      font-weight: 500;
+    }
+  </style>
 </body>
