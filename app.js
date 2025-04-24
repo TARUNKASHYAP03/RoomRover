@@ -87,6 +87,17 @@ app.delete("/listings/:id", async (req, res) => {
 //   res.send("Sample listing saved successfully!");
 // });
 
+// Catch-all route for non-existent pages
+app.use((req, res, next) => {
+  res.status(404).render("error.ejs", { message: "Page Not Found!" });
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  const { statuscode = 500, message = "Something went wrong!" } = err;
+  res.status(statuscode).render("error.ejs", { message });
+});
+
 // Port 8080 pe server run ho raha hai, isliye 8080 ka message chahiye
 app.listen(8080, () => {
   console.log("Server is running on port 8080");
