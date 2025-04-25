@@ -5,7 +5,7 @@ const Listing = require("./models/listing"); // Import the Listing model
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate"); // Import ejs-mate for layout support
-const { listingSchema } = require("./schema.js"); // Import the listing schema
+const { listingSchema,reviewSchema } = require("./schema.js"); // Import the listing schema
 const Review = require("./models/review"); // Import the Review model
 
 const mongo_url = "mongodb://127.0.0.1:27017/RoomRover";
@@ -35,6 +35,17 @@ const validatelisting = (req, res, next) => {
     next();
   } // Proceed to the next middleware if validation passes
 };
+
+const validateReview = (req, res, next) => {
+  const { error } = reviewSchema.validate(req.body); // Validate the request body against the review schema
+  if (error) {
+    console.log(error);
+    return res.status(400).send("Invalid data");
+  } else {
+    next();
+  } // Proceed to the next middleware if validation passes
+}
+// Middleware to log the request method and URL
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -87,7 +98,7 @@ app.delete("/listings/:id", async (req, res) => {
 });
 
 // Reviews routes
-app.post("/listings/:id/reviews", async (req, res) => {
+app.post("/listings/:id/reviews",validateReview, async (req, res) => {
   const { id } = req.params;
   const listing = await Listing.findById(id);
   const review = new Review(req.body.review); // Create a new review using the request body
