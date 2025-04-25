@@ -5,6 +5,7 @@ const Listing = require("./models/listing"); // Import the Listing model
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate"); // Import ejs-mate for layout support
+const { listingSchema } = require("./schema.js"); // Import the listing schema
 
 const mongo_url = "mongodb://127.0.0.1:27017/RoomRover";
 
@@ -23,6 +24,16 @@ app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-enco
 app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate); // Use ejs-mate for EJS layout support
 app.use(express.static(path.join(__dirname, "public")));
+
+const validatelisting = (req, res, next) => {
+  const { error } = listingSchema.validate(req.body); // Validate the request body against the schema
+  if (error) {
+    console.log(error);
+    return res.status(400).send("Invalid data");
+  } else {
+    next();
+  } // Proceed to the next middleware if validation passes
+};
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
