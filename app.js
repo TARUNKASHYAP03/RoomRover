@@ -6,6 +6,7 @@ const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate"); // Import ejs-mate for layout support
 const { listingSchema } = require("./schema.js"); // Import the listing schema
+const Review = require("./models/review"); // Import the Review model
 
 const mongo_url = "mongodb://127.0.0.1:27017/RoomRover";
 
@@ -83,6 +84,17 @@ app.delete("/listings/:id", async (req, res) => {
   let { id } = req.params;
   await Listing.findByIdAndDelete(id); // Find the listing by ID and delete it
   res.redirect("/listings"); // Redirect to the listings page after deletion
+});
+
+// Reviews routes
+app.post("/listings/:id/reviews", async (req, res) => {
+  const { id } = req.params;
+  const listing = await Listing.findById(id);
+  const review = new Review(req.body.review); // Create a new review using the request body
+  listing.reviews.push(review); // Add the review to the listing's reviews array
+  await review.save(); // Save the review to the database
+  await listing.save(); // Save the updated listing to the database
+  res.redirect(`/listings/${id}`); // Redirect to the listing's page after saving
 });
 
 // app.get("/testlisting", async (req, res) => {

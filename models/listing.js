@@ -11,6 +11,12 @@ const listingSchema = new Schema({
   price: { type: Number, required: true },
   location: { type: String, required: true },
   country: { type: String, required: true },
+  reviews: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Review"
+    }
+  ]
 }, { timestamps: true });
 
 const Listing = mongoose.model("Listing", listingSchema);
