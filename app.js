@@ -65,7 +65,7 @@ app.get("/listings/new", (req, res) => {
 // show route to render a single listing
 app.get("/listings/:id", async (req, res) => {
   let { id } = req.params;
-  const listing = await Listing.findById(id);
+  const listing = await Listing.findById(id).populate("reviews"); // Find the listing by ID and populate the reviews
   res.render("listings/show.ejs", { listing }); // Corrected path
 });
 
@@ -106,6 +106,14 @@ app.post("/listings/:id/reviews",validateReview, async (req, res) => {
   await review.save(); // Save the review to the database
   await listing.save(); // Save the updated listing to the database
   res.redirect(`/listings/${id}`); // Redirect to the listing's page after saving
+});
+
+// Delete route to handle deleting a review
+app.delete("/listings/:id/reviews/:reviewId", async (req, res) => {
+  const { id, reviewId } = req.params;
+  await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } }); // Remove the review from the listing's reviews array
+  await Review.findByIdAndDelete(reviewId); // Delete the review from the database
+  res.redirect(`/listings/${id}`); // Redirect to the listing's page after deletion
 });
 
 // app.get("/testlisting", async (req, res) => {

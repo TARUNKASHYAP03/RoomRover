@@ -1,142 +1,302 @@
 <% layout("layouts/boilerplate") %>
 <style>
   body {
-    background-color: #f4f4f4; /* Light grey background */
+    background-color: #f8f9fa;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   }
 
   .listing-details-container {
-    max-width: 960px; /* Standard container width */
+    max-width: 1200px;
     margin: 30px auto;
     padding: 30px;
     background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    display: grid;
-    grid-template-columns: repeat(
-      auto-fit,
-      minmax(300px, 1fr)
-    ); /* Responsive columns */
-    gap: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
 
   .image-section {
-    grid-column: 1 / -1; /* Image takes full width initially */
-    border-radius: 8px;
+    width: 100%;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-
-  @media (min-width: 768px) {
-    .image-section {
-      grid-column: 1 / 2; /* Image takes the first column on larger screens */
-      height: 350px; /* Fixed height for a more consistent look */
-    }
+    margin-bottom: 30px;
   }
 
   .listing-image {
     width: 100%;
-    height: 100%;
-    object-fit: cover; /* Maintain aspect ratio and cover the container */
-    display: block;
-  }
-
-  .details-section {
-    padding: 20px;
-  }
-
-  @media (min-width: 768px) {
-    .details-section {
-      grid-column: 2 / 3; /* Details take the second column on larger screens */
-    }
+    height: 400px;
+    object-fit: cover;
   }
 
   .listing-title {
-    font-size: 2em;
-    color: #333;
-    margin-bottom: 5px;
+    font-size: 2.2rem;
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-weight: 600;
   }
 
   .listing-info-list {
     list-style: none;
     padding: 0;
+    margin-bottom: 30px;
   }
 
   .listing-info-item {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     color: #555;
-    font-size: 1em;
+    font-size: 1.05rem;
+    line-height: 1.6;
   }
 
   .listing-info-item strong {
-    font-weight: bold;
-    color: #333;
-    margin-right: 5px;
+    font-weight: 600;
+    color: #34495e;
+    margin-right: 8px;
   }
 
   .action-buttons {
     display: flex;
-    gap: 10px;
-    margin-top: 20px;
+    gap: 12px;
+    margin: 30px 0;
   }
 
-  .edit-button,
-  .delete-button {
-    padding: 8px 15px;
+  .btn {
+    padding: 10px 20px;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
     text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-edit {
+    background-color: #3498db;
     color: white;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
-  .edit-button {
-    background-color: #007bff;
+  .btn-edit:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
   }
 
-  .edit-button:hover {
-    background-color: #0056b3;
+  .btn-delete {
+    background-color: #e74c3c;
+    color: white;
   }
 
-  .delete-button {
-    background-color: #dc3545;
+  .btn-delete:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
   }
 
-  .delete-button:hover {
-    background-color: #c82333;
+  /* Review Form Styles */
+  .review-form-section {
+    background-color: #f8f9fa;
+    padding: 30px;
+    border-radius: 12px;
+    margin: 40px 0;
   }
 
-  .delete-form {
-    display: inline;
+  .section-title {
+    font-size: 1.8rem;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-weight: 600;
   }
+
   .star-rating {
     display: flex;
-    gap: 5px;
-    font-size: 2rem;
-    cursor: pointer;
+    gap: 8px;
+    margin-bottom: 20px;
   }
 
   .star {
-    color: #ccc;
-    transition: color 0.2s ease;
+    font-size: 2rem;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s;
   }
 
-  .star.hovered,
-  .star.selected {
-    color: #ffc107;
+  .star.selected,
+  .star.hovered {
+    color: #f39c12;
   }
 
-  .invalid-feedback {
-    display: none;
-    font-size: 0.9em;
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #34495e;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border 0.3s;
+  }
+
+  .form-control:focus {
+    border-color: #3498db;
+    outline: none;
+  }
+
+  textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  .btn-submit {
+    background-color: #2ecc71;
+    color: white;
+    padding: 12px 24px;
+    font-size: 1rem;
+  }
+
+  .btn-submit:hover {
+    background-color: #27ae60;
+    transform: translateY(-2px);
+  }
+
+  /* Reviews Section */
+  .reviews-section {
+    margin-top: 50px;
+  }
+
+  .reviews-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .review-card {
+    display: flex;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s;
+  }
+
+  .review-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .review-card-left {
+    flex: 0 0 40%;
+    padding: 30px;
+    background-color: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .review-card-right {
+    flex: 1;
+    padding: 30px;
+  }
+
+  .review-card:nth-child(even) {
+    flex-direction: row-reverse;
+  }
+
+  .review-author {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 8px;
+  }
+
+  .review-date {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+  }
+
+  .review-rating {
+    margin-bottom: 15px;
+  }
+
+  .star-filled {
+    color: #f39c12;
+    font-size: 1.2rem;
+  }
+
+  .star-empty {
+    color: #ddd;
+    font-size: 1.2rem;
+  }
+
+  .rating-value {
+    margin-left: 10px;
+    font-weight: 600;
+    color: #34495e;
+  }
+
+  .review-comment {
+    color: #34495e;
+    line-height: 1.7;
+    font-size: 1.05rem;
+  }
+
+  .no-reviews {
+    text-align: center;
+    padding: 40px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .no-reviews-text {
+    font-size: 1.2rem;
+    color: #7f8c8d;
+    margin-bottom: 20px;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .review-card {
+      flex-direction: column;
+    }
+
+    .review-card:nth-child(even) {
+      flex-direction: column;
+    }
+
+    .review-card-left {
+      padding: 20px;
+    }
+  }
+  .review-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+
+  .btn-review-delete {
+    background-color: #e74c3c;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
   }
 </style>
 
 <body>
   <div class="listing-details-container">
-    <h3 class="listing-title"><%= listing.title %></h3>
+    <h1 class="listing-title"><%= listing.title %></h1>
 
     <div class="image-section">
       <% if (listing.image && listing.image.url) { %>
@@ -147,174 +307,139 @@
       />
       <% } else { %>
       <div
+        class="no-image-placeholder"
         style="
-          height: 200px;
-          background-color: #f0f0f0;
+          height: 400px;
+          background-color: #ecf0f1;
           display: flex;
           justify-content: center;
           align-items: center;
-          border-radius: 8px;
+          border-radius: 12px;
         "
       >
-        <p class="text-muted" style="color: #777">No image available</p>
+        <p style="color: #7f8c8d; font-size: 1.2rem">No image available</p>
       </div>
       <% } %>
     </div>
 
-    <div class="details-section">
-      <ul class="listing-info-list">
-        <li class="listing-info-item">
-          <strong>Description:</strong> <%= listing.description %>
-        </li>
-        <li class="listing-info-item">
-          <strong>Price:</strong> ₹ <%= listing.price.toLocaleString("en-IN") %>
-          / night
-        </li>
-        <li class="listing-info-item">
-          <strong>Location:</strong> <%= listing.location %>
-        </li>
-        <li class="listing-info-item">
-          <strong>Country:</strong> <%= listing.country %>
-        </li>
-      </ul>
-      <div class="action-buttons">
-        <a href="/listings/<%= listing._id %>/edit" class="edit-button">Edit</a>
-        <form
-          class="delete-form"
-          action="/listings/<%= listing._id %>?_method=DELETE"
-          method="POST"
-        >
-          <button class="delete-button">Delete</button>
-        </form>
-      </div>
+    <ul class="listing-info-list">
+      <li class="listing-info-item">
+        <strong>Description:</strong> <%= listing.description %>
+      </li>
+      <li class="listing-info-item">
+        <strong>Price:</strong> ₹<%= listing.price.toLocaleString("en-IN") %>
+        per night
+      </li>
+      <li class="listing-info-item">
+        <strong>Location:</strong> <%= listing.location %>
+      </li>
+      <li class="listing-info-item">
+        <strong>Country:</strong> <%= listing.country %>
+      </li>
+    </ul>
 
-      <div
-        class="review-section"
-        style="
-          grid-column: 1 / -1;
-          margin-top: 50px;
-          padding-top: 30px;
-          border-top: 1px solid #ddd;
-        "
+    <div class="action-buttons">
+      <a href="/listings/<%= listing._id %>/edit" class="btn btn-edit"
+        >Edit Listing</a
       >
-        <h3 style="font-size: 1.8em; margin-bottom: 20px; color: #222">
-          Leave a Review
-        </h3>
+      <form
+        class="delete-form"
+        action="/listings/<%= listing._id %>?_method=DELETE"
+        method="POST"
+      >
+        <button type="submit" class="btn btn-delete">Delete Listing</button>
+      </form>
+    </div>
 
-        <form
-          action="/listings/<%= listing._id %>/reviews"
-          method="POST"
-          style="display: flex; flex-direction: column; gap: 20px"
-        >
-          <!-- Star Rating -->
-          <div>
-            <label
-              style="
-                font-weight: bold;
-                color: #444;
-                display: block;
-                margin-bottom: 8px;
-              "
-              >Your Rating</label
-            >
-            <div class="star-rating">
-              <% for (let i = 1; i <= 5; i++) { %>
-              <span class="star" data-value="<%= i %>">&#9733;</span>
-              <% } %>
-              <input type="hidden" name="review[rating]" id="rating-value" />
+    <!-- Review Form Section -->
+    <div class="review-form-section">
+      <h2 class="section-title">Leave a Review</h2>
+      <form action="/listings/<%= listing._id %>/reviews" method="POST">
+        <div class="form-group">
+          <label class="form-label">Your Rating</label>
+          <div class="star-rating">
+            <% for (let i = 1; i <= 5; i++) { %>
+            <span class="star" data-value="<%= i %>">★</span>
+            <% } %>
+            <input type="hidden" name="review[rating]" id="rating-value" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="comment" class="form-label">Your Experience</label>
+          <textarea
+            name="review[comment]"
+            id="comment"
+            class="form-control"
+            placeholder="Share your experience with this property..."
+            required
+          ></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-submit">Submit Review</button>
+      </form>
+    </div>
+
+    <!-- Reviews Display Section -->
+    <div class="reviews-section">
+      <h2 class="section-title">Customer Reviews</h2>
+
+      <% if (listing.reviews && listing.reviews.length > 0) { %>
+      <div class="reviews-container">
+        <% listing.reviews.forEach((review, index) => { %>
+        <div class="review-card">
+          <div class="review-card-left">
+            <div class="review-author">
+              <% if (review.author) { %> <%= review.author.username %> <% } else
+              { %> Anonymous <% } %>
+            </div>
+            <div class="review-date">
+              <%= new Date(review.createdAt).toLocaleDateString('en-US', { year:
+              'numeric', month: 'long', day: 'numeric' }) %>
+            </div>
+            <div class="review-rating">
+              <% for (let i = 1; i <= 5; i++) { %> <% if (i <= review.rating) {
+              %>
+              <span class="star-filled">★</span>
+              <% } else { %>
+              <span class="star-empty">★</span>
+              <% } %> <% } %>
+              <span class="rating-value"><%= review.rating %>/5</span>
             </div>
           </div>
-
-          <!-- Comment -->
-          <div>
-            <label
-              for="comment"
-              style="
-                font-weight: bold;
-                color: #444;
-                display: block;
-                margin-bottom: 8px;
-              "
-              >Your Experience</label
-            >
-            <textarea
-              name="review[comment]"
-              id="comment"
-              rows="4"
-              placeholder="Write something helpful..."
-              style="
-                width: 100%;
-                padding: 12px;
-                border: 1px solid #ccc;
-                border-radius: 6px;
-                font-size: 1em;
-                resize: vertical;
-              "
-            ></textarea>
-            <div class="invalid-feedback">
-              Please submit some comments for review
-            </div>
+          <div class="review-card-right">
+            <div class="review-comment"><%= review.comment %></div>
           </div>
-
-          <!-- Submit -->
-          <button
-            type="submit"
-            style="
-              background-color: #28a745;
-              color: white;
-              padding: 12px 20px;
-              border: none;
-              font-size: 1em;
-              border-radius: 6px;
-              cursor: pointer;
-              align-self: flex-start;
-            "
-          >
-            Submit Review
-          </button>
-        </form>
+          <div>
+            <form
+              action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE"
+              method="POST"
+            >
+              <button type="submit" class="btn btn-delete">Delete</button>
+            </form>
+          </div>
+        </div>
+        <% }); %>
       </div>
+      <% } else { %>
+      <div class="no-reviews">
+        <p class="no-reviews-text">
+          No reviews yet. Be the first to share your experience!
+        </p>
+      </div>
+      <% } %>
     </div>
   </div>
 
   <script>
-    const reviewForm = document.querySelector("form[action*='/reviews']");
-    const commentTextarea = document.getElementById("comment");
-    const invalidFeedback = commentTextarea.nextElementSibling;
-
-    reviewForm.addEventListener("submit", function (e) {
-      const rating = parseInt(ratingInput.value);
-      const comment = commentTextarea.value.trim();
-
-      // Reset previous errors
-      commentTextarea.style.borderColor = "#ccc";
-      invalidFeedback.style.color = "#dc3545";
-      invalidFeedback.style.display = "none";
-
-      if (!rating || comment.length === 0) {
-        e.preventDefault(); // prevent form submission
-
-        if (!rating) {
-          alert("Please select a star rating.");
-        }
-
-        if (comment.length === 0) {
-          commentTextarea.style.borderColor = "#dc3545";
-          invalidFeedback.style.display = "block";
-        }
-      }
-    });
-  </script>
-
-  <script>
+    // Star rating functionality
     const stars = document.querySelectorAll(".star-rating .star");
     const ratingInput = document.getElementById("rating-value");
-
     let selectedRating = 0;
 
-    stars.forEach((star, idx) => {
+    stars.forEach((star, index) => {
       star.addEventListener("mouseenter", () => {
-        highlightStars(idx + 1);
+        highlightStars(index + 1);
       });
 
       star.addEventListener("mouseleave", () => {
@@ -322,7 +447,7 @@
       });
 
       star.addEventListener("click", () => {
-        selectedRating = idx + 1;
+        selectedRating = index + 1;
         ratingInput.value = selectedRating;
         highlightStars(selectedRating);
       });
@@ -337,5 +462,24 @@
         }
       });
     }
+
+    // Form validation
+    const reviewForm = document.querySelector("form[action*='/reviews']");
+    reviewForm.addEventListener("submit", function (e) {
+      const rating = parseInt(ratingInput.value);
+      const comment = document.getElementById("comment").value.trim();
+
+      if (!rating) {
+        e.preventDefault();
+        alert("Please select a rating by clicking on the stars");
+        return;
+      }
+
+      if (!comment) {
+        e.preventDefault();
+        alert("Please write your review before submitting");
+        return;
+      }
+    });
   </script>
 </body>
