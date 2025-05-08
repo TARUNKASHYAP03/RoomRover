@@ -5,10 +5,15 @@ const Listing = require("./models/listing"); // Import the Listing model
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate"); // Import ejs-mate for layout support
-const { listingSchema,reviewSchema } = require("./schema.js"); // Import the listing schema
+const { listingSchema, reviewSchema } = require("./schema.js"); // Import the listing schema
 const Review = require("./models/review"); // Import the Review model
 const session = require("express-session");
 const flash = require("connect-flash"); // Import connect-flash
+const passport = require("passport");
+const localStrategy = require("passport-local");
+const User = require("./models/user.js"); // Import the User model
+
+const userRoutes = require("./routes/user.js"); // Import user routes
 
 const mongo_url = "mongodb://127.0.0.1:27017/RoomRover";
 
@@ -27,6 +32,7 @@ app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-enco
 app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate); // Use ejs-mate for EJS layout support
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/", userRoutes); // Use user routes
 
 const sessionOptions = {
   secret: "thisshouldbeasecret",
@@ -42,9 +48,23 @@ const sessionOptions = {
 app.use(session(sessionOptions)); // Use session middleware
 app.use(flash()); // Use flash middleware
 
+app.use(passport.initialize()); // Initialize passport
+app.use(passport.session()); // Use passport session middleware
+passport.use(new localStrategy(User.authenticate())); // Use local strategy for authentication
+passport.serializeUser(User.serializeUser()); // Serialize user
+passport.deserializeUser(User.deserializeUser()); // Deserialize user
+
+// Middleware to set flash messages in res.locals
 app.use((req, res, next) => {
   res.locals.success = req.flash("success"); // Pass flash success messages to all views
+  res.locals.error = req.flash("error"); // Pass flash error messages to all views
   next();
+});
+
+app.get("/register", async (req, res) => {
+    let fakeUser = new User({ email: "student02@gmail.com", username: "demostudent" });
+    let registerUser = await User.register(fakeUser, "hello"); // Register the user
+    res.send(registerUser); // Send the registered user as a response
 });
 
 const validatelisting = (req, res, next) => {
@@ -65,7 +85,7 @@ const validateReview = (req, res, next) => {
   } else {
     next();
   } // Proceed to the next middleware if validation passes
-}
+};
 // Middleware to log the request method and URL
 
 app.get("/", (req, res) => {

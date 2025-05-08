@@ -1,8 +1,8 @@
-<% if (success) { %>
-<div class="alert alert-success alert-dismissible fade show mx-auto" role="alert" id="flash-message" style="max-width: 500px;">
-  <%= success %>
-  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
+<% if (typeof success !== 'undefined' && success) { %>
+  <div class="alert alert-success alert-dismissible fade show mx-auto" role="alert" id="flash-message" style="max-width: 500px;">
+    <%= success %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
 <% } %>
 <script>
   // Remove flash message after 3 seconds
