@@ -12,6 +12,7 @@ const flash = require("connect-flash"); // Import connect-flash
 const passport = require("passport");
 const localStrategy = require("passport-local");
 const User = require("./models/user.js"); // Import the User model
+const { isLoggedIn } = require("./middleware.js"); // Import the isLoggedIn middleware
 
 const userRoutes = require("./routes/user.js"); // Import user routes
 
@@ -90,7 +91,7 @@ const validateReview = (req, res, next) => {
 // Middleware to log the request method and URL
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.redirect("/listings");
 });
 
 // Index route to render the homepage
@@ -100,7 +101,7 @@ app.get("/listings", async (req, res) => {
 });
 
 // New route to render the form for creating a new listing
-app.get("/listings/new", (req, res) => {
+app.get("/listings/new",isLoggedIn, (req, res) => {
   res.render("listings/new.ejs"); // Corrected path
 });
 
@@ -120,14 +121,14 @@ app.post("/listings", async (req, res) => {
 });
 
 // Edit route to render the form for editing a listing
-app.get("/listings/:id/edit", async (req, res) => {
+app.get("/listings/:id/edit", isLoggedIn, async (req, res) => {
   let { id } = req.params;
   const listing = await Listing.findById(id); // Find the listing by ID
   res.render("listings/edit.ejs", { listing }); // Corrected path
 });
 
 // Update route to handle form submission and update a listing
-app.put("/listings/:id", async (req, res) => {
+app.put("/listings/:id", isLoggedIn, async (req, res) => {
   let { id } = req.params;
   await Listing.findByIdAndUpdate(id, { ...req.body.listing });
   res.redirect(`/listings/${id}`);
