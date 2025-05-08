@@ -32,34 +32,35 @@ app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-enco
 app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate); // Use ejs-mate for EJS layout support
 app.use(express.static(path.join(__dirname, "public")));
-app.use("/", userRoutes); // Use user routes
 
 const sessionOptions = {
   secret: "thisshouldbeasecret",
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // Cookie expires in 7 days
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
 };
 
-app.use(session(sessionOptions)); // Use session middleware
-app.use(flash()); // Use flash middleware
+app.use(session(sessionOptions));
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
 
-app.use(passport.initialize()); // Initialize passport
-app.use(passport.session()); // Use passport session middleware
-passport.use(new localStrategy(User.authenticate())); // Use local strategy for authentication
-passport.serializeUser(User.serializeUser()); // Serialize user
-passport.deserializeUser(User.deserializeUser()); // Deserialize user
+passport.use(new localStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 // Middleware to set flash messages in res.locals
 app.use((req, res, next) => {
-  res.locals.success = req.flash("success"); // Pass flash success messages to all views
-  res.locals.error = req.flash("error"); // Pass flash error messages to all views
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
   next();
 });
+
+app.use("/", userRoutes); // Use user routes
 
 app.get("/register", async (req, res) => {
     let fakeUser = new User({ email: "student02@gmail.com", username: "demostudent" });
