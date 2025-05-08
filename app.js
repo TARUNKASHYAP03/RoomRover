@@ -7,6 +7,8 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate"); // Import ejs-mate for layout support
 const { listingSchema,reviewSchema } = require("./schema.js"); // Import the listing schema
 const Review = require("./models/review"); // Import the Review model
+const session = require("express-session");
+const flash = require("connect-flash"); // Import connect-flash
 
 const mongo_url = "mongodb://127.0.0.1:27017/RoomRover";
 
@@ -25,6 +27,25 @@ app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-enco
 app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate); // Use ejs-mate for EJS layout support
 app.use(express.static(path.join(__dirname, "public")));
+
+const sessionOptions = {
+  secret: "thisshouldbeasecret",
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // Cookie expires in 7 days
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+  },
+};
+
+app.use(session(sessionOptions)); // Use session middleware
+app.use(flash()); // Use flash middleware
+
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success"); // Pass flash success messages to all views
+  next();
+});
 
 const validatelisting = (req, res, next) => {
   const { error } = listingSchema.validate(req.body); // Validate the request body against the schema
@@ -73,6 +94,7 @@ app.get("/listings/:id", async (req, res) => {
 app.post("/listings", async (req, res) => {
   const newListing = new Listing(req.body.listing); // Create a new listing using the request body
   await newListing.save(); // Save the listing to the database
+  req.flash("success", "Listing created successfully!"); // Flash success message
   res.redirect("/listings"); // Redirect to the listings page after saving
 });
 
@@ -94,17 +116,19 @@ app.put("/listings/:id", async (req, res) => {
 app.delete("/listings/:id", async (req, res) => {
   let { id } = req.params;
   await Listing.findByIdAndDelete(id); // Find the listing by ID and delete it
+  req.flash("success", "Listing deleted successfu3lly!"); // Flash success message
   res.redirect("/listings"); // Redirect to the listings page after deletion
 });
 
 // Reviews routes
-app.post("/listings/:id/reviews",validateReview, async (req, res) => {
+app.post("/listings/:id/reviews", validateReview, async (req, res) => {
   const { id } = req.params;
   const listing = await Listing.findById(id);
   const review = new Review(req.body.review); // Create a new review using the request body
   listing.reviews.push(review); // Add the review to the listing's reviews array
   await review.save(); // Save the review to the database
   await listing.save(); // Save the updated listing to the database
+  req.flash("success", "Review added successfully!"); // Flash success message
   res.redirect(`/listings/${id}`); // Redirect to the listing's page after saving
 });
 
