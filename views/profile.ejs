@@ -1,0 +1,285 @@
+<% layout('/layouts/boilerplate') %>
+<div class="profile-container">
+  <div class="profile-header">
+    <div class="profile-cover">
+      <div class="cover-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+    </div>
+    <div class="profile-avatar">
+      <div class="avatar-wrapper">
+        <i class="bi bi-person-circle"></i>
+        <div class="online-status"></div>
+      </div>
+      <div class="profile-actions">
+        <button class="btn btn-edit" onclick="location.href='/profile/edit'">
+          <i class="bi bi-pencil-fill"></i> Edit Profile
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="profile-body">
+    <div class="profile-info">
+      <h1 class="profile-name"><%= currentUser.username %></h1>
+      <p class="profile-title"><i class="bi bi-envelope-fill"></i> <%= currentUser.email %></p>
+      
+      <div class="social-stats">
+        <div class="stat-item">
+          <span class="stat-number">142</span>
+          <span class="stat-label">Posts</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">3.2k</span>
+          <span class="stat-label">Followers</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">256</span>
+          <span class="stat-label">Following</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-details">
+      <div class="detail-card">
+        <h3><i class="bi bi-person-lines-fill"></i> About Me</h3>
+        <div class="detail-content">
+          <div class="detail-row">
+            <span class="detail-label">Username:</span>
+            <span class="detail-value"><%= currentUser.username %></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Email:</span>
+            <span class="detail-value"><%= currentUser.email %></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Member Since:</span>
+            <span class="detail-value">January 2023</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Last Active:</span>
+            <span class="detail-value">2 hours ago</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-card">
+        <h3><i class="bi bi-graph-up"></i> Activity</h3>
+        <div class="activity-chart">
+          <!-- Placeholder for chart -->
+          <div class="chart-placeholder">
+            <p>Weekly activity graph would appear here</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  :root {
+    --primary-color: #764ba2;
+    --secondary-color: #667eea;
+    --accent-color: #ff5a5f;
+    --text-color: #333;
+    --light-text: #777;
+    --bg-color: #f8f9fa;
+    --card-bg: #fff;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .profile-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-color);
+  }
+
+  .profile-header {
+    position: relative;
+    margin-bottom: 100px;
+  }
+
+  .cover-image {
+    height: 250px;
+    width: 100%;
+    border-radius: 10px;
+    background-size: cover;
+    background-position: center;
+    box-shadow: var(--shadow);
+  }
+
+  .profile-avatar {
+    position: absolute;
+    bottom: -75px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+  }
+
+  .avatar-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+
+  .avatar-wrapper i.bi-person-circle {
+    font-size: 120px;
+    color: white;
+    background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+    padding: 10px;
+    border-radius: 50%;
+    border: 5px solid var(--card-bg);
+    box-shadow: var(--shadow);
+  }
+
+  .online-status {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 20px;
+    height: 20px;
+    background-color: #4CAF50;
+    border: 3px solid var(--card-bg);
+    border-radius: 50%;
+  }
+
+  .profile-actions {
+    margin-top: 20px;
+  }
+
+  .btn-edit {
+    background: linear-gradient(to right, var(--secondary-color), var(--primary-color));
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 50px;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(118, 75, 162, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .btn-edit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(118, 75, 162, 0.4);
+  }
+
+  .profile-body {
+    padding: 0 20px;
+  }
+
+  .profile-info {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .profile-name {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: var(--primary-color);
+  }
+
+  .profile-title {
+    font-size: 1.1rem;
+    color: var(--light-text);
+    margin-bottom: 20px;
+  }
+
+  .social-stats {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 20px;
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+
+  .stat-number {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-color);
+  }
+
+  .stat-label {
+    font-size: 0.9rem;
+    color: var(--light-text);
+  }
+
+  .profile-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 40px;
+  }
+
+  .detail-card {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: var(--shadow);
+  }
+
+  .detail-card h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .detail-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+
+  .detail-row {
+    margin-bottom: 15px;
+  }
+
+  .detail-label {
+    font-weight: 600;
+    color: var(--light-text);
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .detail-value {
+    font-size: 1.1rem;
+  }
+
+  .activity-chart {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f7fa;
+    border-radius: 8px;
+  }
+
+  .chart-placeholder {
+    text-align: center;
+    color: var(--light-text);
+  }
+
+  @media (max-width: 768px) {
+    .profile-details {
+      grid-template-columns: 1fr;
+    }
+    
+    .detail-content {
+      grid-template-columns: 1fr;
+    }
+    
+    .cover-image {
+      height: 180px;
+    }
+    
+    .profile-name {
+      font-size: 2rem;
+    }
+  }
+</style>

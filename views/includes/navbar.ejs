@@ -1,33 +1,56 @@
-<nav class="roomrover-navbar">
-  <div class="nav-container">
-    <a class="nav-brand" href="/">
-      <i class="fa-regular fa-compass"></i>
-      <span>RoomRover</span>
+<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top border-bottom">
+  <div class="container-fluid px-4">
+    <!-- Logo -->
+    <a class="navbar-brand" href="/">
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#FF5A5F" viewBox="0 0 24 24">
+        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+      </svg>
+      <span class="ms-2 fw-bold" style="color: #FF5A5F;">RoomRover</span>
     </a>
-    <div class="nav-search">
-      <div class="search-container">
-        <div class="search-tab active">Anywhere</div>
-        <div class="search-divider"></div>
-        <div class="search-tab">Any week</div>
-        <div class="search-divider"></div>
-        <div class="search-tab">Add guests</div>
-        <div class="search-icon">
-          <i class="fa-solid fa-magnifying-glass"></i>
-        </div>
+
+    <!-- Search Bar (Centered) -->
+    <div class="d-none d-lg-flex justify-content-center position-absolute start-0 end-0 mx-auto" style="width: fit-content;">
+      <div class="input-group rounded-pill border shadow-sm" style="width: 400px;">
+        <button class="btn btn-white border-0" type="button">Anywhere</button>
+        <div class="vr"></div>
+        <button class="btn btn-white border-0" type="button">Any week</button>
+        <div class="vr"></div>
+        <button class="btn btn-white border-0 text-muted" type="button">Add guests</button>
+        <button class="btn btn-danger rounded-pill ms-auto" type="button" style="padding: 8px 12px;">
+          <i class="bi bi-search"></i>
+        </button>
       </div>
     </div>
-    
-    <div class="nav-menu">
-      <div class="menu-container">
-        <a href="/host" class="menu-item">Become a Host</a>
-        <div class="menu-divider"></div>
-        <div class="menu-item dropdown-toggle">
-          <div class="profile-menu">
-            <i class="fa-solid fa-bars"></i>
-            <i class="fa-solid fa-user-circle"></i>
-          </div>
-          <!-- Dropdown menu would go here -->
-        </div>
+
+    <!-- Right Side Menu -->
+    <div class="d-flex align-items-center ms-auto">
+      <!-- Become Host Link -->
+      <a href="/host" class="text-dark text-decoration-none me-3 d-none d-md-block fw-medium">Become a Host</a>
+      
+      <!-- User Menu -->
+      <div class="dropdown">
+        <button class="btn btn-light rounded-pill p-2 dropdown-toggle d-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-list me-1"></i>
+          <i class="bi bi-person-circle ms-1"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow-lg mt-2" aria-labelledby="userDropdown">
+          <% if (!currentUser) { %>
+            <li><a class="dropdown-item" href="/login"><i class="bi bi-box-arrow-in-right me-2"></i>Log in</a></li>
+            <li><a class="dropdown-item" href="/signup"><i class="bi bi-person-plus me-2"></i>Sign up</a></li>
+            <li><hr class="dropdown-divider"></li>
+          <% } else { %>
+            <li><h6 class="dropdown-header">Welcome, <%= currentUser.username %></h6></li>
+            <li><a class="dropdown-item" href="/profile"><i class="bi bi-person me-2"></i>Profile</a></li>
+            <li><a class="dropdown-item" href="/trips"><i class="bi bi-suitcase me-2"></i>My Trips</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="/listings/new"><i class="bi bi-house-door me-2"></i>Host your home</a></li>
+          <% } %>
+          <li><a class="dropdown-item" href="#"><i class="bi bi-globe me-2"></i>Language</a></li>
+          <li><a class="dropdown-item" href="#"><i class="bi bi-question-circle me-2"></i>Help</a></li>
+          <% if (currentUser) { %>
+            <li><a class="dropdown-item text-danger" href="/logout"><i class="bi bi-box-arrow-right me-2"></i>Log out</a></li>
+          <% } %>
+        </ul>
       </div>
     </div>
   </div>

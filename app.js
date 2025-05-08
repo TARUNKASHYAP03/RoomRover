@@ -54,6 +54,11 @@ passport.use(new localStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+app.use((req, res, next) => {
+  res.locals.currentUser = req.user;
+  next();
+});
+
 // Middleware to set flash messages in res.locals
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
@@ -63,11 +68,9 @@ app.use((req, res, next) => {
 
 app.use("/", userRoutes); // Use user routes
 
-app.get("/register", async (req, res) => {
-    let fakeUser = new User({ email: "student02@gmail.com", username: "demostudent" });
-    let registerUser = await User.register(fakeUser, "hello"); // Register the user
-    res.send(registerUser); // Send the registered user as a response
-});
+// app.get("/register", (req, res) => {
+//     res.render("users/register"); // Make sure you have a users/register.ejs form
+// });
 
 const validatelisting = (req, res, next) => {
   const { error } = listingSchema.validate(req.body); // Validate the request body against the schema
@@ -160,6 +163,12 @@ app.delete("/listings/:id/reviews/:reviewId", async (req, res) => {
   await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } }); // Remove the review from the listing's reviews array
   await Review.findByIdAndDelete(reviewId); // Delete the review from the database
   res.redirect(`/listings/${id}`); // Redirect to the listing's page after deletion
+});
+
+// Example Express route
+app.get('/profile', (req, res) => {
+  if (!req.user) return res.redirect('/login');
+  res.render('profile', { currentUser: req.user });
 });
 
 // app.get("/testlisting", async (req, res) => {
