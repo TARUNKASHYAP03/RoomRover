@@ -13,6 +13,7 @@ const passport = require("passport");
 const localStrategy = require("passport-local");
 const User = require("./models/user.js"); // Import the User model
 const { isLoggedIn } = require("./middleware.js"); // Import the isLoggedIn middleware
+const crypto = require("crypto"); // Add this at the top with other requires
 
 const userRoutes = require("./routes/user.js"); // Import user routes
 
@@ -34,8 +35,10 @@ app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate); // Use ejs-mate for EJS layout support
 app.use(express.static(path.join(__dirname, "public")));
 
+const sessionSecret = crypto.randomBytes(32).toString("hex"); // Generate a new secret on each server start
+
 const sessionOptions = {
-  secret: "thisshouldbeasecret",
+  secret: sessionSecret, // Use the random secret
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -104,45 +107,64 @@ app.get("/listings", async (req, res) => {
 });
 
 // New route to render the form for creating a new listing
-app.get("/listings/new",isLoggedIn, (req, res) => {
+app.get("/listings/new", isLoggedIn, (req, res) => {
   res.render("listings/new.ejs"); // Corrected path
 });
 
 // show route to render a single listing
 app.get("/listings/:id", async (req, res) => {
   let { id } = req.params;
-  const listing = await Listing.findById(id).populate("reviews"); // Find the listing by ID and populate the reviews
-  res.render("listings/show.ejs", { listing }); // Corrected path
+  const listing = await Listing.findById(id)
+    .populate("owner") // Populate owner to access email and username
+    .populate("reviews"); // Populate reviews
+  res.render("listings/show.ejs", { listing });
 });
 
+// Protect create, edit, update, and delete listing routes with isLoggedIn middleware
+
 // Create route to handle form submission and create a new listing
-app.post("/listings", async (req, res) => {
+app.post("/listings", isLoggedIn, async (req, res) => {
   const newListing = new Listing(req.body.listing); // Create a new listing using the request body
+  newListing.owner = req.user._id; // Set the owner of the listing to the current user
   await newListing.save(); // Save the listing to the database
   req.flash("success", "Listing created successfully!"); // Flash success message
   res.redirect("/listings"); // Redirect to the listings page after saving
 });
 
+// Place isOwner middleware BEFORE any route that uses it
+const isOwner = async (req, res, next) => {
+  const { id } = req.params;
+  const listing = await Listing.findById(id);
+  if (!listing) {
+    req.flash("error", "Listing not found!");
+    return res.redirect("/listings");
+  }
+  if (!req.user || !listing.owner.equals(req.user._id)) {
+    req.flash("error", "You do not have permission to do that!");
+    return res.redirect(`/listings/${id}`);
+  }
+  next();
+};
+
 // Edit route to render the form for editing a listing
-app.get("/listings/:id/edit", isLoggedIn, async (req, res) => {
+app.get("/listings/:id/edit", isLoggedIn, isOwner, async (req, res) => {
   let { id } = req.params;
-  const listing = await Listing.findById(id); // Find the listing by ID
-  res.render("listings/edit.ejs", { listing }); // Corrected path
+  const listing = await Listing.findById(id);
+  res.render("listings/edit.ejs", { listing });
 });
 
-// Update route to handle form submission and update a listing
-app.put("/listings/:id", isLoggedIn, async (req, res) => {
+app.put("/listings/:id", isLoggedIn, isOwner, async (req, res) => {
   let { id } = req.params;
   await Listing.findByIdAndUpdate(id, { ...req.body.listing });
   res.redirect(`/listings/${id}`);
 });
 
 // Delete route to handle deleting a listing
-app.delete("/listings/:id", async (req, res) => {
+app.delete("/listings/:id", isLoggedIn, isOwner, async (req, res) => {
   let { id } = req.params;
-  await Listing.findByIdAndDelete(id); // Find the listing by ID and delete it
-  req.flash("success", "Listing deleted successfu3lly!"); // Flash success message
-  res.redirect("/listings"); // Redirect to the listings page after deletion
+  await Listing.findByIdAndDelete(id);
+  req.flash("success", "Listing deleted successfully!");
+  res.redirect("/listings");
 });
 
 // Reviews routes

@@ -336,19 +336,28 @@
       <li class="listing-info-item">
         <strong>Country:</strong> <%= listing.country %>
       </li>
+      <li class="listing-info-item">
+        <strong>Owner:</strong>
+        <% if (listing.owner && listing.owner.username) { %>
+          <%= listing.owner.username %>
+          (<%= listing.owner.email %>)
+        <% } else { %>
+          Unknown
+        <% } %>
+      </li>
     </ul>
 
     <div class="action-buttons">
-      <a href="/listings/<%= listing._id %>/edit" class="btn btn-edit"
-        >Edit Listing</a
-      >
-      <form
-        class="delete-form"
-        action="/listings/<%= listing._id %>?_method=DELETE"
-        method="POST"
-      >
-        <button type="submit" class="btn btn-delete">Delete Listing</button>
-      </form>
+      <% if (currentUser && listing.owner && currentUser._id.toString() === listing.owner._id.toString()) { %>
+        <a href="/listings/<%= listing._id %>/edit" class="btn btn-edit">Edit Listing</a>
+        <form
+          class="delete-form"
+          action="/listings/<%= listing._id %>?_method=DELETE"
+          method="POST"
+        >
+          <button type="submit" class="btn btn-delete">Delete Listing</button>
+        </form>
+      <% } %>
     </div>
 
     <!-- Review Form Section -->
