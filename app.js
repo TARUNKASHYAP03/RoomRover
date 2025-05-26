@@ -14,6 +14,7 @@ const localStrategy = require("passport-local");
 const User = require("./models/user.js"); // Import the User model
 const { isLoggedIn } = require("./middleware.js"); // Import the isLoggedIn middleware
 const crypto = require("crypto"); // Add this at the top with other requires
+const Booking = require("./models/booking"); // Add at the top
 
 const userRoutes = require("./routes/user.js"); // Import user routes
 
@@ -102,8 +103,19 @@ app.get("/", (req, res) => {
 
 // Index route to render the homepage
 app.get("/listings", async (req, res) => {
-  const allListings = await Listing.find({});
-  res.render("listings/index", { allListings }); // Corrected path
+  const { category, minPrice, maxPrice, location } = req.query;
+  let filter = {};
+
+  if (category) filter.category = category;
+  if (location) filter.location = new RegExp(location, "i");
+  if (minPrice || maxPrice) {
+    filter.price = {};
+    if (minPrice) filter.price.$gte = Number(minPrice);
+    if (maxPrice) filter.price.$lte = Number(maxPrice);
+  }
+
+  const allListings = await Listing.find(filter);
+  res.render("listings/index", { allListings, filters: req.query });
 });
 
 // New route to render the form for creating a new listing
@@ -112,15 +124,23 @@ app.get("/listings/new", isLoggedIn, (req, res) => {
 });
 
 // show route to render a single listing
-app.get("/listings/:id", async (req, res) => {
-  let { id } = req.params;
-  const listing = await Listing.findById(id)
-    .populate("owner") // Populate owner to access email and username
-    .populate({
-      path: "reviews",
-      populate: { path: "author", select: "username" } // Populate review author username
-    });
-  res.render("listings/show.ejs", { listing });
+app.get("/listings/:id", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const listing = await Listing.findById(id)
+      .populate("owner")
+      .populate({
+        path: "reviews",
+        populate: { path: "author", select: "username" }
+      });
+    if (!listing) {
+      // Listing not found
+      return res.status(404).render("error.ejs", { message: "Listing not found!" });
+    }
+    res.render("listings/show.ejs", { listing });
+  } catch (err) {
+    next(err);
+  }
 });
 
 // Protect create, edit, update, and delete listing routes with isLoggedIn middleware
@@ -213,6 +233,69 @@ app.get('/profile', (req, res) => {
   res.render('profile', { currentUser: req.user });
 });
 
+// Booking POST route
+app.post("/listings/:id/book", isLoggedIn, async (req, res) => {
+  const { id } = req.params;
+  const { startDate, endDate, guests } = req.body;
+  const listing = await Listing.findById(id);
+  if (!listing) {
+    req.flash("error", "Listing not found.");
+    return res.redirect(`/listings/${id}`);
+  }
+
+  // Backend validation for dates
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  if (isNaN(start) || isNaN(end) || start < today || end <= start) {
+    return res.render("listings/show.ejs", { listing, error: "Invalid dates. Check-in must be today or later, and check-out must be after check-in." });
+  }
+
+  // Prevent overlapping bookings
+  const overlapping = await Booking.findOne({
+    listing: id,
+    $or: [
+      { startDate: { $lte: end }, endDate: { $gte: start } }
+    ]
+  });
+  if (overlapping) {
+    return res.render("listings/show.ejs", { listing, error: "Selected dates are not available. Please choose different dates." });
+  }
+  const booking = new Booking({
+    listing: id,
+    user: req.user._id,
+    startDate,
+    endDate,
+    guests
+  });
+  await booking.save();
+  res.redirect(`/bookings/${booking._id}/confirmation`);
+});
+
+// Booking confirmation page
+app.get("/bookings/:bookingId/confirmation", isLoggedIn, async (req, res) => {
+  const booking = await Booking.findById(req.params.bookingId).populate("listing");
+  if (!booking) {
+    req.flash("error", "Booking not found.");
+    return res.redirect("/listings");
+  }
+  res.render("bookings/confirmation", { booking });
+});
+
+// New route to render the user's trips
+app.get("/trips", isLoggedIn, async (req, res, next) => {
+  try {
+    const bookings = await Booking.find({ user: req.user._id })
+      .populate("listing")
+      .sort({ startDate: -1 });
+    res.render("trips/index.ejs", { bookings });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // app.get("/testlisting", async (req, res) => {
 //   let sampleListing = new Listing({
 //     title: "Sample Listing",
@@ -240,4 +323,21 @@ app.use((err, req, res, next) => {
 // Port 8080 pe server run ho raha hai, isliye 8080 ka message chahiye
 app.listen(8080, () => {
   console.log("Server is running on port 8080");
+});
+
+// Delete route to handle deleting a booking
+app.delete("/bookings/:id", isLoggedIn, async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) {
+      return res.status(404).json({ error: "Booking not found." });
+    }
+    if (booking.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+    await Booking.findByIdAndDelete(req.params.id);
+    return res.status(200).json({ message: "Booking cancelled" });
+  } catch (err) {
+    return res.status(500).json({ error: "Server error" });
+  }
 });

@@ -1,0 +1,156 @@
+<% layout("layouts/boilerplate") %>
+<style>
+  .trips-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 20px;
+  }
+  .trips-title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    color: #2c3e50;
+  }
+  .trip-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+  .trip-card {
+    background: #fff;
+    border-radius: 1.2rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    overflow: hidden;
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .trip-card:hover {
+    box-shadow: 0 6px 24px rgba(34,34,34,0.13);
+    transform: translateY(-4px) scale(1.015);
+  }
+  .trip-card-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    background: #f0f0f0;
+  }
+  .trip-card-body {
+    padding: 1.2rem 1.3rem 1.1rem 1.3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .trip-card-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 0.3rem;
+  }
+  .trip-card-location {
+    color: #555;
+    font-size: 1rem;
+    margin-bottom: 0.2rem;
+  }
+  .trip-card-dates {
+    color: #888;
+    font-size: 0.98rem;
+    margin-bottom: 0.2rem;
+  }
+  .trip-card-link {
+    margin-top: 0.7rem;
+    color: #fff;
+    background: #3498db;
+    border-radius: 6px;
+    padding: 8px 0;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.2s;
+    display: block;
+  }
+  .trip-card-link:hover {
+    background: #217dbb;
+  }
+  .cancel-btn {
+    margin-top: 0.7rem;
+    color: #fff;
+    background: #ff385c;
+    border-radius: 6px;
+    padding: 8px 0;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 500;
+    border: none;
+    width: 100%;
+    transition: background 0.2s;
+    cursor: pointer;
+    display: block;
+  }
+  .cancel-btn:hover {
+    background: #d81e5b;
+  }
+  @media (max-width: 900px) {
+    .trip-cards { flex-direction: column; gap: 1.5rem; align-items: center; }
+    .trip-card { width: 95%; }
+  }
+</style>
+
+<div class="trips-container">
+  <div class="trips-title">My Trips</div>
+  <% if (bookings.length === 0) { %>
+    <p>You have no upcoming or past trips yet.</p>
+  <% } else { %>
+    <div class="trip-cards">
+      <% bookings.forEach(booking => { %>
+        <% if (booking.listing) { %>
+        <div class="trip-card" id="trip-<%= booking._id %>">
+          <img class="trip-card-img" src="<%= booking.listing.image && booking.listing.image.url ? booking.listing.image.url : 'https://via.placeholder.com/320x180?text=No+Image' %>" alt="Listing image" />
+          <div class="trip-card-body">
+            <div class="trip-card-title"><%= booking.listing.title %></div>
+            <div class="trip-card-location"><i class="fa fa-map-marker-alt"></i> <%= booking.listing.location %></div>
+            <div class="trip-card-dates">
+              <i class="fa fa-calendar"></i>
+              <%= new Date(booking.startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+              &mdash;
+              <%= new Date(booking.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+            </div>
+            <div class="trip-card-dates">
+              <i class="fa fa-user-friends"></i>
+              <%= booking.guests %> Guest<%= booking.guests > 1 ? 's' : '' %>
+            </div>
+            <a class="trip-card-link" href="/listings/<%= booking.listing._id %>">View Listing</a>
+            <button class="cancel-btn" onclick="cancelBooking('<%= booking._id %>')">Cancel Booking</button>
+          </div>
+        </div>
+        <% } %>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
+
+<script>
+  function cancelBooking(bookingId) {
+    if (!confirm('Are you sure you want to cancel this booking?')) return;
+    fetch(`/bookings/${bookingId}`, {
+      method: 'DELETE',
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res => {
+      if (res.ok) {
+        document.getElementById('trip-' + bookingId).remove();
+      } else {
+        return res.json().then(data => { throw new Error(data.error || 'Failed to cancel booking'); });
+      }
+    })
+    .catch(err => alert(err.message));
+  }
+</script>
+
+<% if (currentUser) { %>
+  <a href="/trips" class="nav-link">My Trips</a>
+<% } %>

@@ -1,0 +1,7 @@
+<% layout("layouts/boilerplate") %>
+<div style="max-width:500px;margin:3rem auto;background:#fff;padding:2.5rem 2rem;border-radius:1.5rem;box-shadow:0 4px 24px rgba(34,34,34,0.07);text-align:center;">
+  <i class="fa fa-check-circle" style="color:#38d39f;font-size:3rem;margin-bottom:1rem;"></i>
+  <h2 style="margin-bottom:1rem;">Booking Confirmed!</h2>
+  <p style="font-size:1.1em;">Your stay at <b><%= booking.listing.title %></b> is booked from <b><%= booking.startDate.toDateString() %></b> to <b><%= booking.endDate.toDateString() %></b> for <b><%= booking.guests %></b> guest<%= booking.guests > 1 ? 's' : '' %>.</p>
+  <a href="/listings/<%= booking.listing._id %>" class="filter-chip" style="background:#222;color:#fff;margin-top:1.5rem;display:inline-block;">Back to Listing</a>
+</div>

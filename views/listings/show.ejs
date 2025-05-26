@@ -262,6 +262,38 @@
     margin-bottom: 20px;
   }
 
+  /* Booking Form Styles */
+  .booking-box {
+    background: #fff;
+    border-radius: 1.2rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    padding: 2rem;
+    margin-top: 2rem;
+    max-width: 400px;
+  }
+
+  .booking-box h4 {
+    margin-bottom: 1.2rem;
+  }
+
+  .booking-box label {
+    font-weight: 500;
+  }
+
+  .booking-box .form-control {
+    margin-bottom: 1rem;
+  }
+
+  .booking-box button[type="submit"] {
+    background: #ff385c;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1.1em;
+    width: 100%;
+    margin-top: 0.5rem;
+    box-shadow: 0 2px 8px rgba(255, 56, 92, 0.12);
+  }
+
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .review-card {
@@ -274,6 +306,12 @@
 
     .review-card-left {
       padding: 20px;
+    }
+
+    .booking-box {
+      width: 90%;
+      margin: 20px auto;
+      padding: 1.5rem;
     }
   }
   .review-actions {
@@ -387,6 +425,44 @@
 
         <button type="submit" class="btn btn-submit">Submit Review</button>
       </form>
+    </div>
+
+    <!-- Booking Form (move this above reviews section) -->
+    <div class="booking-box">
+      <form action="/listings/<%= listing._id %>/book" method="POST" id="bookingForm">
+        <h4>Book this listing</h4>
+        <label for="startDate">Check-in</label>
+        <input
+          type="date"
+          id="startDate"
+          name="startDate"
+          class="form-control"
+          required
+          min="<%= new Date().toISOString().split('T')[0] %>"
+        />
+        <label for="endDate">Check-out</label>
+        <input
+          type="date"
+          id="endDate"
+          name="endDate"
+          class="form-control"
+          required
+          min="<%= new Date().toISOString().split('T')[0] %>"
+        />
+        <label for="guests">Guests</label>
+        <select name="guests" id="guests" class="form-control" required style="margin-bottom:1.5rem;">
+          <% 
+            const maxGuests = (listing.maxGuests && Number.isFinite(listing.maxGuests) && listing.maxGuests > 0) ? listing.maxGuests : 10;
+            for(let i = 1; i <= maxGuests; i++) { 
+          %>
+            <option value="<%= i %>"><%= i %> Guest<%= (i > 1 ? 's' : '') %></option>
+          <% } %>
+        </select>
+        <button type="submit" class="filter-chip">Book Now</button>
+      </form>
+      <% if (locals.error) { %>
+        <div style="color:#ff385c;margin-top:1rem;"><%= error %></div>
+      <% } %>
     </div>
 
     <!-- Reviews Display Section -->
