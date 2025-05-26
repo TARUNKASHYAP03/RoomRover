@@ -1,19 +1,26 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const ReviewSchema = new Schema({
-    comment: String,
-    rating:{
-        type: Number,
-        min: 1,
-        max: 5,
-        required: true
+const reviewSchema = new Schema(
+  {
+    rating: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 5,
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
+    comment: {
+      type: String,
+      required: true,
     },
-})
+    author: {
+      type: Schema.Types.ObjectId,
+      ref: "User", // Reference to User model
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
 
-module.exports=mongoose.model('Review', ReviewSchema);
+module.exports = mongoose.model("Review", reviewSchema);
 // app.post("/listings", validatelisting, async (req, res) =>)

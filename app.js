@@ -116,7 +116,10 @@ app.get("/listings/:id", async (req, res) => {
   let { id } = req.params;
   const listing = await Listing.findById(id)
     .populate("owner") // Populate owner to access email and username
-    .populate("reviews"); // Populate reviews
+    .populate({
+      path: "reviews",
+      populate: { path: "author", select: "username" } // Populate review author username
+    });
   res.render("listings/show.ejs", { listing });
 });
 
@@ -167,24 +170,41 @@ app.delete("/listings/:id", isLoggedIn, isOwner, async (req, res) => {
   res.redirect("/listings");
 });
 
+// Middleware to check if the current user is the author of the review
+const isReviewAuthor = async (req, res, next) => {
+  const { reviewId, id } = req.params;
+  const review = await Review.findById(reviewId);
+  if (!review || !review.author) {
+    req.flash("error", "Review not found!");
+    return res.redirect(`/listings/${id}`);
+  }
+  if (!req.user || !review.author || !review.author.equals || !review.author.equals(req.user._id)) {
+    req.flash("error", "You do not have permission to do that");
+    return res.redirect("back");
+  }
+  next();
+};
+
 // Reviews routes
-app.post("/listings/:id/reviews", validateReview, async (req, res) => {
+app.post("/listings/:id/reviews", isLoggedIn, validateReview, async (req, res) => {
   const { id } = req.params;
   const listing = await Listing.findById(id);
-  const review = new Review(req.body.review); // Create a new review using the request body
-  listing.reviews.push(review); // Add the review to the listing's reviews array
-  await review.save(); // Save the review to the database
-  await listing.save(); // Save the updated listing to the database
-  req.flash("success", "Review added successfully!"); // Flash success message
-  res.redirect(`/listings/${id}`); // Redirect to the listing's page after saving
+  const review = new Review(req.body.review);
+  review.author = req.user._id;
+  listing.reviews.push(review);
+  await review.save();
+  await listing.save();
+  req.flash("success", "Review added successfully!");
+  res.redirect(`/listings/${id}`);
 });
 
 // Delete route to handle deleting a review
-app.delete("/listings/:id/reviews/:reviewId", async (req, res) => {
+app.delete("/listings/:id/reviews/:reviewId", isLoggedIn, isReviewAuthor, async (req, res) => {
   const { id, reviewId } = req.params;
-  await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } }); // Remove the review from the listing's reviews array
-  await Review.findByIdAndDelete(reviewId); // Delete the review from the database
-  res.redirect(`/listings/${id}`); // Redirect to the listing's page after deletion
+  await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+  await Review.findByIdAndDelete(reviewId);
+  req.flash("success", "Review deleted successfully!");
+  res.redirect(`/listings/${id}`);
 });
 
 // Example Express route

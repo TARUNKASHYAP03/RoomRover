@@ -395,12 +395,11 @@
 
       <% if (listing.reviews && listing.reviews.length > 0) { %>
       <div class="reviews-container">
-        <% listing.reviews.forEach((review, index) => { %>
+        <% listing.reviews.forEach(function(review) { %>
         <div class="review-card">
           <div class="review-card-left">
             <div class="review-author">
-              <% if (review.author) { %> <%= review.author.username %> <% } else
-              { %> Anonymous <% } %>
+              Posted by: <%= review.author ? review.author.username : "Unknown" %>
             </div>
             <div class="review-date">
               <%= new Date(review.createdAt).toLocaleDateString('en-US', { year:
@@ -428,7 +427,7 @@
             </form>
           </div>
         </div>
-        <% }); %>
+        <% }) %>
       </div>
       <% } else { %>
       <div class="no-reviews">
