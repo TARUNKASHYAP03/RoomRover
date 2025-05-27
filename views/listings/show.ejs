@@ -436,26 +436,8 @@
     <!-- Card: Image -->
     <div class="listing-card-section" style="padding:0;">
       <div class="image-section" style="margin-bottom:0;">
-        <% if (listing.image && listing.image.url) { %>
-        <img
-          src="<%= listing.image.url %>"
-          alt="<%= listing.title %>"
-          class="listing-image"
-        />
-        <% } else { %>
-        <div
-          class="no-image-placeholder"
-          style="
-            height: 400px;
-            background-color: #ecf0f1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 12px;
-          "
-        >
-          <p style="color: #7f8c8d; font-size: 1.2rem">No image available</p>
-        </div>
+        <% if (listing.image) { %>
+          <img src="<%= listing.image %>" alt="Listing Image" style="max-width:300px;">
         <% } %>
       </div>
     </div>

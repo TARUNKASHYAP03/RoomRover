@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config(); // Load environment variables from .env file
+}
+
 const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
@@ -15,6 +19,9 @@ const User = require("./models/user.js"); // Import the User model
 const { isLoggedIn } = require("./middleware.js"); // Import the isLoggedIn middleware
 const crypto = require("crypto"); // Add this at the top with other requires
 const Booking = require("./models/booking"); // Add at the top
+const multer = require("multer");
+const upload = multer({ dest: "public/uploads/" }); // Save uploads to public/uploads
+const sharp = require("sharp");
 
 const userRoutes = require("./routes/user.js"); // Import user routes
 
@@ -131,11 +138,13 @@ app.get("/listings/:id", async (req, res, next) => {
       .populate("owner")
       .populate({
         path: "reviews",
-        populate: { path: "author", select: "username" }
+        populate: { path: "author", select: "username" },
       });
     if (!listing) {
       // Listing not found
-      return res.status(404).render("error.ejs", { message: "Listing not found!" });
+      return res
+        .status(404)
+        .render("error.ejs", { message: "Listing not found!" });
     }
     res.render("listings/show.ejs", { listing });
   } catch (err) {
@@ -146,13 +155,21 @@ app.get("/listings/:id", async (req, res, next) => {
 // Protect create, edit, update, and delete listing routes with isLoggedIn middleware
 
 // Create route to handle form submission and create a new listing
-app.post("/listings", isLoggedIn, async (req, res) => {
-  const newListing = new Listing(req.body.listing); // Create a new listing using the request body
-  newListing.owner = req.user._id; // Set the owner of the listing to the current user
-  await newListing.save(); // Save the listing to the database
-  req.flash("success", "Listing created successfully!"); // Flash success message
-  res.redirect("/listings"); // Redirect to the listings page after saving
-});
+app.post(
+  "/listings",
+  isLoggedIn,
+  upload.single("image"),
+  async (req, res) => {
+    const newListing = new Listing(req.body.listing);
+    newListing.owner = req.user._id;
+    if (req.file) {
+      newListing.image = `/uploads/${req.file.filename}`; // Save relative path
+    }
+    await newListing.save();
+    req.flash("success", "Listing created successfully!");
+    res.redirect("/listings");
+  }
+);
 
 // Place isOwner middleware BEFORE any route that uses it
 const isOwner = async (req, res, next) => {
@@ -198,7 +215,12 @@ const isReviewAuthor = async (req, res, next) => {
     req.flash("error", "Review not found!");
     return res.redirect(`/listings/${id}`);
   }
-  if (!req.user || !review.author || !review.author.equals || !review.author.equals(req.user._id)) {
+  if (
+    !req.user ||
+    !review.author ||
+    !review.author.equals ||
+    !review.author.equals(req.user._id)
+  ) {
     req.flash("error", "You do not have permission to do that");
     return res.redirect("back");
   }
@@ -206,31 +228,41 @@ const isReviewAuthor = async (req, res, next) => {
 };
 
 // Reviews routes
-app.post("/listings/:id/reviews", isLoggedIn, validateReview, async (req, res) => {
-  const { id } = req.params;
-  const listing = await Listing.findById(id);
-  const review = new Review(req.body.review);
-  review.author = req.user._id;
-  listing.reviews.push(review);
-  await review.save();
-  await listing.save();
-  req.flash("success", "Review added successfully!");
-  res.redirect(`/listings/${id}`);
-});
+app.post(
+  "/listings/:id/reviews",
+  isLoggedIn,
+  validateReview,
+  async (req, res) => {
+    const { id } = req.params;
+    const listing = await Listing.findById(id);
+    const review = new Review(req.body.review);
+    review.author = req.user._id;
+    listing.reviews.push(review);
+    await review.save();
+    await listing.save();
+    req.flash("success", "Review added successfully!");
+    res.redirect(`/listings/${id}`);
+  }
+);
 
 // Delete route to handle deleting a review
-app.delete("/listings/:id/reviews/:reviewId", isLoggedIn, isReviewAuthor, async (req, res) => {
-  const { id, reviewId } = req.params;
-  await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
-  await Review.findByIdAndDelete(reviewId);
-  req.flash("success", "Review deleted successfully!");
-  res.redirect(`/listings/${id}`);
-});
+app.delete(
+  "/listings/:id/reviews/:reviewId",
+  isLoggedIn,
+  isReviewAuthor,
+  async (req, res) => {
+    const { id, reviewId } = req.params;
+    await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+    await Review.findByIdAndDelete(reviewId);
+    req.flash("success", "Review deleted successfully!");
+    res.redirect(`/listings/${id}`);
+  }
+);
 
 // Example Express route
-app.get('/profile', (req, res) => {
-  if (!req.user) return res.redirect('/login');
-  res.render('profile', { currentUser: req.user });
+app.get("/profile", (req, res) => {
+  if (!req.user) return res.redirect("/login");
+  res.render("profile", { currentUser: req.user });
 });
 
 // Booking POST route
@@ -245,30 +277,35 @@ app.post("/listings/:id/book", isLoggedIn, async (req, res) => {
 
   // Backend validation for dates
   const today = new Date();
-  today.setHours(0,0,0,0);
+  today.setHours(0, 0, 0, 0);
   const start = new Date(startDate);
   const end = new Date(endDate);
 
   if (isNaN(start) || isNaN(end) || start < today || end <= start) {
-    return res.render("listings/show.ejs", { listing, error: "Invalid dates. Check-in must be today or later, and check-out must be after check-in." });
+    return res.render("listings/show.ejs", {
+      listing,
+      error:
+        "Invalid dates. Check-in must be today or later, and check-out must be after check-in.",
+    });
   }
 
   // Prevent overlapping bookings
   const overlapping = await Booking.findOne({
     listing: id,
-    $or: [
-      { startDate: { $lte: end }, endDate: { $gte: start } }
-    ]
+    $or: [{ startDate: { $lte: end }, endDate: { $gte: start } }],
   });
   if (overlapping) {
-    return res.render("listings/show.ejs", { listing, error: "Selected dates are not available. Please choose different dates." });
+    return res.render("listings/show.ejs", {
+      listing,
+      error: "Selected dates are not available. Please choose different dates.",
+    });
   }
   const booking = new Booking({
     listing: id,
     user: req.user._id,
     startDate,
     endDate,
-    guests
+    guests,
   });
   await booking.save();
   res.redirect(`/bookings/${booking._id}/confirmation`);
@@ -276,7 +313,9 @@ app.post("/listings/:id/book", isLoggedIn, async (req, res) => {
 
 // Booking confirmation page
 app.get("/bookings/:bookingId/confirmation", isLoggedIn, async (req, res) => {
-  const booking = await Booking.findById(req.params.bookingId).populate("listing");
+  const booking = await Booking.findById(req.params.bookingId).populate(
+    "listing"
+  );
   if (!booking) {
     req.flash("error", "Booking not found.");
     return res.redirect("/listings");
@@ -352,9 +391,11 @@ app.post("/chatbot", express.json(), (req, res) => {
   } else if (message.toLowerCase().includes("hello")) {
     reply = `Hello! How can I help you today?`;
   } else if (message.toLowerCase().includes("booking")) {
-    reply = "You can view your bookings on the Trips page or create a new booking from any listing.";
+    reply =
+      "You can view your bookings on the Trips page or create a new booking from any listing.";
   } else if (message.toLowerCase().includes("help")) {
-    reply = "I'm here to help! You can ask about listings, bookings, or your account.";
+    reply =
+      "I'm here to help! You can ask about listings, bookings, or your account.";
   }
 
   res.json({ reply });
