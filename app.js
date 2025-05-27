@@ -341,3 +341,21 @@ app.delete("/bookings/:id", isLoggedIn, async (req, res) => {
     return res.status(500).json({ error: "Server error" });
   }
 });
+
+// Simple chatbot route (no login required)
+app.post("/chatbot", express.json(), (req, res) => {
+  const { message } = req.body;
+  let reply = "Sorry, I didn't understand that.";
+
+  if (!message) {
+    reply = "Please enter a message.";
+  } else if (message.toLowerCase().includes("hello")) {
+    reply = `Hello! How can I help you today?`;
+  } else if (message.toLowerCase().includes("booking")) {
+    reply = "You can view your bookings on the Trips page or create a new booking from any listing.";
+  } else if (message.toLowerCase().includes("help")) {
+    reply = "I'm here to help! You can ask about listings, bookings, or your account.";
+  }
+
+  res.json({ reply });
+});

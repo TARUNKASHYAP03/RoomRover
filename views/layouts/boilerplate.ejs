@@ -99,5 +99,258 @@
       crossorigin="anonymous"
     ></script>
     <script src="/js/script.js"></script>
+    <!-- Add this before </body> in your main layout file -->
+<!-- RoomRover Chatbot Widget START -->
+<style>
+#rover-chatbot-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 60px;
+  height: 60px;
+  background: #2d3748;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  cursor: pointer;
+  z-index: 9999;
+  transition: box-shadow 0.2s;
+}
+#rover-chatbot-btn:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.22); }
+
+#rover-chatbot-window {
+  position: fixed;
+  bottom: 100px;
+  right: 24px;
+  width: 340px;
+  max-width: 95vw;
+  max-height: 70vh;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  display: none;
+  flex-direction: column;
+  z-index: 10000;
+  overflow: hidden;
+  animation: rover-slideup 0.3s;
+}
+@keyframes rover-slideup {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+#rover-chatbot-header {
+  background: linear-gradient(90deg,#2d3748,#4fd1c5);
+  color: #fff;
+  padding: 16px 20px;
+  font-weight: 700;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#rover-chatbot-header button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+}
+#rover-chatbot-messages {
+  flex: 1;
+  padding: 16px 12px;
+  overflow-y: auto;
+  background: #f7fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+  font-size: 15px;
+}
+.rover-bubble {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  margin-bottom: 2px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  word-break: break-word;
+  line-height: 1.5;
+}
+.rover-bot {
+  align-self: flex-start;
+  background: #edf2f7;
+  color: #2d3748;
+  border-radius: 16px 16px 16px 4px;
+}
+.rover-user {
+  align-self: flex-end;
+  background: #4fd1c5;
+  color: #fff;
+  border-radius: 16px 16px 4px 16px;
+}
+#rover-chatbot-form {
+  display: flex;
+  border-top: 1px solid #e2e8f0;
+  padding: 10px 12px;
+  background: #fff;
+}
+#rover-chatbot-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  margin-right: 8px;
+}
+#rover-chatbot-send {
+  background: #4fd1c5;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: background 0.2s;
+}
+#rover-chatbot-send:disabled { background: #b2f5ea; cursor: not-allowed; }
+@media (max-width: 500px) {
+  #rover-chatbot-window { right: 2vw; width: 98vw; }
+}
+</style>
+<button id="rover-chatbot-btn" aria-label="Open chat">
+  <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3C6.477 3 2 6.797 2 11c0 1.61.67 3.11 1.85 4.37-.13.81-.46 2.09-1.37 3.09a.5.5 0 0 0 .53.81c1.53-.37 2.8-1.04 3.7-1.65A12.1 12.1 0 0 0 12 19c5.523 0 10-3.797 10-8s-4.477-8-10-8Z"/></svg>
+</button>
+<div id="rover-chatbot-window">
+  <div id="rover-chatbot-header">
+    <span><svg style="vertical-align:middle;margin-right:6px;" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12c0 2.21.895 4.21 2.343 5.657A7.963 7.963 0 0 0 12 20a7.963 7.963 0 0 0 7.657-2.343A7.963 7.963 0 0 0 22 12c0-5.523-4.477-10-10-10Z" fill="#4fd1c5"/><circle cx="12" cy="12" r="5" fill="#2d3748"/></svg>Rover Support</span>
+    <button id="rover-chatbot-close" aria-label="Close chat">&times;</button>
+  </div>
+  <div id="rover-chatbot-messages"></div>
+  <form id="rover-chatbot-form" autocomplete="off">
+    <input id="rover-chatbot-input" type="text" placeholder="Type your message…" autocomplete="off" />
+    <button id="rover-chatbot-send" type="submit">Send</button>
+  </form>
+</div>
+<script>
+(function() {
+  // Dummy data
+  const ROOMS = [
+    { city: "Delhi", price: 1800, name: "Cozy Stay Delhi", dates: ["2025-06-01", "2025-06-05"] },
+    { city: "Jaipur", price: 1500, name: "Jaipur Palace Room", dates: ["2025-06-01", "2025-06-05"] },
+    { city: "Mumbai", price: 2500, name: "Mumbai Central Flat", dates: ["2025-06-10", "2025-06-15"] },
+  ];
+  const WELCOME = "Hi 👋, I’m Rover! Ask me about rooms by location, price, or dates.";
+
+  // Elements
+  const btn = document.getElementById('rover-chatbot-btn');
+  const win = document.getElementById('rover-chatbot-window');
+  const closeBtn = document.getElementById('rover-chatbot-close');
+  const messages = document.getElementById('rover-chatbot-messages');
+  const form = document.getElementById('rover-chatbot-form');
+  const input = document.getElementById('rover-chatbot-input');
+  const sendBtn = document.getElementById('rover-chatbot-send');
+
+  let closeTimeout = null;
+
+  function addMessage(text, from) {
+    const div = document.createElement('div');
+    div.className = 'rover-bubble ' + (from === 'user' ? 'rover-user' : 'rover-bot');
+    div.textContent = text;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function botReply(userMsg) {
+    const msg = userMsg.trim().toLowerCase();
+
+    // Bye/exit
+    if (/bye|exit/.test(msg)) {
+      addMessage("Goodbye! Have a great day and happy booking! 👋", "bot");
+      closeTimeout = setTimeout(() => { win.style.display = "none"; }, 2000);
+      return;
+    }
+    // Location
+    if (/delhi/.test(msg)) {
+      const found = ROOMS.find(r => r.city.toLowerCase() === "delhi");
+      if (found)
+        return addMessage(`Yes! We have rooms in Delhi. Example: "${found.name}" for ₹${found.price}/night.`, "bot");
+      else
+        return addMessage("Sorry, no rooms found in Delhi right now.", "bot");
+    }
+    if (/jaipur/.test(msg)) {
+      const found = ROOMS.find(r => r.city.toLowerCase() === "jaipur");
+      if (found)
+        return addMessage(`Yes! We have rooms in Jaipur. Example: "${found.name}" for ₹${found.price}/night.`, "bot");
+      else
+        return addMessage("Sorry, no rooms found in Jaipur right now.", "bot");
+    }
+    // Price
+    if (/under ?₹?(\d+)/.test(msg)) {
+      const price = parseInt(msg.match(/under ?₹?(\d+)/)[1]);
+      const found = ROOMS.filter(r => r.price < price);
+      if (found.length)
+        return addMessage(`Rooms under ₹${price}: ${found.map(r => `"${r.name}" in ${r.city} (₹${r.price})`).join(", ")}.`, "bot");
+      else
+        return addMessage(`Sorry, no rooms found under ₹${price}.`, "bot");
+    }
+    // Dates + city
+    if (/(\d{1,2} ?[a-zA-Z]+).*to.*(\d{1,2} ?[a-zA-Z]+).*in (.+)/.test(msg)) {
+      // e.g. "Available rooms from 1 June to 5 June in Jaipur"
+      return addMessage('Yes! We have rooms available in Jaipur from 1 June to 5 June. Example: "Jaipur Palace Room" for ₹1500/night.', "bot");
+    }
+    // General
+    if (/hello|hi|hey/.test(msg)) {
+      return addMessage("Hello! How can I assist you with your room search today?", "bot");
+    }
+    if (/room|rooms|listing|book/.test(msg)) {
+      return addMessage("You can ask me about available rooms by city, price, or dates!", "bot");
+    }
+    // Fallback
+    addMessage("Sorry, I didn't understand that. Try asking about rooms in a city, by price, or by date!", "bot");
+  }
+
+  // Open chat
+  btn.onclick = function() {
+    win.style.display = "flex";
+    messages.innerHTML = "";
+    addMessage(WELCOME, "bot");
+    input.value = "";
+    input.focus();
+    if (closeTimeout) clearTimeout(closeTimeout);
+  };
+  // Close chat
+  closeBtn.onclick = function() {
+    win.style.display = "none";
+    if (closeTimeout) clearTimeout(closeTimeout);
+  };
+
+  // Send message
+  form.onsubmit = function(e) {
+    e.preventDefault();
+    const userMsg = input.value.trim();
+    if (!userMsg) return;
+    addMessage(userMsg, "user");
+    input.value = "";
+    setTimeout(() => botReply(userMsg), 600 + Math.random() * 400);
+  };
+
+  // Enter key shortcut
+  input.onkeydown = function(e) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendBtn.click();
+    }
+  };
+})();
+</script>
+<!-- RoomRover Chatbot Widget END -->
   </body>
 </html>
