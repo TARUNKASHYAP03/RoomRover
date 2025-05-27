@@ -1,4 +1,7 @@
 <% layout("layouts/boilerplate") %>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <style>
   body {
     background-color: #f8f9fa;
@@ -25,13 +28,22 @@
     width: 100%;
     height: 400px;
     object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s;
+  }
+
+  .listing-image:hover {
+    transform: scale(1.025);
   }
 
   .listing-title {
-    font-size: 2.2rem;
+    font-size: 2.3rem;
+    font-weight: 700;
     color: #2c3e50;
-    margin-bottom: 15px;
-    font-weight: 600;
+    margin-bottom: 0;
+    letter-spacing: -1px;
   }
 
   .listing-info-list {
@@ -270,6 +282,8 @@
     padding: 2rem;
     margin-top: 2rem;
     max-width: 400px;
+    box-shadow: 0 2px 12px rgba(255, 56, 92, 0.12);
+    border: 1px solid #ffe0e6;
   }
 
   .booking-box h4 {
@@ -294,6 +308,64 @@
     box-shadow: 0 2px 8px rgba(255, 56, 92, 0.12);
   }
 
+  .listing-card-section {
+    background: #f8fafc;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+    padding: 2rem 2.5rem;
+    margin-bottom: 2.2rem;
+    transition: box-shadow 0.2s;
+  }
+
+  .listing-card-section:hover {
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+  }
+
+  .listing-title-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .listing-location-row {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    color: #0077cc;
+    font-size: 1.1rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .listing-info-list {
+    margin-bottom: 0;
+  }
+
+  .listing-info-item i {
+    color: #0077cc;
+    margin-right: 7px;
+    font-size: 1.1em;
+  }
+
+  .filter-chip,
+  .btn-submit {
+    background: linear-gradient(90deg, #ff385c 60%, #ff7a85 100%);
+    color: #fff;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    padding: 12px 0;
+    transition: background 0.2s, transform 0.15s;
+    box-shadow: 0 2px 8px rgba(255, 56, 92, 0.12);
+  }
+
+  .filter-chip:hover,
+  .btn-submit:hover {
+    background: linear-gradient(90deg, #e03150 60%, #ff385c 100%);
+    transform: translateY(-2px) scale(1.03);
+  }
+
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .review-card {
@@ -314,6 +386,21 @@
       padding: 1.5rem;
     }
   }
+
+  @media (max-width: 900px) {
+    .listing-details-container {
+      padding: 10px;
+    }
+
+    .listing-card-section {
+      padding: 1rem 0.7rem;
+    }
+
+    .listing-title {
+      font-size: 1.4rem;
+    }
+  }
+
   .review-actions {
     display: flex;
     justify-content: flex-end;
@@ -334,56 +421,68 @@
 
 <body>
   <div class="listing-details-container">
-    <h1 class="listing-title"><%= listing.title %></h1>
 
-    <div class="image-section">
-      <% if (listing.image && listing.image.url) { %>
-      <img
-        src="<%= listing.image.url %>"
-        alt="<%= listing.title %>"
-        class="listing-image"
-      />
-      <% } else { %>
-      <div
-        class="no-image-placeholder"
-        style="
-          height: 400px;
-          background-color: #ecf0f1;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          border-radius: 12px;
-        "
-      >
-        <p style="color: #7f8c8d; font-size: 1.2rem">No image available</p>
+    <!-- Card: Title & Location -->
+    <div class="listing-card-section">
+      <div class="listing-title-row">
+        <span class="listing-title"><%= listing.title %></span>
       </div>
-      <% } %>
+      <div class="listing-location-row">
+        <i class="fa fa-map-marker-alt"></i>
+        <span><%= listing.location %>, <%= listing.country %></span>
+      </div>
     </div>
 
-    <ul class="listing-info-list">
-      <li class="listing-info-item">
-        <strong>Description:</strong> <%= listing.description %>
-      </li>
-      <li class="listing-info-item">
-        <strong>Price:</strong> ₹<%= listing.price.toLocaleString("en-IN") %>
-        per night
-      </li>
-      <li class="listing-info-item">
-        <strong>Location:</strong> <%= listing.location %>
-      </li>
-      <li class="listing-info-item">
-        <strong>Country:</strong> <%= listing.country %>
-      </li>
-      <li class="listing-info-item">
-        <strong>Owner:</strong>
-        <% if (listing.owner && listing.owner.username) { %>
-          <%= listing.owner.username %>
-          (<%= listing.owner.email %>)
+    <!-- Card: Image -->
+    <div class="listing-card-section" style="padding:0;">
+      <div class="image-section" style="margin-bottom:0;">
+        <% if (listing.image && listing.image.url) { %>
+        <img
+          src="<%= listing.image.url %>"
+          alt="<%= listing.title %>"
+          class="listing-image"
+        />
         <% } else { %>
-          Unknown
+        <div
+          class="no-image-placeholder"
+          style="
+            height: 400px;
+            background-color: #ecf0f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+          "
+        >
+          <p style="color: #7f8c8d; font-size: 1.2rem">No image available</p>
+        </div>
         <% } %>
-      </li>
-    </ul>
+      </div>
+    </div>
+
+    <!-- Card: Info -->
+    <div class="listing-card-section">
+      <ul class="listing-info-list">
+        <li class="listing-info-item">
+          <i class="fa fa-align-left"></i>
+          <strong>Description:</strong> <%= listing.description %>
+        </li>
+        <li class="listing-info-item">
+          <i class="fa fa-rupee-sign"></i>
+          <strong>Price:</strong> ₹<%= listing.price.toLocaleString("en-IN") %> per night
+        </li>
+        <li class="listing-info-item">
+          <i class="fa fa-user"></i>
+          <strong>Owner:</strong>
+          <% if (listing.owner && listing.owner.username) { %>
+            <%= listing.owner.username %>
+            (<%= listing.owner.email %>)
+          <% } else { %>
+            Unknown
+          <% } %>
+        </li>
+      </ul>
+    </div>
 
     <div class="action-buttons">
       <% if (currentUser && listing.owner && currentUser._id.toString() === listing.owner._id.toString()) { %>
@@ -512,6 +611,14 @@
         </p>
       </div>
       <% } %>
+    </div>
+
+    <!-- Card: Location Map -->
+    <div class="listing-card-section">
+      <h3 style="font-size:1.2rem; font-weight:600; margin-bottom:1rem;">
+        <i class="fa fa-map-marked-alt"></i> Location Map
+      </h3>
+      <div id="listing-map" style="width:100%;height:320px;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.08);"></div>
     </div>
   </div>
 
