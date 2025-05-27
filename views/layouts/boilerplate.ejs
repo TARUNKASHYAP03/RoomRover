@@ -87,6 +87,10 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Plus+Jakarta+Sans&family=Poppins:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="192x192" href="./android-chrome-192x192.png">
+    <!-- Or, if you prefer the PNG: -->
+    <!-- <link rel="icon" type="image/png" href="/android-chrome-192x192.png"> -->
   </head>
   <body>
     <%- include("../includes/navbar.ejs") %> <%-
@@ -352,5 +356,42 @@
 })();
 </script>
 <!-- RoomRover Chatbot Widget END -->
+<!-- Add this to your main layout file, e.g., views/layouts/boilerplate.ejs -->
+<div id="google_translate_element" style="display:none;"></div>
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'en',
+    includedLanguages: 'en,hi',
+    layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+  }, 'google_translate_element');
+}
+
+// Listen for your custom dropdown in the navbar
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.lang-option').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var lang = btn.getAttribute('data-lang');
+      var googleLang = lang === 'en' ? 'en' : 'hi';
+      // Set Google Translate language
+      var select = document.querySelector('.goog-te-combo');
+      if (select) {
+        select.value = googleLang;
+        select.dispatchEvent(new Event('change'));
+      }
+      // Update label in navbar
+      document.getElementById('current-lang-label').textContent = lang === 'en' ? 'English' : 'हिन्दी';
+    });
+  });
+});
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<style>
+/* Optional: Hide Google Translate banner for a cleaner look */
+.goog-te-banner-frame.skiptranslate, .goog-logo-link, .goog-te-gadget span {
+  display: none !important;
+}
+body { top: 0px !important; }
+</style>
   </body>
 </html>

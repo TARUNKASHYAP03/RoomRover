@@ -72,3 +72,61 @@
   })
   .catch(err => alert(err.message));
 }
+
+const translations = {
+  en: {
+    search_anywhere: "Anywhere",
+    search_anyweek: "Any week",
+    search_addguests: "Add guests",
+    become_host: "Become a Host",
+    login: "Log in",
+    signup: "Sign up",
+    host_home: "Host your home",
+    profile: "Profile",
+    my_trips: "My Trips",
+    help: "Help",
+    logout: "Log out",
+    welcome: "Welcome"
+    // Add more keys as needed
+  },
+  hi: {
+    search_anywhere: "कहीं भी",
+    search_anyweek: "कोई भी सप्ताह",
+    search_addguests: "मेहमान जोड़ें",
+    become_host: "मेज़बान बनें",
+    login: "लॉग इन",
+    signup: "साइन अप",
+    host_home: "अपना घर सूचीबद्ध करें",
+    profile: "प्रोफ़ाइल",
+    my_trips: "मेरी यात्राएँ",
+    help: "सहायता",
+    logout: "लॉग आउट",
+    welcome: "स्वागत है"
+    // Add more keys as needed
+  }
+};
+
+function setLanguage(lang) {
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    if (translations[lang][key]) {
+      el.textContent = translations[lang][key];
+    }
+  });
+  // Update label in navbar
+  document.getElementById('current-lang-label').textContent = lang === 'en' ? 'English' : 'हिन्दी';
+  localStorage.setItem("roomrover_lang", lang);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Dropdown click
+  document.querySelectorAll('.lang-option').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var lang = btn.getAttribute('data-lang');
+      setLanguage(lang);
+    });
+  });
+  // On load, set saved or default language
+  const savedLang = localStorage.getItem("roomrover_lang") || "en";
+  setLanguage(savedLang);
+});

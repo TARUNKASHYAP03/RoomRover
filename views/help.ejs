@@ -1,0 +1,49 @@
+<%- include('layouts/boilerplate.ejs', { body: `
+  <section class="help-section">
+    <h1>Need Help?</h1>
+    <p>Welcome to RoomRover Help & Support. Find answers to common questions or contact us for further assistance.</p>
+    <div class="faq">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-item">
+        <h3>How do I book a room?</h3>
+        <p>Browse available rooms, select your preferred option, and follow the booking instructions on the room page.</p>
+      </div>
+      <div class="faq-item">
+        <h3>Can I cancel my booking?</h3>
+        <p>Yes, you can cancel your booking from your account dashboard. Cancellation policies may apply.</p>
+      </div>
+      <div class="faq-item">
+        <h3>Is customer support available 24/7?</h3>
+        <p>Our support team is available 24/7 via email and phone to assist you with any queries.</p>
+      </div>
+    </div>
+    <div class="contact-us">
+      <h2>Contact Us</h2>
+      <p>Email: <a href="mailto:support@roomrover.com">support@roomrover.com</a></p>
+      <p>Phone: +91-12345-67890</p>
+      <form class="contact-form" method="post" action="#">
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="email" name="email" placeholder="Your Email" required>
+        <textarea name="message" placeholder="Your Message" rows="4" required></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+    </div>
+  </section>
+  <style>
+    .help-section { max-width: 700px; margin: 40px auto; padding: 32px 24px; background: #fff; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06);}
+    .help-section h1 { font-family: 'Montserrat', 'Noto Sans', Arial, sans-serif; font-size: 2.3rem; margin-bottom: 10px; }
+    .help-section p { color: #444; margin-bottom: 18px; }
+    .faq { margin-bottom: 32px; }
+    .faq h2 { font-size: 1.3rem; margin-bottom: 12px; }
+    .faq-item { margin-bottom: 18px; }
+    .faq-item h3 { font-size: 1.1rem; margin-bottom: 4px; color: #2d3748; }
+    .contact-us h2 { font-size: 1.2rem; margin-bottom: 10px; }
+    .contact-form { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+    .contact-form input, .contact-form textarea { padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 1rem; }
+    .contact-form button { background: #4fd1c5; color: #fff; border: none; border-radius: 6px; padding: 10px 0; font-weight: 600; font-size: 1rem; cursor: pointer; transition: background 0.2s;}
+    .contact-form button:hover { background: #38b2ac; }
+    @media (max-width: 600px) {
+      .help-section { padding: 16px 4vw; }
+    }
+  </style>
+` }) %>
