@@ -115,7 +115,9 @@
               <div class="mb-3">
                 <label for="image" class="form-label">Change Image</label>
                 <input type="file" class="form-control" id="image" name="image" accept="image/*">
-                <% if (listing.image) { %>
+                <% if (listing.image?.url) { %>
+                  <img src="<%= listing.image.url %>" alt="Current Image" style="max-width:200px; margin-top:10px;">
+                <% } else if (listing.image) { %>
                   <img src="<%= listing.image %>" alt="Current Image" style="max-width:200px; margin-top:10px;">
                 <% } %>
               </div>
