@@ -1,6 +1,6 @@
-<% if (typeof success !== 'undefined' && success) { %>
+<% if (Array.isArray(success) && success.length && success[0]) { %>
   <div class="alert alert-success alert-dismissible fade show mx-auto" role="alert" id="flash-message" style="max-width: 500px;">
-    <%= success %>
+    <%= success[0] %>
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
 <% } %>
