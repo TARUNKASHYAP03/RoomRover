@@ -20,7 +20,8 @@ const { isLoggedIn, isAdmin } = require("./middleware.js"); // Import the isLogg
 const crypto = require("crypto"); // Add this at the top with other requires
 const Booking = require("./models/booking"); // Add at the top
 const multer = require("multer");
-const upload = multer({ dest: "public/uploads/" }); // Save uploads to public/uploads
+const { cloudinary, storage } = require("./cloudConfig.js"); // Import cloudinary and storage configuration
+const upload = multer({ storage }); // Save uploads to public/uploads
 const sharp = require("sharp");
 
 const userRoutes = require("./routes/user.js"); // Import user routes
@@ -185,16 +186,8 @@ app.post(
     newListing.owner = req.user._id;
 
     if (req.file) {
-      // Resize image to 600x400 and overwrite the uploaded file
-      const imagePath = path.join(__dirname, "public", "uploads", req.file.filename);
-      await sharp(imagePath)
-        .resize(600, 400, { fit: "cover" })
-        .toFile(imagePath + "_resized.jpg");
-      // Save the resized image path
-      newListing.image = `/uploads/${req.file.filename}_resized.jpg`;
-      // Optionally, delete the original file if you want
-      const fs = require("fs");
-      fs.unlink(imagePath, () => {});
+      // Use Cloudinary URL
+      newListing.image = req.file.path; // Cloudinary provides the URL in req.file.path
     }
 
     await newListing.save();
