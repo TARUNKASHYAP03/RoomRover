@@ -229,12 +229,8 @@ app.put("/listings/:id", isLoggedIn, isAdmin, upload.single("image"), async (req
 
   // If a new image is uploaded, replace the old one
   if (req.file) {
-    // Optionally delete the old image file
-    if (listing.image) {
-      const oldImagePath = path.join(__dirname, "public", listing.image);
-      fs.unlink(oldImagePath, err => {}); // Ignore error if file doesn't exist
-    }
-    listing.image = `/uploads/${req.file.filename}`;
+    // Set to Cloudinary URL
+    listing.image = req.file.path;
   }
 
   await listing.save();
