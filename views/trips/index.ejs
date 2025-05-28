@@ -106,7 +106,7 @@
       <% bookings.forEach(booking => { %>
         <% if (booking.listing) { %>
         <div class="trip-card" id="trip-<%= booking._id %>">
-          <img class="trip-card-img" src="<%= booking.listing.image && booking.listing.image.url ? booking.listing.image.url : 'https://via.placeholder.com/320x180?text=No+Image' %>" alt="Listing image" />
+          <img class="trip-card-img" src="<%= booking.listing.image ? booking.listing.image : 'https://via.placeholder.com/320x180?text=No+Image' %>" alt="Listing image" />
           <div class="trip-card-body">
             <div class="trip-card-title"><%= booking.listing.title %></div>
             <div class="trip-card-location"><i class="fa fa-map-marker-alt"></i> <%= booking.listing.location %></div>

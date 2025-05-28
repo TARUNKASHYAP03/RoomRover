@@ -2,10 +2,10 @@
   <div class="container-fluid px-4">
     <!-- Logo -->
     <a class="navbar-brand" href="/">
-      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#FF5A5F" viewBox="0 0 24 24">
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#007bff" viewBox="0 0 24 24">
         <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
       </svg>
-      <span class="ms-2 fw-bold" style="color: #FF5A5F;">RoomRover</span>
+      <span class="ms-2 fw-bold" style="color: #007bff;">RoomRover</span>
     </a>
 
     <!-- Search Bar (Centered) -->
@@ -13,9 +13,12 @@
           style="width: fit-content;"
           action="/listings"
           method="get">
-      <div class="input-group rounded-pill border shadow-sm" style="width: 400px;">
+      <div class="input-group rounded-pill border shadow-sm"
+           style="width: 400px; border: 2px solid #007bff; box-shadow: 0 2px 8px rgba(0,123,255,0.1);">
         <input type="text" class="form-control border-0" name="q" placeholder="Search by location or title..." aria-label="Search">
-        <button class="btn btn-danger rounded-pill ms-auto" type="submit" style="padding: 8px 12px;">
+        <button class="btn rounded-pill ms-auto"
+                type="submit"
+                style="padding: 8px 12px; background-color: #007bff; color: #fff;">
           <i class="bi bi-search"></i>
         </button>
       </div>
