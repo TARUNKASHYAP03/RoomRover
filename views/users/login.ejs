@@ -1,35 +1,108 @@
 <% layout('/layouts/boilerplate') %>
 
-<div class="row mb-3 mt-4">
-  <div class="col-6 offset-3">
+<style>
+  body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f3ff 0%, #e0e7ff 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .login-card {
+    max-width: 400px;
+    margin: 48px auto;
+    background: #fff;
+    border-radius: 1.25rem;
+    border: 1px solid #e3e6ee;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10);
+    padding: 2.5rem 2rem 2rem 2rem;
+  }
+  .login-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+    color: #375aee;
+    font-size: 2.5rem;
+  }
+  .login-title {
+    font-family: 'Georgia', serif;
+    font-weight: 700;
+    font-size: 2.1rem;
+    text-align: center;
+    margin-bottom: 0.25rem;
+    color: #222;
+  }
+  .login-subtitle {
+    text-align: center;
+    color: #375aee;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+  }
+  .login-subtitle a {
+    color: #375aee;
+    text-decoration: underline;
+    transition: color 0.2s;
+  }
+  .login-subtitle a:hover {
+    color: #223a8a;
+  }
+  .form-label {
+    font-size: 1rem;
+    color: #222;
+  }
+  .form-control:focus {
+    border-color: #375aee;
+    box-shadow: 0 0 0 0.2rem rgba(55, 90, 238, 0.10);
+  }
+  .input-group-text {
+    background: #f3f4f6;
+    border: none;
+    color: #375aee;
+  }
+  .btn-login {
+    background: #375aee;
+    border: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: background 0.2s;
+  }
+  .btn-login:hover {
+    background: #223a8a;
+  }
+</style>
 
-    <% if (error) { %>
-      <div class="alert alert-danger text-center"><%= error %></div>
-    <% } %>
+<div class="login-card">
+  <div class="login-icon">
+    <i class="bi bi-box-arrow-in-right"></i>
+  </div>
+  <div class="login-title">Log In</div>
+  <div class="login-subtitle">
+    Or <a href="/signup">create a new account</a>
+  </div>
 
-    <% if (success) { %>
-      <div class="alert alert-success text-center"><%= success %></div>
-    <% } %>
+  <% if (error) { %>
+    <div class="alert alert-danger text-center"><%= error %></div>
+  <% } %>
+  <% if (success) { %>
+    <div class="alert alert-success text-center"><%= success %></div>
+  <% } %>
 
-    <h1 class="text-center">Log In</h1>
-
-    <form action="/login" method="POST" novalidate>
-      <div class="mb-3">
-        <label for="username" class="form-label fw-bold">Username</label>
+  <form action="/login" method="POST" novalidate>
+    <div class="mb-3">
+      <label for="username" class="form-label fw-bold">Username</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-person"></i></span>
         <input type="text" class="form-control" id="username" name="username" required>
       </div>
-
-      <div class="mb-3">
-        <label for="password" class="form-label fw-bold">Password</label>
+    </div>
+    <div class="mb-4">
+      <label for="password" class="form-label fw-bold">Password</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-lock"></i></span>
         <input type="password" class="form-control" id="password" name="password" required>
       </div>
-
-      <button type="submit" class="btn btn-success w-100">Login</button>
-    </form>
-
-    <div class="text-center mt-3">
-      <a href="/signup">Don't have an account? Sign up</a>
     </div>
-
-  </div>
+    <button type="submit" class="btn btn-login w-100 mb-2">
+      <i class="bi bi-box-arrow-in-right me-1"></i> Login
+    </button>
+  </form>
 </div>

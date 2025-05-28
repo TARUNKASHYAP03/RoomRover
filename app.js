@@ -147,7 +147,7 @@ app.get("/listings", async (req, res) => {
 });
 
 // New route to render the form for creating a new listing
-app.get("/listings/new", isLoggedIn, isAdmin, (req, res) => {
+app.get("/listings/new", isLoggedIn, (req, res) => {
   res.render("listings/new.ejs"); // Corrected path
 });
 
@@ -179,7 +179,6 @@ app.get("/listings/:id", async (req, res, next) => {
 app.post(
   "/listings",
   isLoggedIn,
-  isAdmin,
   upload.single("image"),
   async (req, res) => {
     const newListing = new Listing(req.body.listing);

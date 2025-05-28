@@ -1,36 +1,156 @@
 <% layout('/layouts/boilerplate') %>
 
-<div class="row mb-3 mt-4">
-  <div class="col-6 offset-3">
+<style>
+  body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f3ff 0%, #e0e7ff 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .signup-card {
+    max-width: 400px;
+    margin: 48px auto;
+    background: #fff;
+    border-radius: 1.25rem;
+    border: 1px solid #e3e6ee;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10);
+    padding: 2.5rem 2rem 2rem 2rem;
+  }
+  .signup-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+    color: #375aee;
+    font-size: 2.5rem;
+  }
+  .signup-title {
+    font-family: 'Georgia', serif;
+    font-weight: 700;
+    font-size: 2.1rem;
+    text-align: center;
+    margin-bottom: 0.25rem;
+    color: #222;
+  }
+  .signup-subtitle {
+    text-align: center;
+    color: #375aee;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+  }
+  .signup-subtitle a {
+    color: #375aee;
+    text-decoration: underline;
+    transition: color 0.2s;
+  }
+  .signup-subtitle a:hover {
+    color: #223a8a;
+  }
+  .form-label {
+    font-size: 1rem;
+    color: #222;
+  }
+  .form-control:focus {
+    border-color: #375aee;
+    box-shadow: 0 0 0 0.2rem rgba(55, 90, 238, 0.10);
+  }
+  .input-group-text {
+    background: #f3f4f6;
+    border: none;
+    color: #375aee;
+  }
+  .btn-signup {
+    background: #375aee;
+    border: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: background 0.2s;
+  }
+  .btn-signup:hover {
+    background: #223a8a;
+  }
+  .password-mismatch {
+    color: #d32f2f;
+    font-size: 0.95rem;
+    margin-top: 0.25rem;
+    display: none;
+    text-align: left;
+  }
+</style>
 
-    <% if (error) { %>
-      <div class="alert alert-danger text-center"><%= error %></div>
-    <% } %>
+<div class="signup-card">
+  <div class="signup-icon">
+    <i class="bi bi-person-plus"></i>
+  </div>
+  <div class="signup-title">Create your account</div>
+  <div class="signup-subtitle">
+    Or <a href="/login">sign in to your existing account</a>
+  </div>
 
-    <% if (success) { %>
-      <div class="alert alert-success text-center"><%= success %></div>
-    <% } %>
+  <% if (error) { %>
+    <div class="alert alert-danger text-center"><%= error %></div>
+  <% } %>
+  <% if (success) { %>
+    <div class="alert alert-success text-center"><%= success %></div>
+  <% } %>
 
-    <h1 class="text-center">Sign Up</h1>
-
-    <form action="/signup" method="POST" novalidate>
-      <div class="mb-3">
-        <label for="username" class="form-label fw-bold">Username</label>
+  <form id="signupForm" action="/signup" method="POST" novalidate>
+    <div class="mb-3">
+      <label for="username" class="form-label fw-bold">Full Name</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-person"></i></span>
         <input type="text" class="form-control" id="username" name="username" required>
       </div>
-      <div class="mb-3">
-        <label for="email" class="form-label fw-bold">Email</label>
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label fw-bold">Email address</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
         <input type="email" class="form-control" id="email" name="email" required>
       </div>
-      <div class="mb-3">
-        <label for="password" class="form-label fw-bold">Password</label>
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label fw-bold">Password</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-lock"></i></span>
         <input type="password" class="form-control" id="password" name="password" required>
       </div>
-      <button type="submit" class="btn btn-primary w-100">Sign Up</button>
-    </form>
-    <div class="text-center mt-3">
-      <span>Already have an account?</span>
-      <a href="/login">Login</a>
     </div>
-  </div>
+    <div class="mb-4">
+      <label for="confirmPassword" class="form-label fw-bold">Confirm Password</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+      </div>
+      <div id="passwordMismatch" class="password-mismatch">Passwords do not match.</div>
+    </div>
+    <button type="submit" class="btn btn-signup w-100 mb-2">
+      <i class="bi bi-person-plus me-1"></i> Create Account
+    </button>
+  </form>
 </div>
+
+<script>
+  // Client-side password confirmation check
+  const form = document.getElementById('signupForm');
+  const password = document.getElementById('password');
+  const confirmPassword = document.getElementById('confirmPassword');
+  const mismatchMsg = document.getElementById('passwordMismatch');
+
+  form.addEventListener('submit', function(e) {
+    if (password.value !== confirmPassword.value) {
+      mismatchMsg.style.display = 'block';
+      confirmPassword.classList.add('is-invalid');
+      e.preventDefault();
+    } else {
+      mismatchMsg.style.display = 'none';
+      confirmPassword.classList.remove('is-invalid');
+    }
+  });
+
+  confirmPassword.addEventListener('input', function() {
+    if (password.value === confirmPassword.value) {
+      mismatchMsg.style.display = 'none';
+      confirmPassword.classList.remove('is-invalid');
+    }
+  });
+</script>
