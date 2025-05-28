@@ -16,7 +16,7 @@ const flash = require("connect-flash"); // Import connect-flash
 const passport = require("passport");
 const localStrategy = require("passport-local");
 const User = require("./models/user.js"); // Import the User model
-const { isLoggedIn } = require("./middleware.js"); // Import the isLoggedIn middleware
+const { isLoggedIn, isAdmin } = require("./middleware.js"); // Import the isLoggedIn middleware
 const crypto = require("crypto"); // Add this at the top with other requires
 const Booking = require("./models/booking"); // Add at the top
 const multer = require("multer");
@@ -110,23 +110,43 @@ app.get("/", (req, res) => {
 
 // Index route to render the homepage
 app.get("/listings", async (req, res) => {
-  const { category, minPrice, maxPrice, location } = req.query;
+  const { q, category, minPrice, maxPrice, guests } = req.query;
   let filter = {};
 
-  if (category) filter.category = category;
-  if (location) filter.location = new RegExp(location, "i");
+  // Build filter object for MongoDB
+  if (q) {
+    filter.$or = [
+      { location: { $regex: q, $options: "i" } },
+      { title: { $regex: q, $options: "i" } },
+    ];
+  }
+  if (category) {
+    filter.category = category;
+  }
   if (minPrice || maxPrice) {
     filter.price = {};
     if (minPrice) filter.price.$gte = Number(minPrice);
     if (maxPrice) filter.price.$lte = Number(maxPrice);
   }
+  if (guests) {
+    filter.guests = { $gte: Number(guests) };
+  }
+
+  // Prepare filters object for EJS
+  const filters = {
+    category: category || "",
+    minPrice: minPrice || 0,
+    maxPrice: maxPrice || 10000,
+    guests: guests || 1,
+    q: q || "",
+  };
 
   const allListings = await Listing.find(filter);
-  res.render("listings/index", { allListings, filters: req.query });
+  res.render("listings/index.ejs", { allListings, currentUser: req.user, q, filters });
 });
 
 // New route to render the form for creating a new listing
-app.get("/listings/new", isLoggedIn, (req, res) => {
+app.get("/listings/new", isLoggedIn, isAdmin, (req, res) => {
   res.render("listings/new.ejs"); // Corrected path
 });
 
@@ -158,13 +178,25 @@ app.get("/listings/:id", async (req, res, next) => {
 app.post(
   "/listings",
   isLoggedIn,
+  isAdmin,
   upload.single("image"),
   async (req, res) => {
     const newListing = new Listing(req.body.listing);
     newListing.owner = req.user._id;
+
     if (req.file) {
-      newListing.image = `/uploads/${req.file.filename}`; // Save relative path
+      // Resize image to 600x400 and overwrite the uploaded file
+      const imagePath = path.join(__dirname, "public", "uploads", req.file.filename);
+      await sharp(imagePath)
+        .resize(600, 400, { fit: "cover" })
+        .toFile(imagePath + "_resized.jpg");
+      // Save the resized image path
+      newListing.image = `/uploads/${req.file.filename}_resized.jpg`;
+      // Optionally, delete the original file if you want
+      const fs = require("fs");
+      fs.unlink(imagePath, () => {});
     }
+
     await newListing.save();
     req.flash("success", "Listing created successfully!");
     res.redirect("/listings");
@@ -187,20 +219,38 @@ const isOwner = async (req, res, next) => {
 };
 
 // Edit route to render the form for editing a listing
-app.get("/listings/:id/edit", isLoggedIn, isOwner, async (req, res) => {
+app.get("/listings/:id/edit", isLoggedIn, isAdmin, async (req, res) => {
   let { id } = req.params;
   const listing = await Listing.findById(id);
   res.render("listings/edit.ejs", { listing });
 });
 
-app.put("/listings/:id", isLoggedIn, isOwner, async (req, res) => {
+const fs = require("fs");
+
+app.put("/listings/:id", isLoggedIn, isAdmin, upload.single("image"), async (req, res) => {
   let { id } = req.params;
-  await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+  const listing = await Listing.findById(id);
+
+  // Update listing fields
+  Object.assign(listing, req.body.listing);
+
+  // If a new image is uploaded, replace the old one
+  if (req.file) {
+    // Optionally delete the old image file
+    if (listing.image) {
+      const oldImagePath = path.join(__dirname, "public", listing.image);
+      fs.unlink(oldImagePath, err => {}); // Ignore error if file doesn't exist
+    }
+    listing.image = `/uploads/${req.file.filename}`;
+  }
+
+  await listing.save();
+  req.flash("success", "Listing updated successfully!");
   res.redirect(`/listings/${id}`);
 });
 
 // Delete route to handle deleting a listing
-app.delete("/listings/:id", isLoggedIn, isOwner, async (req, res) => {
+app.delete("/listings/:id", isLoggedIn, isAdmin, async (req, res) => {
   let { id } = req.params;
   await Listing.findByIdAndDelete(id);
   req.flash("success", "Listing deleted successfully!");
@@ -347,6 +397,12 @@ app.get("/trips", isLoggedIn, async (req, res, next) => {
 //   console.log("Sample listing saved:", sampleListing);
 //   res.send("Sample listing saved successfully!");
 // });
+
+// New route to make a user an admin
+app.get("/makeadmin/:userid", async (req, res) => {
+  await User.findByIdAndUpdate(req.params.userid, { isAdmin: true });
+  res.send("User is now admin");
+});
 
 // Catch-all route for non-existent pages
 app.use((req, res, next) => {

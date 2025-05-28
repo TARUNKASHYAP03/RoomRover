@@ -11,7 +11,7 @@
               <p class="text-muted fs-6">Update the listing details below.</p>
             </div>
 
-            <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" class="needs-validation" novalidate>
+            <form action="/listings/<%= listing._id %>?_method=PUT" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
               <!-- Title -->
               <div class="mb-4">
                 <label for="title" class="form-label fw-semibold">Title</label>
@@ -109,6 +109,15 @@
                     placeholder="https://example.com/image.jpg"
                   />
                 </div>
+              </div>
+
+              <!-- Change Image -->
+              <div class="mb-3">
+                <label for="image" class="form-label">Change Image</label>
+                <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                <% if (listing.image) { %>
+                  <img src="<%= listing.image %>" alt="Current Image" style="max-width:200px; margin-top:10px;">
+                <% } %>
               </div>
 
               <!-- Buttons -->

@@ -9,18 +9,17 @@
     </a>
 
     <!-- Search Bar (Centered) -->
-    <div class="d-none d-lg-flex justify-content-center position-absolute start-0 end-0 mx-auto" style="width: fit-content;">
+    <form class="d-none d-lg-flex justify-content-center position-absolute start-0 end-0 mx-auto"
+          style="width: fit-content;"
+          action="/listings"
+          method="get">
       <div class="input-group rounded-pill border shadow-sm" style="width: 400px;">
-        <button class="btn btn-white border-0" type="button" data-i18n="search_anywhere">Anywhere</button>
-        <div class="vr"></div>
-        <button class="btn btn-white border-0" type="button" data-i18n="search_anyweek">Any week</button>
-        <div class="vr"></div>
-        <button class="btn btn-white border-0 text-muted" type="button" data-i18n="search_addguests">Add guests</button>
-        <button class="btn btn-danger rounded-pill ms-auto" type="button" style="padding: 8px 12px;">
+        <input type="text" class="form-control border-0" name="q" placeholder="Search by location or title..." aria-label="Search">
+        <button class="btn btn-danger rounded-pill ms-auto" type="submit" style="padding: 8px 12px;">
           <i class="bi bi-search"></i>
         </button>
       </div>
-    </div>
+    </form>
 
     <!-- Right Side Menu -->
     <div class="d-flex align-items-center ms-auto">

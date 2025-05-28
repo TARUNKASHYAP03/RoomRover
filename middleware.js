@@ -1,7 +1,15 @@
 module.exports.isLoggedIn = (req, res, next) => {
   if (!req.isAuthenticated()) {
-    req.flash("error", "You must be signed in first!"); // Flash error message
-    return res.redirect("/login"); // Redirect to the login page if not authenticated
+    req.flash("error", "You must be signed in!");
+    return res.redirect("/login");
   }
-  next(); // Proceed to the next middleware if authenticated
-} 
+  next();
+};
+
+module.exports.isAdmin = (req, res, next) => {
+  if (!req.user || !req.user.isAdmin) {
+    req.flash("error", "Admin access required.");
+    return res.redirect("/listings");
+  }
+  next();
+};

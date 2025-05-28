@@ -312,42 +312,53 @@
 </script>
 
 <body>
+  <% if (currentUser && currentUser.isAdmin) { %>
+    <a href="/listings/new" class="btn btn-success mb-3">Add New Listing</a>
+  <% } %>
   <div class="row row-cols-md-3 row-cols-sm-2 row-cols-1 mt-1 g-4">
     <% for (let listing of allListings) { %>
-    <div class="col">
-      <div class="card h-100 overflow-hidden shadow-sm">
-        <a href="/listings/<%= listing._id %>" class="listing-link" style="text-decoration:none;">
-          <div class="position-relative">
-            <% if (listing.image) { %>
-              <img src="<%= listing.image %>" class="card-img-top" style="object-fit:cover; width:100%; height:250px;" alt="Listing Image">
-            <% } %>
-            <div class="card-img-overlay d-flex justify-content-end">
-              <button class="btn-heart">
-                <i class="fa fa-heart"></i>
-              </button>
+      <div class="col">
+        <div class="card h-100 overflow-hidden shadow-sm">
+          <a href="/listings/<%= listing._id %>" class="listing-link" style="text-decoration:none;">
+            <div class="position-relative">
+              <% if (listing.image) { %>
+                <img src="<%= listing.image %>" class="card-img-top" style="object-fit:cover; width:100%; height:250px;" alt="Listing Image">
+              <% } %>
+              <div class="card-img-overlay d-flex justify-content-end">
+                <button class="btn-heart">
+                  <i class="fa fa-heart"></i>
+                </button>
+              </div>
             </div>
-          </div>
-          <div class="card-body p-3">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <span class="card-location">
-                <i class="fa fa-map-marker-alt"></i>
-                <%= listing.location %>
-              </span>
-              <span class="card-rating">
-                <i class="fa fa-star text-warning"></i>
-                <small><%= listing.rating ? listing.rating.toFixed(2) : 'New' %></small>
-              </span>
+            <div class="card-body p-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="card-location">
+                  <i class="fa fa-map-marker-alt"></i>
+                  <%= listing.location %>
+                </span>
+                <span class="card-rating">
+                  <i class="fa fa-star text-warning"></i>
+                  <small><%= listing.rating ? listing.rating.toFixed(2) : 'New' %></small>
+                </span>
+              </div>
+              <div class="card-title"><%= listing.title %></div>
+              <div class="card-price mb-1">
+                <i class="fa fa-rupee-sign"></i>
+                <%= listing.price.toLocaleString("en-IN") %> <span style="font-weight:400;font-size:0.97em;">/ night</span>
+              </div>
+              <a href="/listings/<%= listing._id %>" class="btn btn-outline-primary btn-sm w-100 mb-2">View Details</a>
+              <% if (currentUser && currentUser.isAdmin) { %>
+                <div class="d-flex gap-2">
+                  <a href="/listings/<%= listing._id %>/edit" class="btn btn-warning btn-sm w-50">Edit</a>
+                  <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST" style="display:inline; width:48%;">
+                    <button class="btn btn-danger btn-sm w-100" onclick="return confirm('Delete this listing?')">Delete</button>
+                  </form>
+                </div>
+              <% } %>
             </div>
-            <div class="card-title"><%= listing.title %></div>
-            <div class="card-price mb-1">
-              <i class="fa fa-rupee-sign"></i>
-              <%= listing.price.toLocaleString("en-IN") %> <span style="font-weight:400;font-size:0.97em;">/ night</span>
-            </div>
-            <a href="/listings/<%= listing._id %>" class="view-details-btn">View Details</a>
-          </div>
-        </a>
+          </a>
+        </div>
       </div>
-    </div>
     <% } %>
   </div>
 </body>
