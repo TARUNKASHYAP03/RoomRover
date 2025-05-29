@@ -1,4 +1,10 @@
 <% layout("layouts/boilerplate") %>
+<% if (success && success.length) { %>
+  <div class="alert alert-success"><%= success[0] %></div>
+<% } %>
+<% if (error && error.length) { %>
+  <div class="alert alert-danger"><%= error[0] %></div>
+<% } %>
 <div style="max-width:500px;margin:3rem auto;background:#fff;padding:2.5rem 2rem;border-radius:1.5rem;box-shadow:0 4px 24px rgba(34,34,34,0.07);text-align:center;">
   <i class="fa fa-check-circle" style="color:#38d39f;font-size:3rem;margin-bottom:1rem;"></i>
   <h2 style="margin-bottom:1rem;">Booking Confirmed!</h2>

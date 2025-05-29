@@ -351,9 +351,7 @@ app.post("/listings/:id/book", isLoggedIn, async (req, res) => {
 
 // Booking confirmation page
 app.get("/bookings/:bookingId/confirmation", isLoggedIn, async (req, res) => {
-  const booking = await Booking.findById(req.params.bookingId).populate(
-    "listing"
-  );
+  const booking = await Booking.findById(req.params.bookingId).populate("listing");
   if (!booking) {
     req.flash("error", "Booking not found.");
     return res.redirect("/listings");
