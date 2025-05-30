@@ -1,437 +1,384 @@
+// Environment variables setup
 if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config(); // Load environment variables from .env file
+  require("dotenv").config();
 }
 
+// Dependencies
 const express = require("express");
 const serverless = require("serverless-http");
 const mongoose = require("mongoose");
-const app = express();
-const Listing = require("./models/listing"); // Import the Listing model
 const path = require("path");
 const methodOverride = require("method-override");
-const ejsMate = require("ejs-mate"); // Import ejs-mate for layout support
-const { listingSchema, reviewSchema } = require("./schema.js"); // Import the listing schema
-const sessionNew = require("express-session");
-const MongoStore = require("connect-mongo"); // Import connect-mongo for session storage
-const Review = require("./models/review"); // Import the Review model
+const ejsMate = require("ejs-mate");
 const session = require("express-session");
-const flash = require("connect-flash"); // Import connect-flash
+const MongoStore = require("connect-mongo");
+const flash = require("connect-flash");
 const passport = require("passport");
-const localStrategy = require("passport-local");
-const User = require("./models/user.js"); // Import the User model
-const { isLoggedIn, isAdmin } = require("./middleware.js"); // Import the isLoggedIn middleware
-const crypto = require("crypto"); // Add this at the top with other requires
-const Booking = require("./models/booking"); // Add at the top
+const LocalStrategy = require("passport-local");
 const multer = require("multer");
-const { cloudinary, storage } = require("./cloudConfig.js"); // Import cloudinary and storage configuration
-const upload = multer({ storage }); // Save uploads to public/uploads
 const sharp = require("sharp");
+const crypto = require("crypto");
 
-const userRoutes = require("./routes/user.js"); // Import user routes
+// Models
+const Listing = require("./models/listing");
+const Review = require("./models/review");
+const User = require("./models/user");
+const Booking = require("./models/booking");
 
-const mongo_url = process.env.ATLAS_URI || "mongodb://localhost:27017/RoomRover"; // Use environment variable or default to local MongoDB
+// Configurations
+const { listingSchema, reviewSchema } = require("./schema.js");
+const { cloudinary, storage } = require("./cloudConfig.js");
+const { isLoggedIn, isAdmin } = require("./middleware.js");
 
-main()
-  .then(() => console.log("Connected to DB"))
-  .catch((err) => console.log(err));
+// Routes
+const userRoutes = require("./routes/user.js");
 
-// MongoDB connection function
+// Initialize Express
+const app = express();
+
+// Database connection
+const mongo_url = process.env.ATLAS_URI || "mongodb://localhost:27017/RoomRover";
+
 async function main() {
-  await mongoose.connect(mongo_url);
+  try {
+    await mongoose.connect(mongo_url, {
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+      connectTimeoutMS: 30000
+    });
+    console.log("Connected to MongoDB");
+  } catch (err) {
+    console.error("MongoDB connection error:", err);
+    process.exit(1);
+  }
 }
 
-app.use(express.json());
-app.set("view engine", "ejs"); // Set EJS as the view engine
-app.set("views", path.join(__dirname, "views")); // Set the views directory
-app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-encoded data
-app.use(methodOverride("_method"));
-app.engine("ejs", ejsMate); // Use ejs-mate for EJS layout support
+// Database connection events
+mongoose.connection.on('connected', () => console.log('Mongoose connected'));
+mongoose.connection.on('error', err => console.log('Mongoose error:', err));
+mongoose.connection.on('disconnected', () => console.log('Mongoose disconnected'));
+
+// Graceful shutdown
+process.on('SIGINT', async () => {
+  await mongoose.connection.close();
+  console.log('Mongoose connection closed due to app termination');
+  process.exit(0);
+});
+
+// Initialize database connection
+main().catch(err => console.log(err));
+
+// App configuration
+app.engine("ejs", ejsMate);
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(methodOverride("_method"));
 
-const sessionSecret = crypto.randomBytes(32).toString("hex"); // Generate a new secret on each server start
+// File upload configuration
+const upload = multer({ storage });
 
-// Use connect-mongo to store sessions in MongoDB
+// Session configuration
+const sessionSecret = process.env.SECRET || crypto.randomBytes(32).toString('hex');
+
 const store = MongoStore.create({
   mongoUrl: mongo_url,
   crypto: {
-    secret: process.env.SECRET, // Use the same secret for encryption
+    secret: sessionSecret,
   },
-  touchAfter: 24 * 3600, // Update session every 24 hours
-  collectionName: "sessions", // Specify the collection name for sessions
-  ttl: 14 * 24 * 60 * 60, // Set session expiration to 14 days
+  touchAfter: 24 * 3600,
+  collectionName: "sessions",
 });
 
 store.on("error", function (error) {
   console.log("Session store error:", error);
-}
-); // Log any errors from the session store
-// Configure session options
+});
 
 const sessionOptions = {
-  store: store, // Use the MongoDB store for sessions
-  secret: process.env.SECRET, // Use the random secret
+  store,
+  name: "roomrover_session",
+  secret: sessionSecret,
   resave: false,
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
     expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7,
-  },
+    sameSite: "lax"
+  }
 };
-
-
 
 app.use(session(sessionOptions));
 app.use(flash());
+
+// Passport configuration
 app.use(passport.initialize());
 app.use(passport.session());
-
-passport.use(new localStrategy(User.authenticate()));
+passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+// Local variables middleware
 app.use((req, res, next) => {
   res.locals.currentUser = req.user;
-  next();
-});
-
-// Middleware to set flash messages in res.locals
-app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   next();
 });
 
-app.use("/", userRoutes); // Use user routes
-
-// app.get("/register", (req, res) => {
-//     res.render("users/register"); // Make sure you have a users/register.ejs form
-// });
-
-const validatelisting = (req, res, next) => {
-  const { error } = listingSchema.validate(req.body); // Validate the request body against the schema
+// Validation middleware
+const validateListing = (req, res, next) => {
+  const { error } = listingSchema.validate(req.body);
   if (error) {
-    console.log(error);
-    return res.status(400).send("Invalid data");
-  } else {
-    next();
-  } // Proceed to the next middleware if validation passes
-};
-
-const validateReview = (req, res, next) => {
-  const { error } = reviewSchema.validate(req.body); // Validate the request body against the review schema
-  if (error) {
-    console.log(error);
-    return res.status(400).send("Invalid data");
-  } else {
-    next();
-  } // Proceed to the next middleware if validation passes
-};
-// Middleware to log the request method and URL
-
-app.get("/", (req, res) => {
-  res.redirect("/listings");
-});
-
-// Index route to render the homepage
-app.get("/listings", async (req, res) => {
-  const { q, category, minPrice, maxPrice, guests } = req.query;
-  let filter = {};
-
-  // Build filter object for MongoDB
-  if (q) {
-    filter.$or = [
-      { location: { $regex: q, $options: "i" } },
-      { title: { $regex: q, $options: "i" } },
-    ];
-  }
-  if (category) {
-    filter.category = category;
-  }
-  if (minPrice || maxPrice) {
-    filter.price = {};
-    if (minPrice) filter.price.$gte = Number(minPrice);
-    if (maxPrice) filter.price.$lte = Number(maxPrice);
-  }
-  if (guests) {
-    filter.guests = { $gte: Number(guests) };
-  }
-
-  // Prepare filters object for EJS
-  const filters = {
-    category: category || "",
-    minPrice: minPrice || 0,
-    maxPrice: maxPrice || 10000,
-    guests: guests || 1,
-    q: q || "",
-  };
-
-  const allListings = await Listing.find(filter);
-  res.render("listings/index.ejs", {
-    allListings,
-    currentUser: req.user,
-    q,
-    filters,
-  });
-});
-
-// New route to render the form for creating a new listing
-app.get("/listings/new", isLoggedIn, (req, res) => {
-  res.render("listings/new.ejs"); // Corrected path
-});
-
-// show route to render a single listing
-app.get("/listings/:id", async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const listing = await Listing.findById(id)
-      .populate("owner")
-      .populate({
-        path: "reviews",
-        populate: { path: "author", select: "username" },
-      });
-    if (!listing) {
-      // Listing not found
-      return res
-        .status(404)
-        .render("error.ejs", { message: "Listing not found!" });
-    }
-    res.render("listings/show.ejs", { listing });
-  } catch (err) {
-    next(err);
-  }
-});
-
-// Protect create, edit, update, and delete listing routes with isLoggedIn middleware
-
-// Create route to handle form submission and create a new listing
-app.post("/listings", isLoggedIn, upload.single("image"), async (req, res) => {
-  const newListing = new Listing(req.body.listing);
-  newListing.owner = req.user._id;
-
-  if (req.file) {
-    // Use Cloudinary URL
-    newListing.image = req.file.path; // Cloudinary provides the URL in req.file.path
-  }
-
-  await newListing.save();
-  req.flash("success", "Listing created successfully!");
-  res.redirect("/listings");
-});
-
-// Place isOwner middleware BEFORE any route that uses it
-const isOwner = async (req, res, next) => {
-  const { id } = req.params;
-  const listing = await Listing.findById(id);
-  if (!listing) {
-    req.flash("error", "Listing not found!");
-    return res.redirect("/listings");
-  }
-  if (!req.user || !listing.owner.equals(req.user._id)) {
-    req.flash("error", "You do not have permission to do that!");
-    return res.redirect(`/listings/${id}`);
-  }
-  next();
-};
-
-// Edit route to render the form for editing a listing
-app.get("/listings/:id/edit", isLoggedIn, isAdmin, async (req, res) => {
-  let { id } = req.params;
-  const listing = await Listing.findById(id);
-  res.render("listings/edit.ejs", { listing });
-});
-
-const fs = require("fs");
-
-app.put(
-  "/listings/:id",
-  isLoggedIn,
-  isAdmin,
-  upload.single("image"),
-  async (req, res) => {
-    let { id } = req.params;
-    const listing = await Listing.findById(id);
-
-    // Update listing fields
-    Object.assign(listing, req.body.listing);
-
-    // If a new image is uploaded, replace the old one
-    if (req.file) {
-      // Set to Cloudinary URL
-      listing.image = req.file.path;
-    }
-
-    await listing.save();
-    req.flash("success", "Listing updated successfully!");
-    res.redirect(`/listings/${id}`);
-  }
-);
-
-// Delete route to handle deleting a listing
-app.delete("/listings/:id", isLoggedIn, isAdmin, async (req, res) => {
-  let { id } = req.params;
-  await Listing.findByIdAndDelete(id);
-  req.flash("success", "Listing deleted successfully!");
-  res.redirect("/listings");
-});
-
-// Middleware to check if the current user is the author of the review
-const isReviewAuthor = async (req, res, next) => {
-  const { reviewId, id } = req.params;
-  const review = await Review.findById(reviewId);
-  if (!review || !review.author) {
-    req.flash("error", "Review not found!");
-    return res.redirect(`/listings/${id}`);
-  }
-  if (
-    !req.user ||
-    !review.author ||
-    !review.author.equals ||
-    !review.author.equals(req.user._id)
-  ) {
-    req.flash("error", "You do not have permission to do that");
+    req.flash("error", "Invalid listing data");
     return res.redirect("back");
   }
   next();
 };
 
+const validateReview = (req, res, next) => {
+  const { error } = reviewSchema.validate(req.body);
+  if (error) {
+    req.flash("error", "Invalid review data");
+    return res.redirect("back");
+  }
+  next();
+};
+
+// Routes
+app.use("/", userRoutes);
+
+// Home route
+app.get("/", (req, res) => {
+  res.redirect("/listings");
+});
+
+// Listings routes
+app.get("/listings", async (req, res) => {
+  try {
+    const { q, category, minPrice, maxPrice, guests } = req.query;
+    let filter = {};
+
+    if (q) {
+      filter.$or = [
+        { location: { $regex: q, $options: "i" } },
+        { title: { $regex: q, $options: "i" } },
+      ];
+    }
+    if (category) filter.category = category;
+    if (minPrice || maxPrice) {
+      filter.price = {};
+      if (minPrice) filter.price.$gte = Number(minPrice);
+      if (maxPrice) filter.price.$lte = Number(maxPrice);
+    }
+    if (guests) filter.guests = { $gte: Number(guests) };
+
+    const allListings = await Listing.find(filter);
+    res.render("listings/index.ejs", { allListings, filters: req.query });
+  } catch (err) {
+    req.flash("error", "Failed to load listings");
+    res.redirect("back");
+  }
+});
+
+app.get("/listings/new", isLoggedIn, (req, res) => {
+  res.render("listings/new.ejs");
+});
+
+app.post("/listings", isLoggedIn, upload.single("image"), async (req, res) => {
+  try {
+    const newListing = new Listing(req.body.listing);
+    newListing.owner = req.user._id;
+
+    if (req.file) {
+      newListing.image = req.file.path;
+    }
+
+    await newListing.save();
+    req.flash("success", "Listing created successfully!");
+    res.redirect("/listings");
+  } catch (err) {
+    req.flash("error", "Failed to create listing");
+    res.redirect("back");
+  }
+});
+
+app.get("/listings/:id", async (req, res) => {
+  try {
+    const listing = await Listing.findById(req.params.id)
+      .populate("owner")
+      .populate({
+        path: "reviews",
+        populate: { path: "author", select: "username" },
+      });
+
+    if (!listing) {
+      req.flash("error", "Listing not found");
+      return res.redirect("/listings");
+    }
+
+    res.render("listings/show.ejs", { listing });
+  } catch (err) {
+    req.flash("error", "Failed to load listing");
+    res.redirect("back");
+  }
+});
+
+app.get("/listings/:id/edit", isLoggedIn, isAdmin, async (req, res) => {
+  try {
+    const listing = await Listing.findById(req.params.id);
+    if (!listing) {
+      req.flash("error", "Listing not found");
+      return res.redirect("/listings");
+    }
+    res.render("listings/edit.ejs", { listing });
+  } catch (err) {
+    req.flash("error", "Failed to load listing");
+    res.redirect("back");
+  }
+});
+
+app.put("/listings/:id", isLoggedIn, isAdmin, upload.single("image"), async (req, res) => {
+  try {
+    const listing = await Listing.findById(req.params.id);
+    if (!listing) {
+      req.flash("error", "Listing not found");
+      return res.redirect("/listings");
+    }
+
+    Object.assign(listing, req.body.listing);
+    if (req.file) listing.image = req.file.path;
+
+    await listing.save();
+    req.flash("success", "Listing updated successfully!");
+    res.redirect(`/listings/${req.params.id}`);
+  } catch (err) {
+    req.flash("error", "Failed to update listing");
+    res.redirect("back");
+  }
+});
+
+app.delete("/listings/:id", isLoggedIn, isAdmin, async (req, res) => {
+  try {
+    await Listing.findByIdAndDelete(req.params.id);
+    req.flash("success", "Listing deleted successfully!");
+    res.redirect("/listings");
+  } catch (err) {
+    req.flash("error", "Failed to delete listing");
+    res.redirect("back");
+  }
+});
+
 // Reviews routes
-app.post(
-  "/listings/:id/reviews",
-  isLoggedIn,
-  validateReview,
-  async (req, res) => {
-    const { id } = req.params;
-    const listing = await Listing.findById(id);
+app.post("/listings/:id/reviews", isLoggedIn, validateReview, async (req, res) => {
+  try {
+    const listing = await Listing.findById(req.params.id);
     const review = new Review(req.body.review);
     review.author = req.user._id;
     listing.reviews.push(review);
     await review.save();
     await listing.save();
     req.flash("success", "Review added successfully!");
-    res.redirect(`/listings/${id}`);
+    res.redirect(`/listings/${req.params.id}`);
+  } catch (err) {
+    req.flash("error", "Failed to add review");
+    res.redirect("back");
   }
-);
+});
 
-// Delete route to handle deleting a review
-app.delete(
-  "/listings/:id/reviews/:reviewId",
-  isLoggedIn,
-  isReviewAuthor,
-  async (req, res) => {
-    const { id, reviewId } = req.params;
-    await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
-    await Review.findByIdAndDelete(reviewId);
+app.delete("/listings/:id/reviews/:reviewId", isLoggedIn, async (req, res) => {
+  try {
+    await Listing.findByIdAndUpdate(req.params.id, { $pull: { reviews: req.params.reviewId } });
+    await Review.findByIdAndDelete(req.params.reviewId);
     req.flash("success", "Review deleted successfully!");
-    res.redirect(`/listings/${id}`);
+    res.redirect(`/listings/${req.params.id}`);
+  } catch (err) {
+    req.flash("error", "Failed to delete review");
+    res.redirect("back");
   }
-);
-
-// Example Express route
-app.get("/profile", (req, res) => {
-  if (!req.user) return res.redirect("/login");
-  res.render("profile", { currentUser: req.user });
 });
 
-// Booking POST route
+// Booking routes
 app.post("/listings/:id/book", isLoggedIn, async (req, res) => {
-  const { id } = req.params;
-  const { startDate, endDate, guests } = req.body;
-  const listing = await Listing.findById(id);
-  if (!listing) {
-    req.flash("error", "Listing not found.");
-    return res.redirect(`/listings/${id}`);
-  }
+  try {
+    const { startDate, endDate, guests } = req.body;
+    const listing = await Listing.findById(req.params.id);
+    
+    if (!listing) {
+      req.flash("error", "Listing not found");
+      return res.redirect("/listings");
+    }
 
-  // Backend validation for dates
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const start = new Date(startDate);
-  const end = new Date(endDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const start = new Date(startDate);
+    const end = new Date(endDate);
 
-  if (isNaN(start) || isNaN(end) || start < today || end <= start) {
-    return res.render("listings/show.ejs", {
-      listing,
-      error:
-        "Invalid dates. Check-in must be today or later, and check-out must be after check-in.",
+    if (isNaN(start) || isNaN(end) || start < today || end <= start) {
+      req.flash("error", "Invalid dates");
+      return res.redirect(`/listings/${req.params.id}`);
+    }
+
+    const overlapping = await Booking.findOne({
+      listing: req.params.id,
+      $or: [{ startDate: { $lte: end }, endDate: { $gte: start } }],
     });
-  }
 
-  // Prevent overlapping bookings
-  const overlapping = await Booking.findOne({
-    listing: id,
-    $or: [{ startDate: { $lte: end }, endDate: { $gte: start } }],
-  });
-  if (overlapping) {
-    return res.render("listings/show.ejs", {
-      listing,
-      error: "Selected dates are not available. Please choose different dates.",
+    if (overlapping) {
+      req.flash("error", "Selected dates are not available");
+      return res.redirect(`/listings/${req.params.id}`);
+    }
+
+    const booking = new Booking({
+      listing: req.params.id,
+      user: req.user._id,
+      startDate,
+      endDate,
+      guests,
     });
+
+    await booking.save();
+    res.redirect(`/bookings/${booking._id}/confirmation`);
+  } catch (err) {
+    req.flash("error", "Failed to create booking");
+    res.redirect("back");
   }
-  const booking = new Booking({
-    listing: id,
-    user: req.user._id,
-    startDate,
-    endDate,
-    guests,
-  });
-  await booking.save();
-  res.redirect(`/bookings/${booking._id}/confirmation`);
 });
 
-// Booking confirmation page
 app.get("/bookings/:bookingId/confirmation", isLoggedIn, async (req, res) => {
-  const booking = await Booking.findById(req.params.bookingId).populate(
-    "listing"
-  );
-  if (!booking) {
-    req.flash("error", "Booking not found.");
-    return res.redirect("/listings");
+  try {
+    const booking = await Booking.findById(req.params.bookingId).populate("listing");
+    if (!booking) {
+      req.flash("error", "Booking not found");
+      return res.redirect("/listings");
+    }
+    res.render("bookings/confirmation", { booking });
+  } catch (err) {
+    req.flash("error", "Failed to load booking");
+    res.redirect("back");
   }
-  res.render("bookings/confirmation", { booking });
 });
 
-// New route to render the user's trips
-app.get("/trips", isLoggedIn, async (req, res, next) => {
+app.get("/trips", isLoggedIn, async (req, res) => {
   try {
     const bookings = await Booking.find({ user: req.user._id })
       .populate("listing")
       .sort({ startDate: -1 });
     res.render("trips/index.ejs", { bookings });
   } catch (err) {
-    next(err);
+    req.flash("error", "Failed to load trips");
+    res.redirect("back");
   }
 });
 
-
-// New route to make a user an admin
-app.get("/makeadmin/:userid", async (req, res) => {
-  await User.findByIdAndUpdate(req.params.userid, { isAdmin: true });
-  res.send("User is now admin");
-});
-
-// Catch-all route for non-existent pages
-app.use((req, res, next) => {
-  res.status(404).render("error.ejs", { message: "Page Not Found!" });
-});
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  const { statuscode = 500, message = "Something went wrong!" } = err;
-  res.status(statuscode).render("error.ejs", { message });
-});
-
-// Port 8080 pe server run ho raha hai, isliye 8080 ka message chahiye
-app.listen(8080, () => {
-  console.log("Server is running on port 8080");
-});
-
-// Delete route to handle deleting a booking
 app.delete("/bookings/:id", isLoggedIn, async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id);
     if (!booking) {
-      return res.status(404).json({ error: "Booking not found." });
+      return res.status(404).json({ error: "Booking not found" });
     }
     if (booking.user.toString() !== req.user._id.toString()) {
       return res.status(403).json({ error: "Unauthorized" });
@@ -443,7 +390,19 @@ app.delete("/bookings/:id", isLoggedIn, async (req, res) => {
   }
 });
 
-// Simple chatbot route (no login required)
+// Admin route
+app.get("/makeadmin/:userid", isLoggedIn, isAdmin, async (req, res) => {
+  try {
+    await User.findByIdAndUpdate(req.params.userid, { isAdmin: true });
+    req.flash("success", "User promoted to admin");
+    res.redirect("back");
+  } catch (err) {
+    req.flash("error", "Failed to update user");
+    res.redirect("back");
+  }
+});
+
+// Chatbot route
 app.post("/chatbot", express.json(), (req, res) => {
   const { message } = req.body;
   let reply = "Sorry, I didn't understand that.";
@@ -453,14 +412,31 @@ app.post("/chatbot", express.json(), (req, res) => {
   } else if (message.toLowerCase().includes("hello")) {
     reply = `Hello! How can I help you today?`;
   } else if (message.toLowerCase().includes("booking")) {
-    reply =
-      "You can view your bookings on the Trips page or create a new booking from any listing.";
+    reply = "You can view your bookings on the Trips page or create a new booking from any listing.";
   } else if (message.toLowerCase().includes("help")) {
-    reply =
-      "I'm here to help! You can ask about listings, bookings, or your account.";
+    reply = "I'm here to help! You can ask about listings, bookings, or your account.";
   }
 
   res.json({ reply });
+});
+
+// Error handlers
+app.use((req, res) => {
+  res.status(404).render("error.ejs", { message: "Page Not Found!" });
+});
+
+app.use((err, req, res, next) => {
+  if (res.headersSent) {
+    return next(err);
+  }
+  console.error(err);
+  res.status(500).render("error.ejs", { message: "Something went wrong!" });
+});
+
+// Server setup
+const port = process.env.PORT || 8080;
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
 
 module.exports.handler = serverless(app);
