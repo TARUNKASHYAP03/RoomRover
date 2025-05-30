@@ -3,7 +3,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 const express = require("express");
-const serverless = require('serverless-http');
+const serverless = require("serverless-http");
 const mongoose = require("mongoose");
 const app = express();
 const Listing = require("./models/listing"); // Import the Listing model
@@ -11,6 +11,8 @@ const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate"); // Import ejs-mate for layout support
 const { listingSchema, reviewSchema } = require("./schema.js"); // Import the listing schema
+const sessionNew = require("express-session");
+const MongoStore = require("connect-mongo"); // Import connect-mongo for session storage
 const Review = require("./models/review"); // Import the Review model
 const session = require("express-session");
 const flash = require("connect-flash"); // Import connect-flash
@@ -27,7 +29,7 @@ const sharp = require("sharp");
 
 const userRoutes = require("./routes/user.js"); // Import user routes
 
-const mongo_url = "mongodb://127.0.0.1:27017/RoomRover";
+const mongo_url = process.env.ATLAS_URI || "mongodb://localhost:27017/airbnb"; // Use environment variable or default to local MongoDB
 
 main()
   .then(() => console.log("Connected to DB"))
@@ -48,8 +50,26 @@ app.use(express.static(path.join(__dirname, "public")));
 
 const sessionSecret = crypto.randomBytes(32).toString("hex"); // Generate a new secret on each server start
 
+// Use connect-mongo to store sessions in MongoDB
+const store = MongoStore.create({
+  mongoUrl: mongo_url,
+  crypto: {
+    secret: process.env.SECRET, // Use the same secret for encryption
+  },
+  touchAfter: 24 * 3600, // Update session every 24 hours
+  collectionName: "sessions", // Specify the collection name for sessions
+  ttl: 14 * 24 * 60 * 60, // Set session expiration to 14 days
+});
+
+store.on("error", function (error) {
+  console.log("Session store error:", error);
+}
+); // Log any errors from the session store
+// Configure session options
+
 const sessionOptions = {
-  secret: sessionSecret, // Use the random secret
+  store: store, // Use the MongoDB store for sessions
+  secret: process.env.SECRET, // Use the random secret
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -58,6 +78,8 @@ const sessionOptions = {
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
 };
+
+
 
 app.use(session(sessionOptions));
 app.use(flash());
@@ -145,7 +167,12 @@ app.get("/listings", async (req, res) => {
   };
 
   const allListings = await Listing.find(filter);
-  res.render("listings/index.ejs", { allListings, currentUser: req.user, q, filters });
+  res.render("listings/index.ejs", {
+    allListings,
+    currentUser: req.user,
+    q,
+    filters,
+  });
 });
 
 // New route to render the form for creating a new listing
@@ -178,24 +205,19 @@ app.get("/listings/:id", async (req, res, next) => {
 // Protect create, edit, update, and delete listing routes with isLoggedIn middleware
 
 // Create route to handle form submission and create a new listing
-app.post(
-  "/listings",
-  isLoggedIn,
-  upload.single("image"),
-  async (req, res) => {
-    const newListing = new Listing(req.body.listing);
-    newListing.owner = req.user._id;
+app.post("/listings", isLoggedIn, upload.single("image"), async (req, res) => {
+  const newListing = new Listing(req.body.listing);
+  newListing.owner = req.user._id;
 
-    if (req.file) {
-      // Use Cloudinary URL
-      newListing.image = req.file.path; // Cloudinary provides the URL in req.file.path
-    }
-
-    await newListing.save();
-    req.flash("success", "Listing created successfully!");
-    res.redirect("/listings");
+  if (req.file) {
+    // Use Cloudinary URL
+    newListing.image = req.file.path; // Cloudinary provides the URL in req.file.path
   }
-);
+
+  await newListing.save();
+  req.flash("success", "Listing created successfully!");
+  res.redirect("/listings");
+});
 
 // Place isOwner middleware BEFORE any route that uses it
 const isOwner = async (req, res, next) => {
@@ -221,23 +243,29 @@ app.get("/listings/:id/edit", isLoggedIn, isAdmin, async (req, res) => {
 
 const fs = require("fs");
 
-app.put("/listings/:id", isLoggedIn, isAdmin, upload.single("image"), async (req, res) => {
-  let { id } = req.params;
-  const listing = await Listing.findById(id);
+app.put(
+  "/listings/:id",
+  isLoggedIn,
+  isAdmin,
+  upload.single("image"),
+  async (req, res) => {
+    let { id } = req.params;
+    const listing = await Listing.findById(id);
 
-  // Update listing fields
-  Object.assign(listing, req.body.listing);
+    // Update listing fields
+    Object.assign(listing, req.body.listing);
 
-  // If a new image is uploaded, replace the old one
-  if (req.file) {
-    // Set to Cloudinary URL
-    listing.image = req.file.path;
+    // If a new image is uploaded, replace the old one
+    if (req.file) {
+      // Set to Cloudinary URL
+      listing.image = req.file.path;
+    }
+
+    await listing.save();
+    req.flash("success", "Listing updated successfully!");
+    res.redirect(`/listings/${id}`);
   }
-
-  await listing.save();
-  req.flash("success", "Listing updated successfully!");
-  res.redirect(`/listings/${id}`);
-});
+);
 
 // Delete route to handle deleting a listing
 app.delete("/listings/:id", isLoggedIn, isAdmin, async (req, res) => {
@@ -353,7 +381,9 @@ app.post("/listings/:id/book", isLoggedIn, async (req, res) => {
 
 // Booking confirmation page
 app.get("/bookings/:bookingId/confirmation", isLoggedIn, async (req, res) => {
-  const booking = await Booking.findById(req.params.bookingId).populate("listing");
+  const booking = await Booking.findById(req.params.bookingId).populate(
+    "listing"
+  );
   if (!booking) {
     req.flash("error", "Booking not found.");
     return res.redirect("/listings");
