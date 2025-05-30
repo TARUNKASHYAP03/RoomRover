@@ -29,7 +29,7 @@ const sharp = require("sharp");
 
 const userRoutes = require("./routes/user.js"); // Import user routes
 
-const mongo_url = process.env.ATLAS_URI || "mongodb://localhost:27017/airbnb"; // Use environment variable or default to local MongoDB
+const mongo_url = process.env.ATLAS_URI || "mongodb://localhost:27017/RoomRover"; // Use environment variable or default to local MongoDB
 
 main()
   .then(() => console.log("Connected to DB"))
@@ -403,18 +403,6 @@ app.get("/trips", isLoggedIn, async (req, res, next) => {
   }
 });
 
-// app.get("/testlisting", async (req, res) => {
-//   let sampleListing = new Listing({
-//     title: "Sample Listing",
-//     description: "This is a sample listing.",
-//     price: 100,
-//     location: "Sample Location",
-//     country: ["India"],
-//   });
-//   await sampleListing.save();
-//   console.log("Sample listing saved:", sampleListing);
-//   res.send("Sample listing saved successfully!");
-// });
 
 // New route to make a user an admin
 app.get("/makeadmin/:userid", async (req, res) => {
