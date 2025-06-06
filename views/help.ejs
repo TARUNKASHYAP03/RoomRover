@@ -1,49 +1,256 @@
 <%- include('layouts/boilerplate.ejs', { body: `
   <section class="help-section">
-    <h1>Need Help?</h1>
-    <p>Welcome to RoomRover Help & Support. Find answers to common questions or contact us for further assistance.</p>
+    <div class="hero">
+      <h1>Need Help? We're Here for You!</h1>
+      <p>Explore our FAQs or reach out to our 24/7 support team for personalized assistance.</p>
+    </div>
+    
     <div class="faq">
       <h2>Frequently Asked Questions</h2>
       <div class="faq-item">
-        <h3>How do I book a room?</h3>
+        <h3 onclick="toggleFAQ(this)">How do I book a room?<span class="toggle-icon">+</span></h3>
         <p>Browse available rooms, select your preferred option, and follow the booking instructions on the room page.</p>
       </div>
       <div class="faq-item">
-        <h3>Can I cancel my booking?</h3>
+        <h3 onclick="toggleFAQ(this)">Can I cancel my booking?<span class="toggle-icon">+</span></h3>
         <p>Yes, you can cancel your booking from your account dashboard. Cancellation policies may apply.</p>
       </div>
       <div class="faq-item">
-        <h3>Is customer support available 24/7?</h3>
+        <h3 onclick="toggleFAQ(this)">Is customer support available 24/7?<span class="toggle-icon">+</span></h3>
         <p>Our support team is available 24/7 via email and phone to assist you with any queries.</p>
       </div>
     </div>
+
     <div class="contact-us">
       <h2>Contact Us</h2>
       <p>Email: <a href="mailto:support@roomrover.com">support@roomrover.com</a></p>
-      <p>Phone: +91-12345-67890</p>
+      <p>Phone: <a href="tel:+911234567890">+91-12345-67890</a></p>
       <form class="contact-form" method="post" action="#">
         <input type="text" name="name" placeholder="Your Name" required>
         <input type="email" name="email" placeholder="Your Email" required>
-        <textarea name="message" placeholder="Your Message" rows="4" required></textarea>
+        <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
         <button type="submit">Send Message</button>
       </form>
+      <p class="form-message"></p>
     </div>
   </section>
+
   <style>
-    .help-section { max-width: 700px; margin: 40px auto; padding: 32px 24px; background: #fff; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06);}
-    .help-section h1 { font-family: 'Montserrat', 'Noto Sans', Arial, sans-serif; font-size: 2.3rem; margin-bottom: 10px; }
-    .help-section p { color: #444; margin-bottom: 18px; }
-    .faq { margin-bottom: 32px; }
-    .faq h2 { font-size: 1.3rem; margin-bottom: 12px; }
-    .faq-item { margin-bottom: 18px; }
-    .faq-item h3 { font-size: 1.1rem; margin-bottom: 4px; color: #2d3748; }
-    .contact-us h2 { font-size: 1.2rem; margin-bottom: 10px; }
-    .contact-form { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
-    .contact-form input, .contact-form textarea { padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 1rem; }
-    .contact-form button { background: #4fd1c5; color: #fff; border: none; border-radius: 6px; padding: 10px 0; font-weight: 600; font-size: 1rem; cursor: pointer; transition: background 0.2s;}
-    .contact-form button:hover { background: #38b2ac; }
+    :root {
+      --primary: #4fd1c5;
+      --primary-dark: #38b2ac;
+      --text-dark: #1a202c;
+      --text-light: #4a5568;
+      --bg-light: #f7fafc;
+    }
+
+    .help-section {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 40px 32px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .hero h1 {
+      font-family: 'Montserrat', 'Noto Sans', Arial, sans-serif;
+      font-size: 2.5rem;
+      color: var(--text-dark);
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      color: var(--text-light);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .faq {
+      margin-bottom: 48px;
+    }
+
+    .faq h2 {
+      font-size: 1.5rem;
+      color: var(--text-dark);
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 8px;
+    }
+
+    .faq-item {
+      margin-bottom: 16px;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-item h3 {
+      font-size: 1.2rem;
+      color: var(--text-dark);
+      background: var(--bg-light);
+      padding: 16px;
+      margin: 0;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.2s;
+    }
+
+    .faq-item h3:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .faq-item p {
+      color: var(--text-light);
+      padding: 0 16px 16px;
+      margin: 0;
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .faq-item.active p {
+      max-height: 200px;
+      opacity: 1;
+      padding: 16px;
+    }
+
+    .faq-item.active .toggle-icon {
+      transform: rotate(45deg);
+    }
+
+    .toggle-icon {
+      font-size: 1.2rem;
+      transition: transform 0.3s ease;
+    }
+
+    .contact-us h2 {
+      font-size: 1.5rem;
+      color: var(--text-dark);
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 8px;
+    }
+
+    .contact-us p {
+      color: var(--text-light);
+      margin-bottom: 12px;
+    }
+
+    .contact-us a {
+      color: var(--primary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .contact-us a:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      padding: 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 8px rgba(79, 209, 197, 0.3);
+    }
+
+    .contact-form textarea {
+      resize: vertical;
+    }
+
+    .contact-form button {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .contact-form button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .form-message {
+      color: var(--text-light);
+      font-size: 0.9rem;
+      text-align: center;
+      margin-top: 12px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .form-message.show {
+      opacity: 1;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     @media (max-width: 600px) {
-      .help-section { padding: 16px 4vw; }
+      .help-section {
+        padding: 24px 16px;
+      }
+      .hero h1 {
+        font-size: 2rem;
+      }
+      .faq h2,
+      .contact-us h2 {
+        font-size: 1.3rem;
+      }
     }
   </style>
+
+  <script>
+    function toggleFAQ(element) {
+      const faqItem = element.parentElement;
+      const isActive = faqItem.classList.toggle('active');
+      element.querySelector('.toggle-icon').textContent = isActive ? '−' : '+';
+    }
+
+    document.querySelector('.contact-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formMessage = document.querySelector('.form-message');
+      formMessage.textContent = 'Thank you! Your message has been sent.';
+      formMessage.classList.add('show');
+      this.reset();
+      setTimeout(() => {
+        formMessage.classList.remove('show');
+      }, 3000);
+    });
+  </script>
 ` }) %>

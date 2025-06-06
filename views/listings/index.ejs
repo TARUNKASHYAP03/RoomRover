@@ -1,364 +1,483 @@
-<% layout("layouts/boilerplate") %>
+<%- layout("layouts/boilerplate") %>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
 <style>
-  body {
-    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-    background: #fafbfc;
-    color: #222;
-    margin: 0;
-    padding: 0;
+:root {
+  --primary-color: #FF385C;
+  --text-dark: #222222;
+  --text-light: #717171;
+  --bg-light: #f7f7f7;
+  --border-color: #dddddd;
+  --shadow: 0 2px 8px rgba(0,0,0,0.08);
+  --hover-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: white;
+}
+
+.container {
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* Filter Bar Styles */
+.filter-container {
+  background: white;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+}
+
+.filter-scroll-container {
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: none;
+}
+
+.filter-scroll {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 24px;
+  width: max-content;
+  min-width: 100%;
+}
+
+.filter-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 80px;
+  flex-shrink: 0;
+}
+
+.filter-item:hover {
+  background: var(--bg-light);
+}
+
+.filter-item.active {
+  background: var(--bg-light);
+  color: var(--primary-color);
+}
+
+.filter-item.active .filter-icon {
+  color: var(--primary-color);
+}
+
+.filter-icon {
+  font-size: 24px;
+  color: var(--text-light);
+  transition: color 0.2s ease;
+}
+
+.filter-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-light);
+  transition: color 0.2s ease;
+}
+
+.filter-item.active .filter-label {
+  color: var(--primary-color);
+}
+
+/* Listings Grid */
+.listings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+  padding: 24px;
+  width: 100%;
+}
+
+/* Listing Card */
+.listing-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.listing-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--hover-shadow);
+}
+
+.listing-image-container {
+  position: relative;
+  width: 100%;
+  padding-top: 75%;
+}
+
+.listing-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.listing-card:hover .listing-image {
+  transform: scale(1.03);
+}
+
+.listing-details {
+  padding: 16px;
+}
+
+.listing-location {
+  font-size: 14px;
+  color: var(--text-light);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.listing-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.listing-price {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.listing-price span {
+  font-weight: 400;
+  font-size: 16px;
+  color: var(--text-light);
+}
+
+.wishlist-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.wishlist-button:hover {
+  transform: scale(1.1);
+}
+
+.wishlist-button i {
+  color: var(--text-dark);
+  font-size: 16px;
+}
+
+.wishlist-button.saved i {
+  color: var(--primary-color);
+}
+
+.listing-rating {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  backdrop-filter: blur(2px);
+}
+
+.listing-rating i {
+  color: var(--primary-color);
+}
+
+/* Admin Controls */
+.admin-controls {
+  padding: 16px;
+  display: flex;
+  gap: 8px;
+  border-top: 1px solid var(--border-color);
+  margin-top: 8px;
+}
+
+.admin-controls .btn {
+  flex: 1;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+/* No listings styles */
+.no-listings {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.no-listings-icon {
+  font-size: 48px;
+  color: var(--text-light);
+  margin-bottom: 16px;
+}
+
+.no-listings h3 {
+  margin-bottom: 8px;
+  color: var(--text-dark);
+}
+
+.no-listings p {
+  color: var(--text-light);
+  margin-bottom: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .filter-scroll {
+    gap: 12px;
+    padding: 0 16px;
   }
-  .filter-bar {
-    display: flex;
-    align-items: center;
-    overflow-x: auto;
-    gap: 1rem;
-    padding: 1.2rem 0.5rem 1rem 0.5rem;
-    background: #fff;
-    border-bottom: 1px solid #f0f0f0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    transition: box-shadow 0.3s;
+  
+  .filter-item {
+    min-width: 70px;
+    padding: 8px 12px;
   }
-  .filter-chip {
-    display: flex;
-    align-items: center;
-    border: 1px solid #e5e7eb;
-    border-radius: 999px;
-    padding: 0.6rem 1.2rem;
-    cursor: pointer;
-    background: #f7f8fa;
-    transition: background 0.2s, box-shadow 0.2s, color 0.2s, border-color 0.2s;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.02);
-    font-weight: 500;
-    font-size: 1rem;
-    white-space: nowrap;
-    margin-bottom: 2px;
+  
+  .listings-grid {
+    padding: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   }
-  .filter-chip.selected, .filter-chip:hover {
-    background: #222;
-    color: #fff;
-    border-color: #222;
-    box-shadow: 0 2px 8px rgba(34,34,34,0.08);
+}
+
+@media (max-width: 480px) {
+  .filter-scroll {
+    gap: 8px;
   }
-  .filter-chip i {
-    margin-right: 0.5rem;
-    font-size: 1.2em;
-  }
-  .filter-bar .form-control, .filter-bar .form-select {
-    border-radius: 999px;
-    border: 1px solid #e5e7eb;
-    padding: 0.5rem 1rem;
-    min-width: 120px;
-    margin-right: 0.5rem;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.02);
-    background: #f7f8fa;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    font-size: 1rem;
-  }
-  .filter-bar .form-control:focus, .filter-bar .form-select:focus {
-    border-color: #222;
-    outline: none;
-    box-shadow: 0 2px 8px rgba(34,34,34,0.08);
-    background: #fff;
-  }
-  .price-slider-container {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    min-width: 200px;
-    background: #f7f8fa;
-    border-radius: 999px;
-    padding: 0.3rem 0.8rem;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.02);
-  }
-  .price-slider-container i {
-    color: #888;
-  }
-  .price-value {
-    font-size: 0.95em;
-    color: #222;
-    font-weight: 500;
-    margin-left: 0.3rem;
+  
+  .filter-item {
     min-width: 60px;
-    text-align: right;
+    padding: 8px;
   }
-  .filter-bar button[type="submit"] {
-    border: none;
-    outline: none;
-    font-weight: 600;
-    letter-spacing: 0.02em;
+  
+  .filter-icon {
+    font-size: 20px;
   }
-  .filter-bar a.filter-chip {
-    text-decoration: none;
-    border: 1px solid #e5e7eb;
+  
+  .filter-label {
+    font-size: 11px;
   }
-  @media (max-width: 900px) {
-    .row-cols-md-3 > .col { flex: 0 0 50%; max-width: 50%; }
-  }
-  @media (max-width: 600px) {
-    .filter-bar {
-      gap: 0.5rem;
-      padding: 0.7rem 0 0.5rem 0;
-    }
-    .filter-chip {
-      padding: 0.4rem 0.7rem;
-      font-size: 0.95rem;
-    }
-    .price-slider-container {
-      min-width: 120px;
-      padding: 0.2rem 0.5rem;
-    }
-    .row-cols-md-3 > .col, .row-cols-sm-2 > .col { flex: 0 0 100%; max-width: 100%; }
-  }
-  .row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    margin-top: 2rem;
-    transition: opacity 0.5s;
-  }
-  .col {
-    flex: 1 1 30%;
-    min-width: 280px;
-    max-width: 1fr;
-    display: flex;
-  }
-  .card {
-    border: none;
-    border-radius: 1.5rem;
-    box-shadow: 0 4px 24px rgba(34,34,34,0.10), 0 1.5px 6px rgba(34,34,34,0.04);
-    overflow: hidden;
-    transition: box-shadow 0.25s, transform 0.18s;
-    background: #fff;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    padding-bottom: 1rem;
-    margin-bottom: 1.5rem;
-  }
-  .card:hover {
-    box-shadow: 0 8px 32px rgba(34,34,34,0.16), 0 2px 8px rgba(34,34,34,0.08);
-    transform: translateY(-6px) scale(1.018);
-  }
-  .card-img-top {
-    border-radius: 1.5rem 1.5rem 0 0;
-    object-fit: cover;
-    width: 100%;
-    height: 15rem;
-    background: #f0f0f0;
-    transition: filter 0.2s;
-  }
-  .card-body {
-    padding: 1.5rem 1.3rem 1.1rem 1.3rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-  }
-  .card-title {
-    font-size: 1.15em;
-    font-weight: 700;
-    margin-bottom: 0.2em;
-    color: #222;
-    letter-spacing: 0.01em;
-  }
-  .card-location {
-    display: flex;
-    align-items: center;
-    gap: 0.4em;
-    font-size: 1em;
-    color: #8b98a9;
-    font-weight: 500;
-  }
-  .card-price {
-    display: flex;
-    align-items: center;
-    gap: 0.3em;
-    font-size: 1.08em;
-    color: #222;
-    font-weight: 600;
-  }
-  .card-rating {
-    display: flex;
-    align-items: center;
-    gap: 0.3em;
-    font-size: 1em;
-  }
-  .view-details-btn {
-    margin-top: 0.7em;
-    padding: 0.6em 1.3em;
-    border-radius: 999px;
-    border: none;
-    background: #222;
-    color: #fff;
-    font-weight: 600;
-    font-size: 1em;
-    letter-spacing: 0.01em;
-    box-shadow: 0 2px 8px rgba(34,34,34,0.10);
-    transition: background 0.18s, box-shadow 0.18s, transform 0.15s;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-  }
-  .view-details-btn:hover {
-    background: #444;
-    box-shadow: 0 4px 16px rgba(34,34,34,0.13);
-    transform: translateY(-2px) scale(1.03);
-  }
-  @media (max-width: 900px) {
-    .row-cols-md-3 > .col { flex: 0 0 50%; max-width: 50%; }
-  }
-  @media (max-width: 600px) {
-    .row-cols-md-3 > .col, .row-cols-sm-2 > .col { flex: 0 0 100%; max-width: 100%; }
-    .card-body { padding: 1.1rem 1rem 1rem 1rem; }
-    .card-img-top { height: 11rem; }
-  }
+}
 </style>
 
-<div class="filter-bar shadow-sm">
-  <form id="filtersForm" method="get" action="/listings" style="display: flex; align-items: center; gap: 1rem; width: 100%;">
-    <input type="hidden" name="category" id="categoryInput" value="<%= filters?.category || '' %>">
-    <input type="hidden" name="minPrice" id="minPriceInput" value="<%= filters?.minPrice || 0 %>">
-    <input type="hidden" name="maxPrice" id="maxPriceInput" value="<%= filters?.maxPrice || 10000 %>">
-    <input type="hidden" name="guests" id="guestsInput" value="<%= filters?.guests || 1 %>">
-
-    <!-- Category Chips -->
-    <div class="d-flex" style="gap:0.5rem;">
-      <div class="filter-chip <%= filters?.category === 'Beach' ? 'selected' : '' %>" onclick="setCategory('Beach')">
-        <i class="fa fa-umbrella-beach"></i> Beach
+<div class="filter-container">
+  <div class="filter-scroll-container">
+    <div class="filter-scroll">
+      <div class="filter-item <%= !filters?.category ? 'active' : '' %>" onclick="setCategory('')">
+        <i class="fas fa-border-all filter-icon"></i>
+        <span class="filter-label">All</span>
       </div>
-      <div class="filter-chip <%= filters?.category === 'Mountain' ? 'selected' : '' %>" onclick="setCategory('Mountain')">
-        <i class="fa fa-mountain"></i> Mountain
+      
+      <div class="filter-item <%= filters?.category === 'Beach' ? 'active' : '' %>" onclick="setCategory('Beach')">
+        <i class="fas fa-umbrella-beach filter-icon"></i>
+        <span class="filter-label">Beach</span>
       </div>
-      <div class="filter-chip <%= filters?.category === 'City' ? 'selected' : '' %>" onclick="setCategory('City')">
-        <i class="fa fa-city"></i> City
+      
+      <div class="filter-item <%= filters?.category === 'Mountain' ? 'active' : '' %>" onclick="setCategory('Mountain')">
+        <i class="fas fa-mountain filter-icon"></i>
+        <span class="filter-label">Mountain</span>
       </div>
-      <div class="filter-chip <%= filters?.category === 'Countryside' ? 'selected' : '' %>" onclick="setCategory('Countryside')">
-        <i class="fa fa-tree"></i> Countryside
+      
+      <div class="filter-item <%= filters?.category === 'City' ? 'active' : '' %>" onclick="setCategory('City')">
+        <i class="fas fa-city filter-icon"></i>
+        <span class="filter-label">City</span>
       </div>
-      <div class="filter-chip <%= filters?.category === 'Apartment' ? 'selected' : '' %>" onclick="setCategory('Apartment')">
-        <i class="fa fa-building"></i> Apartment
+      
+      <div class="filter-item <%= filters?.category === 'Countryside' ? 'active' : '' %>" onclick="setCategory('Countryside')">
+        <i class="fas fa-tree filter-icon"></i>
+        <span class="filter-label">Countryside</span>
       </div>
-      <div class="filter-chip <%= filters?.category === 'Villa' ? 'selected' : '' %>" onclick="setCategory('Villa')">
-        <i class="fa fa-hotel"></i> Villa
+      
+      <div class="filter-item <%= filters?.category === 'Apartment' ? 'active' : '' %>" onclick="setCategory('Apartment')">
+        <i class="fas fa-building filter-icon"></i>
+        <span class="filter-label">Apartment</span>
       </div>
-      <div class="filter-chip <%= filters?.category === 'House' ? 'selected' : '' %>" onclick="setCategory('House')">
-        <i class="fa fa-home"></i> House
+      
+      <div class="filter-item <%= filters?.category === 'Villa' ? 'active' : '' %>" onclick="setCategory('Villa')">
+        <i class="fas fa-home filter-icon"></i>
+        <span class="filter-label">Villa</span>
       </div>
     </div>
-
-    <!-- Location Dropdown -->
-    <select class="form-select" name="location" id="locationSelect" onchange="setLocation(this.value)">
-      <option value="">All Locations</option>
-      <% 
-        const uniqueLocations = [...new Set(allListings.map(l => l.location))];
-        uniqueLocations.forEach(loc => { 
-      %>
-        <option value="<%= loc %>" <%= filters?.location === loc ? 'selected' : '' %>><%= loc %></option>
-      <% }) %>
-    </select>
-
-    <!-- Price Slider -->
-    <div class="price-slider-container">
-      <i class="fa fa-rupee-sign"></i>
-      <input type="range" min="0" max="10000" step="100" value="<%= filters?.maxPrice || 10000 %>" id="priceSlider" oninput="updatePriceValue(this.value)">
-      <span class="price-value" id="priceValue">&#8377; <%= filters?.maxPrice || 10000 %></span>
-    </div>
-
-    <!-- Guests Dropdown -->
-    <select class="form-select" name="guests" id="guestsSelect" onchange="setGuests(this.value)">
-      <% for(let i=1; i<=10; i++) { %>
-        <option value="<%= i %>" <%= Number(filters?.guests) === i ? 'selected' : '' %>><%= i %> Guest<%= i > 1 ? 's' : '' %></option>
-      <% } %>
-    </select>
-
-    <button type="submit" class="filter-chip" style="background: #222; color: #fff; box-shadow: 0 2px 8px rgba(34,34,34,0.12);">
-      <i class="fa fa-filter"></i> Apply
-    </button>
-    <a href="/listings" class="filter-chip" style="background: #f7f8fa; color: #222;">Clear</a>
-  </form>
+  </div>
 </div>
 
-<script>
-  // Smooth transition for listings grid
-  document.addEventListener('DOMContentLoaded', () => {
-    const grid = document.querySelector('.row');
-    if(grid) {
-      grid.style.opacity = 0;
-      setTimeout(() => { grid.style.transition = 'opacity 0.5s'; grid.style.opacity = 1; }, 100);
-    }
-  });
-
-  function setCategory(category) {
-    document.getElementById('categoryInput').value = category;
-    document.getElementById('filtersForm').submit();
-  }
-  function setLocation(location) {
-    document.getElementById('locationSelect').value = location;
-    document.getElementById('filtersForm').submit();
-  }
-  function setGuests(guests) {
-    document.getElementById('guestsInput').value = guests;
-    document.getElementById('filtersForm').submit();
-  }
-  function updatePriceValue(val) {
-    document.getElementById('priceValue').innerHTML = "&#8377; " + val;
-    document.getElementById('maxPriceInput').value = val;
-  }
-</script>
-
-<body>
-  <% if (currentUser && currentUser.isAdmin) { %>
-    <a href="/listings/new" class="btn btn-success mb-3">Add New Listing</a>
-  <% } %>
-  <div class="row row-cols-md-3 row-cols-sm-2 row-cols-1 mt-1 g-4">
-    <% for (let listing of allListings) { %>
-      <div class="col">
-        <div class="card h-100 overflow-hidden shadow-sm">
-          <a href="/listings/<%= listing._id %>" class="listing-link" style="text-decoration:none;">
-            <div class="position-relative">
-              <% if (listing.image) { %>
-                <img src="<%= listing.image?.url || listing.image %>" class="card-img-top" style="object-fit:cover; width:100%; height:250px;" alt="Listing Image">
-              <% } %>
-              <div class="card-img-overlay d-flex justify-content-end">
-                <button class="btn-heart">
-                  <i class="fa fa-heart"></i>
-                </button>
-              </div>
-            </div>
-            <div class="card-body p-3">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="card-location">
-                  <i class="fa fa-map-marker-alt"></i>
-                  <%= listing.location %>
-                </span>
-                <span class="card-rating">
-                  <i class="fa fa-star text-warning"></i>
-                  <small><%= listing.rating ? listing.rating.toFixed(2) : 'New' %></small>
-                </span>
-              </div>
-              <div class="card-title"><%= listing.title %></div>
-              <div class="card-price mb-1">
-                <i class="fa fa-rupee-sign"></i>
-                <%= listing.price.toLocaleString("en-IN") %> <span style="font-weight:400;font-size:0.97em;">/ night</span>
-              </div>
-              <a href="/listings/<%= listing._id %>" class="btn btn-outline-primary btn-sm w-100 mb-2">View Details</a>
-              <% if (currentUser && currentUser.isAdmin) { %>
-                <div class="d-flex gap-2">
-                  <a href="/listings/<%= listing._id %>/edit" class="btn btn-warning btn-sm w-50">Edit</a>
-                  <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST" style="display:inline; width:48%;">
-                    <button class="btn btn-danger btn-sm w-100" onclick="return confirm('Delete this listing?')">Delete</button>
-                  </form>
+<div class="container">
+  <div class="listings-grid">
+    <% if (allListings.length === 0) { %>
+      <div class="no-listings">
+        <i class="fas fa-search no-listings-icon"></i>
+        <h3>No listings found</h3>
+        <p>Try adjusting your filters or search criteria</p>
+        <a href="/listings" class="btn btn-primary" style="display: inline-block; margin-top: 16px;">Clear all filters</a>
+      </div>
+    <% } else { %>
+      <% for (let listing of allListings) { %>
+        <div class="listing-card">
+          <a href="/listings/<%= listing._id %>" style="text-decoration: none; color: inherit;">
+            <div class="listing-image-container">
+              <img src="<%= listing.image?.url || listing.image || 'default-image.jpg' %>" 
+                   alt="<%= listing.title %>" 
+                   class="listing-image"
+                   loading="lazy">
+              
+              <button class="wishlist-button <%= listing.saved ? 'saved' : '' %>">
+                <i class="<%= listing.saved ? 'fas' : 'far' %> fa-heart"></i>
+              </button>
+              
+              <% if (listing.rating) { %>
+                <div class="listing-rating">
+                  <i class="fas fa-star"></i>
+                  <span><%= listing.rating.toFixed(1) %></span>
                 </div>
               <% } %>
             </div>
+            
+            <div class="listing-details">
+              <div class="listing-location">
+                <i class="fas fa-map-marker-alt"></i>
+                <%= listing.location %>
+              </div>
+              <h3 class="listing-title"><%= listing.title %></h3>
+              <div class="listing-price">
+                ₹<%= listing.price.toLocaleString() %> <span>night</span>
+              </div>
+            </div>
           </a>
+          
+          <% if (currentUser && currentUser.isAdmin) { %>
+            <div class="admin-controls">
+              <a href="/listings/<%= listing._id %>/edit" class="btn btn-warning">
+                <i class="fas fa-edit"></i> Edit
+              </a>
+              <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST" style="display: inline;">
+                <button class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this listing?')">
+                  <i class="fas fa-trash"></i> Delete
+                </button>
+              </form>
+            </div>
+          <% } %>
         </div>
-      </div>
+      <% } %>
     <% } %>
   </div>
-</body>
+</div>
+
+<script>
+function setCategory(category) {
+  const url = new URL(window.location);
+  if (category) {
+    url.searchParams.set('category', category);
+  } else {
+    url.searchParams.delete('category');
+  }
+  window.location = url;
+}
+
+document.querySelectorAll('.wishlist-button').forEach(button => {
+  button.addEventListener('click', async function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const listingId = this.closest('a').href.split('/').pop();
+    const isSaved = this.classList.contains('saved');
+    
+    // Optimistic UI update
+    this.classList.toggle('saved');
+    const icon = this.querySelector('i');
+    icon.classList.toggle('far');
+    icon.classList.toggle('fas');
+    
+    try {
+      const response = await fetch(`/listings/${listingId}/wishlist`, {
+        method: isSaved ? 'DELETE' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      
+      if (!response.ok) {
+        // Revert UI if request fails
+        this.classList.toggle('saved');
+        icon.classList.toggle('far');
+        icon.classList.toggle('fas');
+        throw new Error('Failed to update wishlist');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to update wishlist. Please try again.');
+    }
+  });
+});
+
+// Add smooth scroll behavior for filter bar
+document.querySelectorAll('.filter-item').forEach(item => {
+  item.addEventListener('click', function() {
+    const scrollContainer = document.querySelector('.filter-scroll-container');
+    const itemLeft = this.offsetLeft;
+    const itemWidth = this.offsetWidth;
+    const containerWidth = scrollContainer.offsetWidth;
+    
+    scrollContainer.scrollTo({
+      left: itemLeft - (containerWidth / 2) + (itemWidth / 2),
+      behavior: 'smooth'
+    });
+  });
+});
+</script>

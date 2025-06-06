@@ -1,127 +1,292 @@
 <% layout("layouts/boilerplate") %>
 <style>
   .trips-container {
-    max-width: 1100px;
-    margin: 40px auto;
-    padding: 20px;
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 25px;
   }
-  .trips-title {
-    font-size: 2rem;
-    font-weight: 600;
-    margin-bottom: 2rem;
-    color: #2c3e50;
-  }
-  .trip-cards {
+  
+  .trips-header {
     display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
   }
+  
+  .trips-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0;
+    position: relative;
+    display: inline-block;
+  }
+  
+  .trips-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, #3498db, #6a11cb);
+    border-radius: 2px;
+  }
+  
+  .trip-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 2.2rem;
+    padding: 5px;
+  }
+  
   .trip-card {
     background: #fff;
     border-radius: 1.2rem;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     overflow: hidden;
-    width: 320px;
     display: flex;
     flex-direction: column;
-    transition: box-shadow 0.2s, transform 0.2s;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border: 1px solid rgba(0,0,0,0.03);
+    position: relative;
   }
+  
   .trip-card:hover {
-    box-shadow: 0 6px 24px rgba(34,34,34,0.13);
-    transform: translateY(-4px) scale(1.015);
+    box-shadow: 0 8px 30px rgba(34,34,34,0.15);
+    transform: translateY(-5px);
   }
+  
+  .trip-card-img-container {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+  }
+  
   .trip-card-img {
     width: 100%;
-    height: 180px;
+    height: 100%;
     object-fit: cover;
-    background: #f0f0f0;
+    transition: transform 0.5s ease;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ed 100%);
   }
+  
+  .trip-card:hover .trip-card-img {
+    transform: scale(1.03);
+  }
+  
   .trip-card-body {
-    padding: 1.2rem 1.3rem 1.1rem 1.3rem;
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.8rem;
+    flex-grow: 1;
   }
+  
   .trip-card-title {
-    font-size: 1.15rem;
-    font-weight: 600;
+    font-size: 1.25rem;
+    font-weight: 700;
     color: #222;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.2rem;
+    line-height: 1.3;
   }
+  
   .trip-card-location {
     color: #555;
     font-size: 1rem;
-    margin-bottom: 0.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
+  
   .trip-card-dates {
-    color: #888;
-    font-size: 0.98rem;
-    margin-bottom: 0.2rem;
+    color: #666;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.3rem;
   }
+  
+  .trip-card-guests {
+    color: #666;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .trip-card-footer {
+    margin-top: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  
   .trip-card-link {
-    margin-top: 0.7rem;
     color: #fff;
-    background: #3498db;
-    border-radius: 6px;
-    padding: 8px 0;
+    background: linear-gradient(135deg, #3498db, #2575fc);
+    border-radius: 8px;
+    padding: 10px 0;
     text-align: center;
     text-decoration: none;
-    font-weight: 500;
-    transition: background 0.2s;
+    font-weight: 600;
+    transition: all 0.3s ease;
     display: block;
+    border: none;
+    cursor: pointer;
   }
+  
   .trip-card-link:hover {
-    background: #217dbb;
+    background: linear-gradient(135deg, #2980b9, #1a68e8);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
   }
+  
   .cancel-btn {
-    margin-top: 0.7rem;
     color: #fff;
-    background: #ff385c;
-    border-radius: 6px;
-    padding: 8px 0;
+    background: linear-gradient(135deg, #ff385c, #e91e63);
+    border-radius: 8px;
+    padding: 10px 0;
     text-align: center;
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 600;
     border: none;
     width: 100%;
-    transition: background 0.2s;
+    transition: all 0.3s ease;
     cursor: pointer;
-    display: block;
   }
+  
   .cancel-btn:hover {
-    background: #d81e5b;
+    background: linear-gradient(135deg, #e91e63, #d81e5b);
+    box-shadow: 0 4px 12px rgba(255, 56, 92, 0.3);
   }
+  
+  .no-trips {
+    text-align: center;
+    padding: 3rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    margin-top: 2rem;
+  }
+  
+  .no-trips-icon {
+    font-size: 3rem;
+    color: #bdc3c7;
+    margin-bottom: 1rem;
+  }
+  
+  .no-trips-text {
+    font-size: 1.1rem;
+    color: #7f8c8d;
+    margin-bottom: 1.5rem;
+  }
+  
+  .explore-link {
+    display: inline-block;
+    padding: 10px 24px;
+    background: linear-gradient(135deg, #3498db, #6a11cb);
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+  
+  .explore-link:hover {
+    background: linear-gradient(135deg, #2980b9, #5a0db3);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+  }
+  
   @media (max-width: 900px) {
-    .trip-cards { flex-direction: column; gap: 1.5rem; align-items: center; }
-    .trip-card { width: 95%; }
+    .trip-cards {
+      grid-template-columns: 1fr;
+      gap: 1.8rem;
+    }
+    
+    .trips-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+  }
+  
+  /* Loading animation for cancel button */
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .loading-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 8px;
+    vertical-align: middle;
   }
 </style>
 
 <div class="trips-container">
-  <div class="trips-title">My Trips</div>
+  <div class="trips-header">
+    <h1 class="trips-title">My Trips</h1>
+    <% if (currentUser) { %>
+      <a href="/trips" class="nav-link" style="font-weight: 600; color: #3498db; text-decoration: none;">
+        <i class="fas fa-sync-alt" style="margin-right: 8px;"></i>Refresh Trips
+      </a>
+    <% } %>
+  </div>
+  
   <% if (bookings.length === 0) { %>
-    <p>You have no upcoming or past trips yet.</p>
+    <div class="no-trips">
+      <div class="no-trips-icon">
+        <i class="fas fa-suitcase-rolling"></i>
+      </div>
+      <h3>No Trips Booked Yet</h3>
+      <p class="no-trips-text">You don't have any upcoming or past trips. Start planning your next adventure!</p>
+      <a href="/listings" class="explore-link">
+        <i class="fas fa-search" style="margin-right: 8px;"></i>Explore Listings
+      </a>
+    </div>
   <% } else { %>
     <div class="trip-cards">
       <% bookings.forEach(booking => { %>
         <% if (booking.listing) { %>
         <div class="trip-card" id="trip-<%= booking._id %>">
-          <img class="trip-card-img" src="<%= booking.listing.image ? booking.listing.image : 'https://via.placeholder.com/320x180?text=No+Image' %>" alt="Listing image" />
+          <div class="trip-card-img-container">
+            <img 
+              class="trip-card-img" 
+              src="<%= booking.listing.image ? booking.listing.image : 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80' %>" 
+              alt="<%= booking.listing.title %>" 
+            />
+          </div>
           <div class="trip-card-body">
-            <div class="trip-card-title"><%= booking.listing.title %></div>
-            <div class="trip-card-location"><i class="fa fa-map-marker-alt"></i> <%= booking.listing.location %></div>
+            <h3 class="trip-card-title"><%= booking.listing.title %></h3>
+            <div class="trip-card-location">
+              <i class="fas fa-map-marker-alt"></i> <%= booking.listing.location %>
+            </div>
             <div class="trip-card-dates">
-              <i class="fa fa-calendar"></i>
+              <i class="fas fa-calendar-alt"></i>
               <%= new Date(booking.startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
               &mdash;
               <%= new Date(booking.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
             </div>
-            <div class="trip-card-dates">
-              <i class="fa fa-user-friends"></i>
+            <div class="trip-card-guests">
+              <i class="fas fa-user-friends"></i>
               <%= booking.guests %> Guest<%= booking.guests > 1 ? 's' : '' %>
             </div>
-            <a class="trip-card-link" href="/listings/<%= booking.listing._id %>">View Listing</a>
-            <button class="cancel-btn" onclick="cancelBooking('<%= booking._id %>')">Cancel Booking</button>
+            
+            <div class="trip-card-footer">
+              <a class="trip-card-link" href="/listings/<%= booking.listing._id %>">
+                <i class="fas fa-eye" style="margin-right: 8px;"></i>View Listing
+              </a>
+              <button class="cancel-btn" onclick="cancelBooking('<%= booking._id %>', this)">
+                <i class="fas fa-times" style="margin-right: 8px;"></i>Cancel Booking
+              </button>
+            </div>
           </div>
         </div>
         <% } %>
@@ -131,8 +296,14 @@
 </div>
 
 <script>
-  function cancelBooking(bookingId) {
+  function cancelBooking(bookingId, button) {
     if (!confirm('Are you sure you want to cancel this booking?')) return;
+    
+    // Show loading state
+    const originalText = button.innerHTML;
+    button.innerHTML = '<span class="loading-spinner"></span> Cancelling...';
+    button.disabled = true;
+    
     fetch(`/bookings/${bookingId}`, {
       method: 'DELETE',
       headers: {
@@ -142,15 +313,43 @@
     })
     .then(res => {
       if (res.ok) {
-        document.getElementById('trip-' + bookingId).remove();
+        // Add fade out animation before removal
+        const card = document.getElementById('trip-' + bookingId);
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.9)';
+        setTimeout(() => card.remove(), 300);
+        
+        // Show success message if this was the last card
+        if (document.querySelectorAll('.trip-card').length === 1) {
+          setTimeout(() => {
+            const container = document.querySelector('.trips-container');
+            container.innerHTML = `
+              <div class="no-trips">
+                <div class="no-trips-icon">
+                  <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>Booking Cancelled</h3>
+                <p class="no-trips-text">Your booking has been successfully cancelled.</p>
+                <a href="/listings" class="explore-link">
+                  <i class="fas fa-search" style="margin-right: 8px;"></i>Explore Listings
+                </a>
+              </div>
+            `;
+          }, 350);
+        }
       } else {
-        return res.json().then(data => { throw new Error(data.error || 'Failed to cancel booking'); });
+        return res.json().then(data => { 
+          throw new Error(data.error || 'Failed to cancel booking'); 
+        });
       }
     })
-    .catch(err => alert(err.message));
+    .catch(err => {
+      // Restore button state
+      button.innerHTML = originalText;
+      button.disabled = false;
+      
+      // Show error message
+      alert(err.message);
+    });
   }
 </script>
-
-<% if (currentUser) { %>
-  <a href="/trips" class="nav-link">My Trips</a>
-<% } %>

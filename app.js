@@ -362,6 +362,16 @@ app.get("/bookings/:bookingId/confirmation", isLoggedIn, async (req, res) => {
   }
 });
 
+// Profile route (add this with your other routes)
+app.get('/profile', isLoggedIn, (req, res) => {
+  try {
+    res.render('profile', { currentUser: req.user });
+  } catch (err) {
+    console.error("Profile render error:", err);
+    res.status(500).send("Something went wrong");
+  }
+});
+
 app.get("/trips", isLoggedIn, async (req, res) => {
   try {
     const bookings = await Booking.find({ user: req.user._id })

@@ -1,132 +1,190 @@
 <% layout("layouts/boilerplate") %>
-<body style="background-color: #eef2f7">
-  <div class="container my-3">
+<body style="background-color: #f5f7fa">
+  <!-- Decorative Background Elements -->
+  <div class="position-fixed top-0 end-0" style="z-index: -1; width: 300px; height: 300px; background: radial-gradient(circle, rgba(106,17,203,0.05) 0%, rgba(255,255,255,0) 70%); transform: translate(100px,-100px);"></div>
+  <div class="position-fixed bottom-0 start-0" style="z-index: -1; width: 400px; height: 400px; background: radial-gradient(circle, rgba(37,117,252,0.05) 0%, rgba(255,255,255,0) 70%); transform: translate(-150px,150px);"></div>
+
+  <div class="container my-5">
     <div class="row justify-content-center">
       <div class="col-lg-8">
-        <div class="card shadow-lg border-0 rounded-4" style="background-color: #f8f9fa;">
-          <div class="card-body p-4">
-            <!-- Heading -->
-            <div class="text-center mb-3">
-              <h1 class="fw-bold mb-3">Edit Listing</h1>
-              <p class="text-muted fs-6">Update the listing details below.</p>
+        <!-- Enhanced Card Design -->
+        <div class="card shadow-lg border-0 rounded-4 overflow-hidden" style="background-color: #ffffff; border: 1px solid rgba(0,0,0,0.05);">
+          <!-- Card Header with Gradient -->
+          <div class="card-header py-4" style="background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);">
+            <div class="text-center">
+              <h1 class="h3 mb-2 text-white fw-bold"><i class="bi bi-pencil-square me-2"></i>Edit Your Listing</h1>
+              <p class="mb-0 text-white-75">Make your property stand out</p>
             </div>
-
+          </div>
+          
+          <!-- Card Body -->
+          <div class="card-body p-4">
             <form action="/listings/<%= listing._id %>?_method=PUT" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
-              <!-- Title -->
+              <!-- Title Section -->
               <div class="mb-4">
-                <label for="title" class="form-label fw-semibold">Title</label>
+                <label for="title" class="form-label fw-medium text-dark d-flex align-items-center">
+                  <i class="bi bi-card-heading me-2 text-primary"></i>Title
+                </label>
                 <input
                   type="text"
                   name="listing[title]"
                   id="title"
                   value="<%= listing.title %>"
                   required
-                  class="form-control"
+                  class="form-control border-2 py-2"
                   placeholder="Beautiful beachfront villa"
+                  style="border-radius: 8px; border-color: #e0e6ed;"
                 />
               </div>
 
-              <!-- Description -->
+              <!-- Description with Character Counter -->
               <div class="mb-4">
-                <label for="description" class="form-label fw-semibold">Description</label>
+                <label for="description" class="form-label fw-medium text-dark d-flex justify-content-between align-items-center">
+                  <span><i class="bi bi-text-paragraph me-2 text-primary"></i>Description</span>
+                  <span class="badge bg-light text-dark fs-7"><span id="char-count"><%= listing.description.length %></span>/500</span>
+                </label>
                 <textarea
                   name="listing[description]"
                   id="description"
                   required
                   class="form-control"
                   rows="5"
-                  placeholder="Describe your property in detail..."
+                  placeholder="Describe what makes your place special..."
+                  style="border-radius: 12px; min-height: 120px; border: 2px solid #e0e6ed;"
+                  maxlength="500"
                 ><%= listing.description %></textarea>
+                <div class="form-text mt-1">Tip: Highlight unique amenities and nearby attractions</div>
               </div>
 
               <!-- Price & Location -->
-              <div class="row mb-4">
-                <div class="col-md-6 mb-3 mb-md-0">
-                  <label for="price" class="form-label fw-semibold">Price per night (INR)</label>
-                  <div class="input-group">
-                    <span class="input-group-text bg-light border-end-0">₹</span>
-                    <input
-                      type="number"
-                      name="listing[price]"
-                      id="price"
-                      required
-                      min="0"
-                      class="form-control border-start-0"
-                      value="<%= listing.price %>"
-                      placeholder="2500"
-                    />
+              <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                  <div class="p-3 rounded-3" style="background-color: rgba(106,17,203,0.03); border: 1px dashed rgba(106,17,203,0.2);">
+                    <label for="price" class="form-label fw-medium text-dark d-flex align-items-center">
+                      <i class="bi bi-currency-rupee me-2 text-primary"></i>Price per night (₹)
+                    </label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light border-end-0">₹</span>
+                      <input
+                        type="number"
+                        name="listing[price]"
+                        id="price"
+                        required
+                        min="0"
+                        step="100"
+                        class="form-control border-start-0"
+                        value="<%= listing.price %>"
+                        placeholder="2500"
+                        style="font-weight: 500;"
+                      />
+                    </div>
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <label for="location" class="form-label fw-semibold">Location</label>
-                  <input
-                    type="text"
-                    name="listing[location]"
-                    id="location"
-                    required
-                    class="form-control"
-                    value="<%= listing.location %>"
-                    placeholder="Goa"
-                  />
+                  <div class="p-3 rounded-3" style="background-color: rgba(37,117,252,0.03); border: 1px dashed rgba(37,117,252,0.2);">
+                    <label for="location" class="form-label fw-medium text-dark d-flex align-items-center">
+                      <i class="bi bi-geo-alt me-2 text-primary"></i>Location
+                    </label>
+                    <input
+                      type="text"
+                      name="listing[location]"
+                      id="location"
+                      required
+                      class="form-control"
+                      value="<%= listing.location %>"
+                      placeholder="Goa"
+                      style="font-weight: 500;"
+                    />
+                  </div>
                 </div>
               </div>
 
               <!-- Country & Image URL -->
-              <div class="row mb-4">
-                <div class="col-md-6 mb-3 mb-md-0">
-                  <label for="country" class="form-label fw-semibold">Country</label>
-                  <input
-                    type="text"
-                    name="listing[country]"
-                    id="country"
-                    required
-                    class="form-control"
-                    value="<%= listing.country %>"
-                    placeholder="India"
-                    list="countrySuggestions"
-                  />
-                  <datalist id="countrySuggestions">
-                    <option value="India"></option>
-                    <option value="United States"></option>
-                    <option value="Canada"></option>
-                    <option value="Australia"></option>
-                    <option value="United Kingdom"></option>
-                    <option value="Germany"></option>
-                    <option value="France"></option>
-                    <option value="Japan"></option>
-                    <option value="China"></option>
-                    <option value="Brazil"></option>
-                  </datalist>
+              <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                  <div class="p-3 rounded-3" style="background-color: rgba(13,110,253,0.03); border: 1px dashed rgba(13,110,253,0.2);">
+                    <label for="country" class="form-label fw-medium text-dark d-flex align-items-center">
+                      <i class="bi bi-globe me-2 text-primary"></i>Country
+                    </label>
+                    <input
+                      type="text"
+                      name="listing[country]"
+                      id="country"
+                      required
+                      class="form-control"
+                      value="<%= listing.country %>"
+                      placeholder="India"
+                      list="countrySuggestions"
+                    />
+                    <datalist id="countrySuggestions">
+                      <option value="India"></option>
+                      <option value="United States"></option>
+                      <option value="Canada"></option>
+                      <option value="Australia"></option>
+                      <option value="United Kingdom"></option>
+                      <option value="Germany"></option>
+                      <option value="France"></option>
+                      <option value="Japan"></option>
+                      <option value="China"></option>
+                      <option value="Brazil"></option>
+                    </datalist>
+                  </div>
                 </div>
                 <div class="col-md-6">
-                  <label for="image_url" class="form-label fw-semibold">Image URL</label>
-                  <input
-                    type="url"
-                    name="listing[image][url]"
-                    id="image_url"
-                    class="form-control"
-                    value="<%= listing.image?.url || '' %>"
-                    placeholder="https://example.com/image.jpg"
-                  />
+                  <div class="p-3 rounded-3" style="background-color: rgba(25,135,84,0.03); border: 1px dashed rgba(25,135,84,0.2);">
+                    <label for="image_url" class="form-label fw-medium text-dark d-flex align-items-center">
+                      <i class="bi bi-link-45deg me-2 text-primary"></i>Image URL
+                    </label>
+                    <input
+                      type="url"
+                      name="listing[image][url]"
+                      id="image_url"
+                      class="form-control"
+                      value="<%= listing.image?.url || '' %>"
+                      placeholder="https://example.com/image.jpg"
+                    />
+                  </div>
                 </div>
               </div>
 
-              <!-- Change Image -->
-              <div class="mb-3">
-                <label for="image" class="form-label">Change Image</label>
-                <input type="file" class="form-control" id="image" name="image" accept="image/*">
-                <% if (listing.image?.url) { %>
-                  <img src="<%= listing.image.url %>" alt="Current Image" style="max-width:200px; margin-top:10px;">
-                <% } else if (listing.image) { %>
-                  <img src="<%= listing.image %>" alt="Current Image" style="max-width:200px; margin-top:10px;">
-                <% } %>
+              <!-- Image Upload Section -->
+              <div class="mb-4">
+                <label class="form-label fw-medium text-dark d-flex align-items-center">
+                  <i class="bi bi-image me-2 text-primary"></i>Property Image
+                </label>
+                
+                <div class="border rounded-3 p-3" style="border-style: dashed !important; background-color: #f9fafc;">
+                  <!-- Current Image Preview -->
+                  <% if (listing.image?.url || listing.image) { %>
+                    <div class="mb-3 text-center">
+                      <p class="fw-medium mb-2">Current Image:</p>
+                      <img 
+                        src="<%= listing.image?.url || listing.image %>" 
+                        alt="Current Listing Image" 
+                        class="img-thumbnail rounded-3 shadow-sm" 
+                        style="max-width: 100%; max-height: 250px; object-fit: contain;"
+                      >
+                    </div>
+                  <% } %>
+                  
+                  <!-- Image Uploader -->
+                  <div class="text-center">
+                    <input type="file" class="form-control d-none" id="image" name="image" accept="image/*">
+                    <button type="button" class="btn btn-outline-primary rounded-pill px-4" onclick="document.getElementById('image').click()">
+                      <i class="bi bi-upload me-2"></i>Upload New Image
+                    </button>
+                    <div class="form-text mt-2">Recommended size: 1200x800 pixels (max 5MB)</div>
+                  </div>
+                </div>
               </div>
 
-              <!-- Buttons -->
-              <div class="d-flex justify-content-end gap-3 mt-5">
-                <a href="/listings" class="btn btn-light border px-4">Cancel</a>
-                <button type="submit" class="btn btn-primary px-4">
-                  Update Listing
+              <!-- Form Actions -->
+              <div class="d-flex justify-content-between align-items-center mt-5 pt-4 border-top">
+                <a href="/listings" class="btn btn-outline-secondary px-4 rounded-pill">
+                  <i class="bi bi-x-lg me-2"></i>Cancel
+                </a>
+                <button type="submit" class="btn btn-primary px-4 rounded-pill fw-medium" style="background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); border: none;">
+                  <i class="bi bi-check-lg me-2"></i>Update Listing
                 </button>
               </div>
             </form>
@@ -136,24 +194,95 @@
     </div>
   </div>
 
-  <!-- Styling -->
+  <!-- Custom Styling -->
   <style>
-    .form-control:focus, .form-select:focus {
-      border-color: #0d6efd;
-      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    .card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-
-    .form-label {
-      font-size: 0.95rem;
-      color: #343a40;
-    }
-
+    
     .card:hover {
-      box-shadow: 0 0 25px rgba(0, 0, 0, 0.08);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
     }
-
+    
+    .form-control, .form-select, .input-group-text {
+      border-color: #e0e6ed;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+      border-color: #6a11cb !important;
+      box-shadow: 0 0 0 0.25rem rgba(106, 17, 203, 0.15) !important;
+    }
+    
     .input-group-text {
-      font-weight: 500;
+      background-color: #f8fafc;
+    }
+    
+    .form-label {
+      color: #3b4863;
+    }
+    
+    .btn-outline-secondary {
+      border-color: #e0e6ed;
+    }
+    
+    .btn-outline-secondary:hover {
+      background-color: #f8fafc;
+    }
+    
+    textarea::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    textarea::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+    
+    textarea::-webkit-scrollbar-thumb {
+      background: linear-gradient(#6a11cb, #2575fc);
+      border-radius: 10px;
     }
   </style>
+
+  <!-- JavaScript Enhancements -->
+  <script>
+    // Character counter for description
+    const description = document.getElementById('description');
+    const charCount = document.getElementById('char-count');
+    
+    description.addEventListener('input', () => {
+      charCount.textContent = description.value.length;
+    });
+    
+    // Image preview functionality
+    const imageInput = document.getElementById('image');
+    const currentImage = document.querySelector('img[alt="Current Listing Image"]');
+    
+    imageInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0 && currentImage) {
+        const file = e.target.files[0];
+        if (file.size > 5 * 1024 * 1024) {
+          alert('File size should be less than 5MB');
+          return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          currentImage.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+    
+    // Form submission feedback
+    const form = document.querySelector('form');
+    
+    form.addEventListener('submit', () => {
+      const submitBtn = form.querySelector('button[type="submit"]');
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Updating...';
+      submitBtn.disabled = true;
+    });
+  </script>
 </body>

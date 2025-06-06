@@ -1,11 +1,11 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top border-bottom">
+<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top border-bottom shadow-sm">
   <div class="container-fluid px-4">
     <!-- Logo -->
-    <a class="navbar-brand" href="/">
-      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#007bff" viewBox="0 0 24 24">
+    <a class="navbar-brand d-flex align-items-center animate__animated animate__fadeIn" href="/">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#007bff" viewBox="0 0 24 24" class="me-2">
         <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
       </svg>
-      <span class="ms-2 fw-bold" style="color: #007bff;">RoomRover</span>
+      <span class="fw-bold text-gradient animate__animated animate__pulse animate__infinite" style="font-size: 1.5rem;">RoomRover</span>
     </a>
 
     <!-- Search Bar (Centered) -->
@@ -13,9 +13,9 @@
           style="width: fit-content;"
           action="/listings"
           method="get">
-      <div class="input-group rounded-pill border shadow-sm" style="width: 400px; border: 2px solid #007bff;">
-        <input type="text" class="form-control border-0" name="q" placeholder="Search by location or title..." aria-label="Search">
-        <button class="btn rounded-pill ms-auto" type="submit" style="padding: 8px 12px; background-color: #007bff; color: #fff;">
+      <div class="input-group rounded-pill border shadow-sm animate__animated animate__fadeInUp" style="width: 450px; border: 2px solid #007bff; transition: all 0.3s ease;">
+        <input type="text" class="form-control border-0 py-2" name="q" placeholder="Search by location or title..." aria-label="Search">
+        <button class="btn rounded-pill ms-auto search-btn" type="submit" style="padding: 8px 16px; background: linear-gradient(45deg, #007bff, #00ddeb); color: #fff; transition: transform 0.2s;">
           <i class="bi bi-search"></i>
         </button>
       </div>
@@ -24,66 +24,66 @@
     <!-- Right Side Menu -->
     <div class="d-flex align-items-center ms-auto">
       <!-- Become Host Link -->
-      <a href="/host" class="text-dark text-decoration-none me-3 d-none d-md-block fw-medium" data-i18n="become_host">Become a Host</a>
+      <a href="/host" class="text-dark text-decoration-none me-3 d-none d-md-block fw-medium animate__animated animate__fadeInRight" data-i18n="become_host" style="transition: color 0.3s;">Become a Host</a>
       
       <!-- Language Switcher Dropdown -->
-      <div class="dropdown me-2">
-        <button class="btn btn-light rounded-pill p-2 dropdown-toggle d-flex align-items-center" type="button" id="langDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+      <div class="dropdown me-2 animate__animated animate__fadeInRight">
+        <button class="btn btn-light rounded-pill p-2 dropdown-toggle d-flex align-items-center glow-effect" type="button" id="langDropdown" data-bs-toggle="dropdown" aria-expanded="false">
           <i class="bi bi-globe me-1"></i>
           <span id="current-lang-label">English</span>
         </button>
-        <ul class="dropdown-menu dropdown-menu-end shadow-lg mt-2" aria-labelledby="langDropdown">
+        <ul class="dropdown-menu dropdown-menu-end shadow-lg mt-2 rounded-3" aria-labelledby="langDropdown">
           <li>
-            <button class="dropdown-item lang-option" data-lang="en">English</button>
+            <button class="dropdown-item lang-option hover-scale" data-lang="en">English</button>
           </li>
           <li>
-            <button class="dropdown-item lang-option" data-lang="hi">हिन्दी</button>
+            <button class="dropdown-item lang-option hover-scale" data-lang="hi">हिन्दी</button>
           </li>
         </ul>
       </div>
 
       <!-- User Menu -->
-      <div class="dropdown">
-        <button class="btn btn-light rounded-pill p-2 dropdown-toggle d-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+      <div class="dropdown animate__animated animate__fadeInRight">
+        <button class="btn btn-light rounded-pill p-2 dropdown-toggle d-flex align-items-center glow-effect" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
           <i class="bi bi-list me-1"></i>
           <i class="bi bi-person-circle ms-1"></i>
         </button>
         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-user shadow-lg mt-2" aria-labelledby="userDropdown">
           <% if (!currentUser) { %>
-            <li><a class="dropdown-item" href="/login"><i class="bi bi-box-arrow-in-right me-2"></i><span data-i18n="login">Log in</span></a></li>
-            <li><a class="dropdown-item" href="/signup"><i class="bi bi-person-plus me-2"></i><span data-i18n="signup">Sign up</span></a></li>
+            <li><a class="dropdown-item hover-scale" href="/login"><i class="bi bi-box-arrow-in-right me-2"></i><span data-i18n="login">Log in</span></a></li>
+            <li><a class="dropdown-item hover-scale" href="/signup"><i class="bi bi-person-plus me-2"></i><span data-i18n="signup">Sign up</span></a></li>
             <li><hr class="dropdown-divider"></li>
           <% } else { %>
             <li><h6 class="dropdown-header"><span data-i18n="welcome">Welcome</span>, <%= currentUser.username %></h6></li>
             <li>
-              <a class="dropdown-item" href="/profile">
+              <a class="dropdown-item hover-scale" href="/profile">
                 <i class="bi bi-person me-2"></i>
                 <span data-i18n="profile">Profile</span>
               </a>
             </li>
             <li>
-              <a class="dropdown-item" href="/trips">
+              <a class="dropdown-item hover-scale" href="/trips">
                 <i class="bi bi-suitcase me-2"></i><i class="bi bi-house-door me-2"></i>
                 <span data-i18n="my_trips">My Trips</span>
               </a>
             </li>
             <li><hr class="dropdown-divider"></li>
             <li>
-              <a class="dropdown-item" href="/listings/new">
+              <a class="dropdown-item hover-scale" href="/listings/new">
                 <i class="bi bi-house-door me-2"></i>
                 <span data-i18n="host_home">Host your home</span>
               </a>
             </li>
           <% } %>
           <li>
-            <a class="dropdown-item" href="/help.html">
+            <a class="dropdown-item hover-scale" href="/help.html">
               <i class="bi bi-question-circle me-2"></i>
               <span data-i18n="help">Help</span>
             </a>
           </li>
           <% if (currentUser) { %>
             <li>
-              <a class="dropdown-item text-danger" href="/logout">
+              <a class="dropdown-item text-danger hover-scale" href="/logout">
                 <i class="bi bi-box-arrow-right me-2"></i>
                 <span data-i18n="logout">Log out</span>
               </a>
@@ -96,39 +96,100 @@
 </nav>
 
 <style>
+  /* Enhanced Dropdown Styling */
   .dropdown-menu-user {
-    min-width: 220px;
+    min-width: 240px;
     border-radius: 1rem;
     border: 1px solid #e3e6ee;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
     padding: 0.5rem 0;
     font-size: 1rem;
+    background: #fff;
+    animation: slideIn 0.3s ease;
   }
+
   .dropdown-menu-user .dropdown-header {
     font-weight: 600;
     color: #375aee;
-    background: #f5f7ff;
+    background: linear-gradient(45deg, #f5f7ff, #e7edff);
     border-bottom: 1px solid #e3e6ee;
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
+    padding: 0.75rem 1.25rem;
     margin-bottom: 0.25rem;
     border-radius: 1rem 1rem 0 0;
   }
+
   .dropdown-menu-user .dropdown-item {
     padding: 0.75rem 1.25rem;
-    transition: background 0.15s, color 0.15s;
+    transition: all 0.2s ease;
     border-radius: 0.5rem;
     margin: 0 0.25rem;
   }
+
   .dropdown-menu-user .dropdown-item:hover,
   .dropdown-menu-user .dropdown-item:focus {
-    background: #e7edff;
+    background: linear-gradient(45deg, #e7edff, #d6e0ff);
     color: #375aee;
+    transform: translateX(5px);
   }
+
   .dropdown-menu-user .dropdown-divider {
     margin: 0.5rem 0;
+    border-color: #e3e6ee;
   }
+
   .dropdown-menu-user .text-danger {
     color: #d32f2f !important;
+  }
+
+  /* Gradient Text for Logo */
+  .text-gradient {
+    background: linear-gradient(45deg, #007bff, #00ddeb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Glow Effect for Buttons */
+  .glow-effect {
+    transition: box-shadow 0.3s ease;
+  }
+
+  .glow-effect:hover {
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.3);
+  }
+
+  /* Hover Scale Effect */
+  .hover-scale {
+    transition: transform 0.2s ease;
+  }
+
+  .hover-scale:hover {
+    transform: scale(1.05);
+  }
+
+  /* Search Button Hover */
+  .search-btn:hover {
+    transform: scale(1.1);
+  }
+
+  /* Animation for Dropdown */
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 991px) {
+    .navbar-brand {
+      font-size: 1.2rem;
+    }
+    .input-group {
+      width: 300px !important;
+    }
   }
 </style>

@@ -1,128 +1,176 @@
 <% layout("layouts/boilerplate") %>
-<body style="background-color: #eef2f7">
-  <div class="container my-3">
+<body style="background-color: #f8fafc">
+  <!-- Animated Background Elements -->
+  <div class="position-fixed top-0 end-0" style="z-index: -1;">
+    <div style="width: 300px; height: 300px; background: radial-gradient(circle, rgba(106,17,203,0.1) 0%, rgba(255,255,255,0) 70%); transform: translate(100px,-100px);"></div>
+  </div>
+  <div class="position-fixed bottom-0 start-0" style="z-index: -1;">
+    <div style="width: 400px; height: 400px; background: radial-gradient(circle, rgba(37,117,252,0.1) 0%, rgba(255,255,255,0) 70%); transform: translate(-150px,150px);"></div>
+  </div>
+
+  <div class="container my-5">
     <div class="row justify-content-center">
       <div class="col-lg-8">
-        <div class="card shadow-lg border-0 rounded-4" style="background-color: #f8f9fa;">
-          <div class="card-body p-4">
-            <!-- Heading Section -->
-            <div class="text-center mb-3">
-              <h1 class="fw-bold mb-3">Create New Listing</h1>
-              <p class="text-muted fs-6">Fill in the details below to add a new listing.</p>
+        <!-- Floating Card with Glass Morphism Effect -->
+        <div class="card border-0 rounded-4 overflow-hidden shadow-lg" style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3);">
+          <!-- Card Header with Parallax Effect -->
+          <div class="card-header py-4 position-relative overflow-hidden" style="background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);">
+            <div class="position-absolute w-100 h-100" style="background: url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80') center/cover; opacity: 0.15; top: 0; left: 0;"></div>
+            <div class="text-center position-relative">
+              <h2 class="h1 mb-2 text-white fw-bold">Create Your Dream Listing</h2>
+              <p class="mb-0 text-white-75">Turn your property into someone's perfect getaway</p>
             </div>
-
+          </div>
+          
+          <!-- Card Body with Animated Form -->
+          <div class="card-body px-4 py-4">
             <form action="/listings" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
-              <!-- Title -->
-              <div class="mb-4">
-                <label for="title" class="form-label fw-semibold">Title</label>
+              <!-- Title Section with Floating Label -->
+              <div class="form-floating mb-4">
                 <input
                   type="text"
                   name="listing[title]"
                   id="title"
                   required
-                  class="form-control"
-                  placeholder="Beautiful beachfront vila"
+                  class="form-control border-0 border-bottom rounded-0 shadow-none"
+                  placeholder="Beautiful beachfront villa"
+                  style="background: transparent; border-color: #e0e6ed !important;"
                 />
+                <label for="title" class="fw-medium text-muted">Listing Title*</label>
+                <div class="progress" style="height: 2px;">
+                  <div class="progress-bar" role="progressbar" style="width: 0%; background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%); transition: width 0.3s ease;" id="title-progress"></div>
+                </div>
               </div>
 
-              <!-- Description -->
+              <!-- Description Section with Character Counter -->
               <div class="mb-4">
-                <label for="description" class="form-label fw-semibold">Description</label>
+                <label for="description" class="form-label fw-medium text-dark d-flex justify-content-between">
+                  <span>Description*</span>
+                  <span class="text-muted fs-7"><span id="char-count">0</span>/500</span>
+                </label>
                 <textarea
                   name="listing[description]"
                   id="description"
                   required
                   class="form-control"
                   rows="5"
-                  placeholder="Describe your property in detail..."
+                  placeholder="Describe what makes your place special..."
+                  style="border-radius: 12px; min-height: 120px;"
+                  maxlength="500"
                 ></textarea>
+                <div class="form-text mt-1">Tip: Highlight unique amenities and nearby attractions</div>
               </div>
 
-              <!-- Price & Location -->
-              <div class="row mb-4">
-                <div class="col-md-6 mb-3 mb-md-0">
-                  <label for="price" class="form-label fw-semibold">Price per night (INR)</label>
-                  <div class="input-group">
-                    <span class="input-group-text bg-light border-end-0">₹</span>
+              <!-- Price & Location - Floating Cards -->
+              <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                  <div class="p-3 h-100 rounded-3" style="background-color: rgba(106,17,203,0.03); border: 1px dashed rgba(106,17,203,0.2);">
+                    <label for="price" class="form-label fw-medium text-dark d-flex align-items-center">
+                      <i class="bi bi-currency-rupee me-2"></i> Nightly Price*
+                    </label>
                     <input
                       type="number"
                       name="listing[price]"
                       id="price"
                       required
                       min="0"
-                      class="form-control border-start-0"
+                      step="100"
+                      class="form-control border-0 shadow-none bg-transparent px-0"
                       placeholder="2500"
+                      style="font-size: 1.25rem; font-weight: 600; color: #6a11cb;"
                     />
+                    <div class="form-text">Competitive pricing attracts more guests</div>
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <label for="location" class="form-label fw-semibold">Location</label>
-                  <input
-                    type="text"
-                    name="listing[location]"
-                    id="location"
-                    required
-                    class="form-control"
-                    placeholder="Goa"
-                  />
+                  <div class="p-3 h-100 rounded-3" style="background-color: rgba(37,117,252,0.03); border: 1px dashed rgba(37,117,252,0.2);">
+                    <label for="location" class="form-label fw-medium text-dark d-flex align-items-center">
+                      <i class="bi bi-geo-alt me-2"></i> Location*
+                    </label>
+                    <div class="input-group border-0">
+                      <input
+                        type="text"
+                        name="listing[location]"
+                        id="location"
+                        required
+                        class="form-control border-0 shadow-none bg-transparent px-0"
+                        placeholder="Goa"
+                        style="font-size: 1.25rem; font-weight: 600; color: #2575fc;"
+                      />
+                      <button class="btn btn-sm" type="button" style="color: #2575fc;">
+                        <i class="bi bi-geo"></i>
+                      </button>
+                    </div>
+                    <div class="form-text">Visible to guests after booking</div>
+                  </div>
                 </div>
               </div>
 
-              <!-- Country & Image -->
-              <div class="row mb-4">
-                <div class="col-md-6 mb-3 mb-md-0">
-                  <label for="country" class="form-label fw-semibold">Country</label>
-                  <input
-                    type="text"
+              <!-- Country Select with Flag Picker -->
+              <div class="mb-4">
+                <label for="country" class="form-label fw-medium text-dark">Country*</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light" id="flag-container" style="width: 45px;">
+                    <span id="selected-flag" class="fi fi-in fis" style="font-size: 1.2rem;"></span>
+                  </span>
+                  <select
                     name="listing[country]"
                     id="country"
                     required
-                    class="form-control"
-                    placeholder="India"
-                    list="countrySuggestions"
-                  />
-                  <datalist id="countrySuggestions">
-                    <option value="India"></option>
-                    <option value="United States"></option>
-                    <option value="Canada"></option>
-                    <option value="Australia"></option>
-                    <option value="United Kingdom"></option>
-                    <option value="Germany"></option>
-                    <option value="France"></option>
-                    <option value="Japan"></option>
-                    <option value="China"></option>
-                    <option value="Brazil"></option>
-                  </datalist>
-                </div>
-                <div class="col-md-6">
-                  <label for="image_url" class="form-label fw-semibold">Image URL</label>
-                  <input
-                    type="url"
-                    name="listing[image][url]"
-                    id="image_url"
-                    class="form-control"
-                    placeholder="https://example.com/image.jpg"
-                  />
+                    class="form-select"
+                    style="padding-left: 15px;"
+                  >
+                    <option value="India" selected>India</option>
+                    <option value="United States">United States</option>
+                    <option value="Canada">Canada</option>
+                    <option value="Australia">Australia</option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="Germany">Germany</option>
+                    <option value="France">France</option>
+                    <option value="Japan">Japan</option>
+                    <option value="China">China</option>
+                    <option value="Brazil">Brazil</option>
+                  </select>
                 </div>
               </div>
 
-              <!-- File Upload -->
+              <!-- Image Upload with Preview -->
               <div class="mb-4">
-                <label for="image" class="form-label fw-semibold">Upload Image</label>
-                <input
-                  type="file"
-                  name="image"
-                  id="image"
-                  class="form-control"
-                  accept="image/*"
-                />
+                <label class="form-label fw-medium text-dark">Property Images</label>
+                <div class="border rounded-3 p-3 text-center" style="background-color: #f9fafc; border-style: dashed !important;">
+                  <input type="hidden" name="listing[image][url]" id="image_url">
+                  <div id="image-preview" class="mb-3 d-none">
+                    <img src="" alt="Preview" class="img-thumbnail rounded-3" style="max-height: 200px;">
+                  </div>
+                  <div id="upload-area" class="py-4">
+                    <i class="bi bi-cloud-arrow-up fs-1 text-muted mb-2"></i>
+                    <h5 class="mb-2">Drag & drop photos here</h5>
+                    <p class="text-muted mb-3">or click to browse</p>
+                    <input
+                      type="file"
+                      name="image"
+                      id="image"
+                      class="d-none"
+                      accept="image/*"
+                    />
+                    <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3" onclick="document.getElementById('image').click()">
+                      Select Files
+                    </button>
+                  </div>
+                </div>
+                <div class="form-text">First image will be featured (max 5MB each)</div>
               </div>
 
-              <!-- Form Actions -->
-              <div class="d-flex justify-content-end gap-3 mt-5">
-                <a href="/listings" class="btn btn-light border px-4">Cancel</a>
-                <button type="submit" class="btn btn-primary px-4">
-                  Add Listing
+              <!-- Form Submission with Animation -->
+              <div class="d-flex justify-content-between align-items-center mt-5 pt-4 border-top">
+                <a href="/listings" class="btn btn-outline-secondary px-4 rounded-pill">
+                  <i class="bi bi-arrow-left me-2"></i>Cancel
+                </a>
+                <button type="submit" class="btn btn-primary px-4 rounded-pill fw-medium position-relative overflow-hidden" style="background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); border: none;">
+                  <span class="position-relative z-index-1">
+                    <i class="bi bi-magic me-2"></i>Create Listing
+                  </span>
+                  <span class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%); opacity: 0; transition: opacity 0.3s ease;"></span>
                 </button>
               </div>
             </form>
@@ -132,24 +180,198 @@
     </div>
   </div>
 
-  <!-- Custom Styling -->
+  <!-- Floating Notification -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="success-toast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">
+          <i class="bi bi-check-circle-fill me-2"></i> Your listing has been created successfully!
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Styling and JavaScript -->
   <style>
-    .form-control:focus, .form-select:focus {
-      border-color: #0d6efd;
-      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    /* Floating label animation */
+    .form-floating label {
+      transition: all 0.2s ease;
     }
-
-    .form-label {
-      font-size: 0.95rem;
-      color: #343a40;
+    
+    /* Interactive elements */
+    #upload-area {
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
-
-    .card:hover {
-      box-shadow: 0 0 25px rgba(0, 0, 0, 0.08);
+    
+    #upload-area:hover {
+      background-color: rgba(106,17,203,0.05) !important;
     }
-
-    .input-group-text {
-      font-weight: 500;
+    
+    /* Button hover effect */
+    .btn-primary:hover span:last-child {
+      opacity: 1 !important;
+    }
+    
+    /* Country flag styling */
+    .fi {
+      border-radius: 3px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    /* Custom scrollbar for textarea */
+    textarea::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    textarea::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+    
+    textarea::-webkit-scrollbar-thumb {
+      background: linear-gradient(#6a11cb, #2575fc);
+      border-radius: 10px;
+    }
+    
+    /* Animation classes */
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+      100% { transform: translateY(0px); }
+    }
+    
+    .floating {
+      animation: float 3s ease-in-out infinite;
     }
   </style>
+
+  <script>
+    // Character counter for description
+    const description = document.getElementById('description');
+    const charCount = document.getElementById('char-count');
+    
+    description.addEventListener('input', () => {
+      charCount.textContent = description.value.length;
+    });
+    
+    // Title progress indicator
+    const titleInput = document.getElementById('title');
+    const titleProgress = document.getElementById('title-progress');
+    
+    titleInput.addEventListener('input', () => {
+      const progress = Math.min((titleInput.value.length / 50) * 100, 100);
+      titleProgress.style.width = `${progress}%`;
+    });
+    
+    // Image preview functionality
+    const imageInput = document.getElementById('image');
+    const imagePreview = document.getElementById('image-preview');
+    const uploadArea = document.getElementById('upload-area');
+    const previewImg = imagePreview.querySelector('img');
+    
+    imageInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        const file = e.target.files[0];
+        if (file.size > 5 * 1024 * 1024) {
+          alert('File size should be less than 5MB');
+          return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          previewImg.src = event.target.result;
+          imagePreview.classList.remove('d-none');
+          uploadArea.classList.add('d-none');
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+    
+    // Drag and drop for images
+    const dropArea = document.getElementById('upload-area');
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, preventDefaults, false);
+    });
+    
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropArea.addEventListener(eventName, highlight, false);
+    });
+    
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, unhighlight, false);
+    });
+    
+    function highlight() {
+      dropArea.style.backgroundColor = 'rgba(106,17,203,0.1)';
+    }
+    
+    function unhighlight() {
+      dropArea.style.backgroundColor = '';
+    }
+    
+    dropArea.addEventListener('drop', handleDrop, false);
+    
+    function handleDrop(e) {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      imageInput.files = files;
+      const event = new Event('change');
+      imageInput.dispatchEvent(event);
+    }
+    
+    // Country flag changer
+    const countrySelect = document.getElementById('country');
+    const flagContainer = document.getElementById('selected-flag');
+    
+    countrySelect.addEventListener('change', () => {
+      const country = countrySelect.value.toLowerCase();
+      let countryCode;
+      
+      switch(country) {
+        case 'india': countryCode = 'in'; break;
+        case 'united states': countryCode = 'us'; break;
+        case 'canada': countryCode = 'ca'; break;
+        case 'australia': countryCode = 'au'; break;
+        case 'united kingdom': countryCode = 'gb'; break;
+        case 'germany': countryCode = 'de'; break;
+        case 'france': countryCode = 'fr'; break;
+        case 'japan': countryCode = 'jp'; break;
+        case 'china': countryCode = 'cn'; break;
+        case 'brazil': countryCode = 'br'; break;
+        default: countryCode = 'in';
+      }
+      
+      flagContainer.className = `fi fi-${countryCode} fis`;
+    });
+    
+    // Form submission animation
+    const form = document.querySelector('form');
+    const successToast = new bootstrap.Toast(document.getElementById('success-toast'));
+    
+    form.addEventListener('submit', (e) => {
+      // In a real app, you would handle actual form submission here
+      e.preventDefault();
+      
+      // Simulate successful submission
+      setTimeout(() => {
+        successToast.show();
+        // Reset form after success
+        setTimeout(() => {
+          form.reset();
+          imagePreview.classList.add('d-none');
+          uploadArea.classList.remove('d-none');
+          charCount.textContent = '0';
+          titleProgress.style.width = '0%';
+        }, 2000);
+      }, 1500);
+    });
+  </script>
 </body>

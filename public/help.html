@@ -2,95 +2,110 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RoomRover Help Center</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Noto+Sans:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
   <link rel="stylesheet" href="help.css">
 </head>
 <body>
-  <!-- NAVBAR -->
-  <nav class="navbar">
+  <!-- Navbar -->
+  <header class="navbar">
     <div class="navbar-container">
-      <a class="navbar-logo" href="/listings">
-        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="#FF5A5F" viewBox="0 0 24 24">
+      <a class="navbar-logo" href="/listings" aria-label="RoomRover Home">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="#007bff" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
         </svg>
         <span>RoomRover</span>
       </a>
-      <button class="navbar-toggle" aria-label="Toggle navigation">
+      <button class="navbar-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
         <i class="bi bi-list"></i>
       </button>
-      <ul class="navbar-links">
-        <li><a href="/listings">Home</a></li>
-        <li><a href="/listings">Rooms</a></li>
-        <li><a href="/contact">Contact</a></li>
-        <li><a href="help.html" class="active">Help</a></li>
-      </ul>
+      <nav class="navbar-links" aria-label="Main navigation">
+        <ul>
+          <li><a href="/listings">Home</a></li>
+          <li><a href="/listings">Rooms</a></li>
+          <li><a href="/contact">Contact</a></li>
+          <li><a href="help.html" aria-current="page">Help</a></li>
+        </ul>
+      </nav>
     </div>
-  </nav>
+  </header>
 
-  <!-- MAIN HELP CONTENT -->
-  <div class="help-container">
-    <h1>Need Help?</h1>
-    <p class="intro">
-      Welcome to the RoomRover Help Center. Here you’ll find answers to common questions and ways to contact our support team. We’re here to make your stay and booking experience smooth and enjoyable!
-    </p>
-    <section class="faq-section">
-      <h2>Frequently Asked Questions</h2>
+  <!-- Main Content -->
+  <main class="help-container">
+    <section class="hero-section" aria-labelledby="help-heading">
+      <h1 id="help-heading">Need Help?</h1>
+      <p class="intro">
+        Welcome to the RoomRover Help Center. Find answers to common questions or reach out to our support team. We’re here to ensure a seamless booking and stay experience!
+      </p>
+    </section>
+
+    <section class="faq-section" aria-labelledby="faq-heading">
+      <h2 id="faq-heading">Frequently Asked Questions</h2>
       <ul class="faq-list">
         <li class="faq-item">
-          <div class="faq-q">How do I book a room?</div>
-          <div class="faq-a">Browse listings, select your preferred room, choose your dates, and follow the on-screen instructions to complete your booking.</div>
+          <button class="faq-q" aria-expanded="false" aria-controls="faq1">How do I book a room?</button>
+          <div class="faq-a" id="faq1">Browse listings, select your preferred room, choose your dates, and follow the on-screen instructions to complete your booking.</div>
         </li>
         <li class="faq-item">
-          <div class="faq-q">Can I cancel or modify my booking?</div>
-          <div class="faq-a">Yes, you can manage your bookings from your account dashboard. Please review the cancellation policy for your selected room before making changes.</div>
+          <button class="faq-q" aria-expanded="false" aria-controls="faq2">Can I cancel or modify my booking?</button>
+          <div class="faq-a" id="faq2">Yes, manage your bookings from your account dashboard. Review the cancellation policy for your selected room before making changes.</div>
         </li>
         <li class="faq-item">
-          <div class="faq-q">What payment methods are accepted?</div>
-          <div class="faq-a">We accept major credit/debit cards, UPI, and select digital wallets for your convenience.</div>
+          <button class="faq-q" aria-expanded="false" aria-controls="faq3">What payment methods are accepted?</button>
+          <div class="faq-a" id="faq3">We accept major credit/debit cards, UPI, and select digital wallets for your convenience.</div>
         </li>
         <li class="faq-item">
-          <div class="faq-q">Is customer support available 24/7?</div>
-          <div class="faq-a">Absolutely! Our support team is available around the clock to assist you with any questions or issues.</div>
+          <button class="faq-q" aria-expanded="false" aria-controls="faq4">Is customer support available 24/7?</button>
+          <div class="faq-a" id="faq4">Yes, our support team is available 24/7 to assist with any questions or issues.</div>
         </li>
       </ul>
     </section>
-    <section class="contact-section">
-      <h2>Contact Us</h2>
+
+    <section class="contact-section" aria-labelledby="contact-heading">
+      <h2 id="contact-heading">Contact Us</h2>
       <div class="contact-info">
-        <div>Email: <a href="mailto:support@roomrover.com">support@roomrover.com</a></div>
-        <div>Phone: +91-12345-67890</div>
+        <p>Email: <a href="mailto:support@roomrover.com">support@roomrover.com</a></p>
+        <p>Phone: <a href="tel:+911234567890">+91-91051-53165</a></p>
       </div>
-      <form class="contact-form" id="helpContactForm" autocomplete="off">
-        <input type="text" name="name" placeholder="Your Name" required>
-        <input type="email" name="email" placeholder="Your Email" required>
-        <textarea name="message" placeholder="Your Message" rows="4" required></textarea>
+      <form class="contact-form" id="helpContactForm" autocomplete="off" aria-describedby="form-success">
+        <div class="form-group">
+          <label for="name">Your Name</label>
+          <input type="text" id="name" name="name" placeholder="Your Name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Your Email</label>
+          <input type="email" id="email" name="email" placeholder="Your Email" required>
+        </div>
+        <div class="form-group">
+          <label for="message">Your Message</label>
+          <textarea id="message" name="message" placeholder="Your Message" rows="4" required></textarea>
+        </div>
         <button type="submit">Send Message</button>
-        <div class="form-success" id="formSuccessMsg">Thank you! Your message has been sent.</div>
+        <p class="form-success" id="form-success" role="alert" aria-live="polite">Thank you! Your message has been sent.</p>
       </form>
     </section>
-  </div>
+  </main>
 
-  <!-- FOOTER -->
+  <!-- Footer -->
   <footer class="footer">
-    <div class="footer-links">
-      <a href="/listings">Home</a>|
-      <a href="/listings">Rooms</a>|
-      <a href="/contact.html">Contact</a>|
-      <a href="help.html" class="active">Help</a>
-    </div>
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="/listings">Home</a>
+      <a href="/listings">Rooms</a>
+      <a href="/contact.html">Contact</a>
+      <a href="help.html" aria-current="page">Help</a>
+    </nav>
     <div class="footer-contact">
-      Email: <a href="mailto:support@roomrover.com">support@roomrover.com</a>
+      <p>Email: <a href="mailto:support@roomrover.com">support@roomrover.com</a></p>
     </div>
-    <div class="footer-social">
+    <div class="footer-social" aria-label="Social media links">
       <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
       <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
       <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
     </div>
     <div class="footer-copyright">
-      &copy; 2025 RoomRover. All rights reserved.
+      <p>© 2025 RoomRover. All rights reserved.</p>
     </div>
   </footer>
 
@@ -99,16 +114,28 @@
     const navToggle = document.querySelector('.navbar-toggle');
     const navLinks = document.querySelector('.navbar-links');
     navToggle.addEventListener('click', () => {
-      navLinks.classList.toggle('open');
+      const isOpen = navLinks.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', isOpen);
     });
 
-    // Simple form handler (no backend, just shows a success message)
+    // FAQ accordion toggle
+    document.querySelectorAll('.faq-q').forEach(button => {
+      button.addEventListener('click', () => {
+        const isExpanded = button.getAttribute('aria-expanded') === 'true';
+        button.setAttribute('aria-expanded', !isExpanded);
+        const answer = button.nextElementSibling;
+        answer.style.display = isExpanded ? 'none' : 'block';
+      });
+    });
+
+    // Form handler
     document.getElementById('helpContactForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      document.getElementById('formSuccessMsg').style.display = 'block';
+      const successMsg = document.getElementById('form-success');
+      successMsg.style.display = 'block';
       this.reset();
       setTimeout(() => {
-        document.getElementById('formSuccessMsg').style.display = 'none';
+        successMsg.style.display = 'none';
       }, 3500);
     });
   </script>

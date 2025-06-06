@@ -1,5 +1,8 @@
 <% layout("layouts/boilerplate") %>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <style>
@@ -22,6 +25,7 @@
     border-radius: 12px;
     overflow: hidden;
     margin-bottom: 30px;
+    position: relative;
   }
 
   .listing-image {
@@ -32,10 +36,42 @@
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     margin-bottom: 1.5rem;
     transition: transform 0.3s;
+    cursor: zoom-in;
   }
 
-  .listing-image:hover {
-    transform: scale(1.025);
+  .listing-image.zoomed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+    object-fit: contain;
+    background: rgba(0, 0, 0, 0.9);
+    cursor: zoom-out;
+  }
+
+  .image-gallery {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
+
+  .thumbnail {
+    width: 80px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s;
+  }
+
+  .thumbnail:hover,
+  .thumbnail.active {
+    border-color: #3498db;
   }
 
   .listing-title {
@@ -197,6 +233,7 @@
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     transition: transform 0.3s;
+    position: relative;
   }
 
   .review-card:hover {
@@ -366,6 +403,56 @@
     transform: translateY(-2px) scale(1.03);
   }
 
+  /* Review actions */
+  .review-actions {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    display: flex;
+    gap: 10px;
+  }
+
+  .btn-review-edit {
+    background-color: #3498db;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+  }
+
+  .btn-review-delete {
+    background-color: #e74c3c;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+  }
+
+  /* Modal for image zoom */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 999;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-image {
+    max-width: 90%;
+    max-height: 90%;
+  }
+
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .review-card {
@@ -385,6 +472,12 @@
       margin: 20px auto;
       padding: 1.5rem;
     }
+
+    .review-actions {
+      position: static;
+      justify-content: flex-end;
+      margin-top: 15px;
+    }
   }
 
   @media (max-width: 900px) {
@@ -401,258 +494,495 @@
     }
   }
 
-  .review-actions {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 20px;
+  /* Price highlight */
+  .price-highlight {
+    font-size: 1.8rem;
+    color: #ff385c;
+    font-weight: 700;
   }
 
-  .btn-review-delete {
-    background-color: #e74c3c;
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
+  /* Amenities section */
+  .amenities-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+  }
+
+  .amenity-badge {
+    background: #e3f2fd;
+    padding: 5px 12px;
+    border-radius: 20px;
     font-size: 0.9rem;
-    transition: all 0.3s ease;
+    color: #1976d2;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  /* Date validation error */
+  .date-error {
+    color: #ff385c;
+    font-size: 0.9rem;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    display: none;
   }
 </style>
 
-<body>
-  <div class="listing-details-container">
+<div class="listing-details-container">
+  <!-- Card: Title & Location -->
+  <div class="listing-card-section">
+    <div class="listing-title-row">
+      <span class="listing-title"><%= listing.title %></span>
+      <span class="price-highlight"
+        >₹<%= listing.price.toLocaleString("en-IN") %>/night</span
+      >
+    </div>
+    <div class="listing-location-row">
+      <i class="fa fa-map-marker-alt"></i>
+      <span><%= listing.location %>, <%= listing.country %></span>
+    </div>
 
-    <!-- Card: Title & Location -->
-    <div class="listing-card-section">
-      <div class="listing-title-row">
-        <span class="listing-title"><%= listing.title %></span>
+    <% if (listing.amenities && listing.amenities.length > 0) { %>
+    <div class="amenities-container">
+      <% listing.amenities.forEach(amenity => { %>
+      <div class="amenity-badge">
+        <i
+          class="fas fa-<%= amenity === 'WiFi' ? 'wifi' : amenity === 'Parking' ? 'parking' : amenity === 'Pool' ? 'swimming-pool' : amenity === 'Kitchen' ? 'utensils' : amenity === 'AC' ? 'snowflake' : 'check' %>"
+        ></i>
+        <%= amenity %>
       </div>
-      <div class="listing-location-row">
-        <i class="fa fa-map-marker-alt"></i>
-        <span><%= listing.location %>, <%= listing.country %></span>
-      </div>
+      <% }) %>
     </div>
+    <% } %>
+  </div>
 
-    <!-- Card: Image -->
-    <div class="listing-card-section" style="padding:0;">
-      <div class="image-section" style="margin-bottom:0;">
-        <% if (listing.image) { %>
-          <img src="<%= listing.image?.url || listing.image %>" alt="Listing Image" style="max-width:300px;">
-        <% } %>
-      </div>
-    </div>
-
-    <!-- Card: Info -->
-    <div class="listing-card-section">
-      <ul class="listing-info-list">
-        <li class="listing-info-item">
-          <i class="fa fa-align-left"></i>
-          <strong>Description:</strong> <%= listing.description %>
-        </li>
-        <li class="listing-info-item">
-          <i class="fa fa-rupee-sign"></i>
-          <strong>Price:</strong> ₹<%= listing.price.toLocaleString("en-IN") %> per night
-        </li>
-        <li class="listing-info-item">
-          <i class="fa fa-user"></i>
-          <strong>Owner:</strong>
-          <% if (listing.owner && listing.owner.username) { %>
-            <%= listing.owner.username %>
-            (<%= listing.owner.email %>)
-          <% } else { %>
-            Unknown
-          <% } %>
-        </li>
-      </ul>
-    </div>
-
-    <div class="action-buttons">
-      <% if (currentUser && listing.owner && currentUser._id.toString() === listing.owner._id.toString()) { %>
-        <a href="/listings/<%= listing._id %>/edit" class="btn btn-edit">Edit Listing</a>
-        <form
-          class="delete-form"
-          action="/listings/<%= listing._id %>?_method=DELETE"
-          method="POST"
-        >
-          <button type="submit" class="btn btn-delete">Delete Listing</button>
-        </form>
-      <% } %>
-    </div>
-
-    <!-- Review Form Section -->
-    <div class="review-form-section">
-      <h2 class="section-title">Leave a Review</h2>
-      <form action="/listings/<%= listing._id %>/reviews" method="POST">
-        <div class="form-group">
-          <label class="form-label">Your Rating</label>
-          <div class="star-rating">
-            <% for (let i = 1; i <= 5; i++) { %>
-            <span class="star" data-value="<%= i %>">★</span>
-            <% } %>
-            <input type="hidden" name="review[rating]" id="rating-value" />
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="comment" class="form-label">Your Experience</label>
-          <textarea
-            name="review[comment]"
-            id="comment"
-            class="form-control"
-            placeholder="Share your experience with this property..."
-            required
-          ></textarea>
-        </div>
-
-        <button type="submit" class="btn btn-submit">Submit Review</button>
-      </form>
-    </div>
-
-    <!-- Booking Form (move this above reviews section) -->
-    <div class="booking-box">
-      <form action="/listings/<%= listing._id %>/book" method="POST" id="bookingForm">
-        <h4>Book this listing</h4>
-        <label for="startDate">Check-in</label>
-        <input
-          type="date"
-          id="startDate"
-          name="startDate"
-          class="form-control"
-          required
-          min="<%= new Date().toISOString().split('T')[0] %>"
+  <!-- Card: Image Gallery -->
+  <div class="listing-card-section" style="padding: 0">
+    <div class="image-section" style="margin-bottom: 0">
+      <% if (listing.images && listing.images.length > 0) { %>
+      <img
+        src="<%= listing.images[0].url %>"
+        alt="Listing Image"
+        class="listing-image main-image"
+        data-index="0"
+      />
+      <div class="image-gallery">
+        <% listing.images.forEach((image, index) => { %>
+        <img
+          src="<%= image.url %>"
+          alt="Thumbnail <%= index + 1 %>"
+          class="thumbnail <%= index === 0 ? 'active' : '' %>"
+          data-index="<%= index %>"
         />
-        <label for="endDate">Check-out</label>
-        <input
-          type="date"
-          id="endDate"
-          name="endDate"
-          class="form-control"
-          required
-          min="<%= new Date().toISOString().split('T')[0] %>"
-        />
-        <label for="guests">Guests</label>
-        <select name="guests" id="guests" class="form-control" required style="margin-bottom:1.5rem;">
-          <% 
-            const maxGuests = (listing.maxGuests && Number.isFinite(listing.maxGuests) && listing.maxGuests > 0) ? listing.maxGuests : 10;
-            for(let i = 1; i <= maxGuests; i++) { 
-          %>
-            <option value="<%= i %>"><%= i %> Guest<%= (i > 1 ? 's' : '') %></option>
-          <% } %>
-        </select>
-        <button type="submit" class="filter-chip">Book Now</button>
-      </form>
-      <% if (locals.error) { %>
-        <div style="color:#ff385c;margin-top:1rem;"><%= error %></div>
-      <% } %>
-    </div>
-
-    <!-- Reviews Display Section -->
-    <div class="reviews-section">
-      <h2 class="section-title">Customer Reviews</h2>
-
-      <% if (listing.reviews && listing.reviews.length > 0) { %>
-      <div class="reviews-container">
-        <% listing.reviews.forEach(function(review) { %>
-        <div class="review-card">
-          <div class="review-card-left">
-            <div class="review-author">
-              Posted by: <%= review.author ? review.author.username : "Unknown" %>
-            </div>
-            <div class="review-date">
-              <%= new Date(review.createdAt).toLocaleDateString('en-US', { year:
-              'numeric', month: 'long', day: 'numeric' }) %>
-            </div>
-            <div class="review-rating">
-              <% for (let i = 1; i <= 5; i++) { %> <% if (i <= review.rating) {
-              %>
-              <span class="star-filled">★</span>
-              <% } else { %>
-              <span class="star-empty">★</span>
-              <% } %> <% } %>
-              <span class="rating-value"><%= review.rating %>/5</span>
-            </div>
-          </div>
-          <div class="review-card-right">
-            <div class="review-comment"><%= review.comment %></div>
-          </div>
-          <div>
-            <form
-              action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE"
-              method="POST"
-            >
-              <button type="submit" class="btn btn-delete">Delete</button>
-            </form>
-          </div>
-        </div>
         <% }) %>
       </div>
-      <% } else { %>
-      <div class="no-reviews">
-        <p class="no-reviews-text">
-          No reviews yet. Be the first to share your experience!
-        </p>
-      </div>
+      <% } else if (listing.image) { %>
+      <img
+        src="<%= listing.image.url || listing.image %>"
+        alt="Listing Image"
+        class="listing-image"
+      />
       <% } %>
-    </div>
-
-    <!-- Card: Location Map -->
-    <div class="listing-card-section">
-      <h3 style="font-size:1.2rem; font-weight:600; margin-bottom:1rem;">
-        <i class="fa fa-map-marked-alt"></i> Location Map
-      </h3>
-      <div id="listing-map" style="width:100%;height:320px;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.08);"></div>
     </div>
   </div>
 
-  <script>
-    // Star rating functionality
-    const stars = document.querySelectorAll(".star-rating .star");
-    const ratingInput = document.getElementById("rating-value");
-    let selectedRating = 0;
+  <!-- Card: Info -->
+  <div class="listing-card-section">
+    <ul class="listing-info-list">
+      <li class="listing-info-item">
+        <i class="fa fa-align-left"></i>
+        <strong>Description:</strong> <%= listing.description %>
+      </li>
+      <li class="listing-info-item">
+        <i class="fa fa-home"></i>
+        <strong>Property Type:</strong> <%= listing.propertyType || 'Not specified' %>
+      </li>
+      <li class="listing-info-item">
+        <i class="fa fa-user-friends"></i>
+        <strong>Max Guests:</strong> <%= listing.maxGuests || 'Not specified' %>
+      </li>
+      <li class="listing-info-item">
+        <i class="fa fa-bed"></i>
+        <strong>Bedrooms:</strong> <%= listing.bedrooms || 'Not specified' %>
+      </li>
+      <li class="listing-info-item">
+        <i class="fa fa-bath"></i>
+        <strong>Bathrooms:</strong> <%= listing.bathrooms || 'Not specified' %>
+      </li>
+      <li class="listing-info-item">
+        <i class="fa fa-user"></i>
+        <strong>Owner:</strong>
+        <% if (listing.owner && listing.owner.username) { %> 
+          <%= listing.owner.username %> (<%= listing.owner.email %>) 
+        <% } else { %>
+          Unknown 
+        <% } %>
+      </li>
+    </ul>
+  </div>
 
-    stars.forEach((star, index) => {
-      star.addEventListener("mouseenter", () => {
-        highlightStars(index + 1);
-      });
+  <div class="action-buttons">
+    <% if (currentUser && listing.owner && currentUser._id.toString() === listing.owner._id.toString()) { %>
+    <a href="/listings/<%= listing._id %>/edit" class="btn btn-edit">
+      <i class="fas fa-edit"></i> Edit Listing
+    </a>
+    <form
+      class="delete-form"
+      action="/listings/<%= listing._id %>?_method=DELETE"
+      method="POST"
+      onsubmit="return confirm('Are you sure you want to delete this listing?');"
+    >
+      <button type="submit" class="btn btn-delete">
+        <i class="fas fa-trash"></i> Delete Listing
+      </button>
+    </form>
+    <% } %>
+    <a href="/listings" class="btn" style="background: #6c757d; color: white">
+      <i class="fas fa-arrow-left"></i> Back to Listings
+    </a>
+  </div>
 
-      star.addEventListener("mouseleave", () => {
-        highlightStars(selectedRating);
-      });
+  <!-- Booking Form -->
+  <div class="booking-box">
+    <form
+      action="/listings/<%= listing._id %>/book"
+      method="POST"
+      id="bookingForm"
+    >
+      <h4>Book this listing</h4>
+      <label for="startDate">Check-in</label>
+      <input
+        type="date"
+        id="startDate"
+        name="startDate"
+        class="form-control"
+        required
+        min="<%= new Date().toISOString().split('T')[0] %>"
+      />
+      <label for="endDate">Check-out</label>
+      <input
+        type="date"
+        id="endDate"
+        name="endDate"
+        class="form-control"
+        required
+        min="<%= new Date().toISOString().split('T')[0] %>"
+      />
+      <div id="dateError" class="date-error">
+        Check-out date must be after check-in date
+      </div>
+      <label for="guests">Guests</label>
+      <select
+        name="guests"
+        id="guests"
+        class="form-control"
+        required
+        style="margin-bottom: 1.5rem"
+      >
+        <% const maxGuests = (listing.maxGuests && Number.isFinite(listing.maxGuests) && listing.maxGuests > 0) ? listing.maxGuests : 10; for(let i = 1; i <= maxGuests; i++) { %>
+        <option value="<%= i %>">
+          <%= i %> Guest<%= (i > 1 ? 's' : '') %>
+        </option>
+        <% } %>
+      </select>
+      <button type="submit" class="filter-chip">
+        <i class="fas fa-calendar-check"></i> Book Now
+      </button>
+    </form>
+    <% if (locals.error) { %>
+    <div style="color: #ff385c; margin-top: 1rem"><%= error %></div>
+    <% } %>
+  </div>
 
-      star.addEventListener("click", () => {
-        selectedRating = index + 1;
-        ratingInput.value = selectedRating;
-        highlightStars(selectedRating);
-      });
+  <!-- Review Form Section -->
+  <% if (currentUser) { %>
+  <div class="review-form-section">
+    <h2 class="section-title">Leave a Review</h2>
+    <form action="/listings/<%= listing._id %>/reviews" method="POST">
+      <div class="form-group">
+        <label class="form-label">Your Rating</label>
+        <div class="star-rating">
+          <% for (let i = 1; i <= 5; i++) { %>
+          <span class="star" data-value="<%= i %>">★</span>
+          <% } %>
+          <input
+            type="hidden"
+            name="review[rating]"
+            id="rating-value"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="comment" class="form-label">Your Experience</label>
+        <textarea
+          name="review[comment]"
+          id="comment"
+          class="form-control"
+          placeholder="Share your experience with this property..."
+          required
+        ></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-submit">
+        <i class="fas fa-paper-plane"></i> Submit Review
+      </button>
+    </form>
+  </div>
+  <% } else { %>
+  <div class="review-form-section" style="text-align: center">
+    <h2 class="section-title">Want to leave a review?</h2>
+    <p>
+      Please <a href="/login">login</a> to share your experience with this
+      property.
+    </p>
+  </div>
+  <% } %>
+
+  <!-- Reviews Display Section -->
+  <div class="reviews-section">
+    <h2 class="section-title">Customer Reviews</h2>
+
+    <% if (listing.reviews && listing.reviews.length > 0) { %>
+    <div class="reviews-container">
+      <% listing.reviews.forEach(function(review) { %>
+      <div class="review-card">
+        <div class="review-card-left">
+          <div class="review-author">
+            <%= review.author ? review.author.username : "Unknown" %>
+          </div>
+          <div class="review-date">
+            <%= new Date(review.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %>
+          </div>
+          <div class="review-rating">
+            <% for (let i = 1; i <= 5; i++) { %>
+            <span
+              class="<%= i <= review.rating ? 'star-filled' : 'star-empty' %>"
+              >★</span
+            >
+            <% } %>
+            <span class="rating-value"><%= review.rating %>/5</span>
+          </div>
+        </div>
+        <div class="review-card-right">
+          <div class="review-comment"><%= review.comment %></div>
+          <% if (currentUser && (currentUser._id.toString() === review.author._id.toString() || (listing.owner && currentUser._id.toString() === listing.owner._id.toString()))) { %>
+          <div class="review-actions">
+            <% if (currentUser._id.toString() === review.author._id.toString()) { %>
+            <a
+              href="/listings/<%= listing._id %>/reviews/<%= review._id %>/edit"
+              class="btn-review-edit"
+            >
+              <i class="fas fa-edit"></i> Edit
+            </a>
+            <% } %>
+            <form
+              action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE"
+              method="POST"
+              onsubmit="return confirm('Are you sure you want to delete this review?');"
+            >
+              <button type="submit" class="btn-review-delete">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </form>
+          </div>
+          <% } %>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+    <% } else { %>
+    <div class="no-reviews">
+      <p class="no-reviews-text">
+        No reviews yet. Be the first to share your experience!
+      </p>
+    </div>
+    <% } %>
+  </div>
+
+  <!-- Card: Location Map -->
+  <div class="listing-card-section">
+    <h3 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem">
+      <i class="fa fa-map-marked-alt"></i> Location Map
+    </h3>
+    <div
+      id="listing-map"
+      style="
+        width: 100%;
+        height: 400px;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+      "
+    ></div>
+  </div>
+</div>
+
+<!-- Image Modal -->
+<div class="modal-overlay" id="imageModal">
+  <img src="" alt="Enlarged view" class="modal-image" id="modalImage" />
+</div>
+
+<script>
+  // Star rating functionality
+  const stars = document.querySelectorAll(".star-rating .star");
+  const ratingInput = document.getElementById("rating-value");
+  let selectedRating = 0;
+
+  stars.forEach((star, index) => {
+    star.addEventListener("mouseenter", () => {
+      highlightStars(index + 1);
     });
 
-    function highlightStars(count) {
-      stars.forEach((star, index) => {
-        if (index < count) {
-          star.classList.add("hovered");
-        } else {
-          star.classList.remove("hovered");
-        }
+    star.addEventListener("mouseleave", () => {
+      highlightStars(selectedRating);
+    });
+
+    star.addEventListener("click", () => {
+      selectedRating = index + 1;
+      ratingInput.value = selectedRating;
+      highlightStars(selectedRating);
+    });
+  });
+
+  function highlightStars(count) {
+    stars.forEach((star, index) => {
+      if (index < count) {
+        star.classList.add("hovered");
+      } else {
+        star.classList.remove("hovered");
+      }
+    });
+  }
+
+  // Image gallery functionality
+  const mainImage = document.querySelector(".main-image");
+  const thumbnails = document.querySelectorAll(".thumbnail");
+  const modal = document.getElementById("imageModal");
+  const modalImg = document.getElementById("modalImage");
+
+  if (mainImage) {
+    // Click to zoom
+    mainImage.addEventListener("click", function () {
+      if (this.classList.contains("zoomed")) {
+        this.classList.remove("zoomed");
+      } else {
+        this.classList.add("zoomed");
+      }
+    });
+
+    // Thumbnail click handler
+    thumbnails.forEach((thumb) => {
+      thumb.addEventListener("click", function () {
+        const index = this.getAttribute("data-index");
+        const newSrc = this.getAttribute("src");
+
+        // Update main image
+        mainImage.setAttribute("src", newSrc);
+        mainImage.setAttribute("data-index", index);
+
+        // Update active thumbnail
+        thumbnails.forEach((t) => t.classList.remove("active"));
+        this.classList.add("active");
       });
+    });
+  }
+
+  // Modal functionality
+  if (modal) {
+    modal.addEventListener("click", function () {
+      this.style.display = "none";
+    });
+  }
+
+  // Booking form validation
+  const bookingForm = document.getElementById("bookingForm");
+  const startDateInput = document.getElementById("startDate");
+  const endDateInput = document.getElementById("endDate");
+  const dateError = document.getElementById("dateError");
+
+  if (bookingForm) {
+    // Set minimum end date based on start date
+    startDateInput.addEventListener("change", function () {
+      endDateInput.min = this.value;
+      validateDates();
+    });
+
+    endDateInput.addEventListener("change", validateDates);
+
+    function validateDates() {
+      if (startDateInput.value && endDateInput.value) {
+        const startDate = new Date(startDateInput.value);
+        const endDate = new Date(endDateInput.value);
+
+        if (endDate <= startDate) {
+          dateError.style.display = "block";
+          return false;
+        } else {
+          dateError.style.display = "none";
+          return true;
+        }
+      }
+      return true;
     }
 
-    // Form validation
-    const reviewForm = document.querySelector("form[action*='/reviews']");
-    reviewForm.addEventListener("submit", function (e) {
-      const rating = parseInt(ratingInput.value);
-      const comment = document.getElementById("comment").value.trim();
-
-      if (!rating) {
+    bookingForm.addEventListener("submit", function (e) {
+      if (!validateDates()) {
         e.preventDefault();
-        alert("Please select a rating by clicking on the stars");
-        return;
-      }
-
-      if (!comment) {
-        e.preventDefault();
-        alert("Please write your review before submitting");
-        return;
       }
     });
-  </script>
-</body>
+  }
+
+  // Initialize map
+  const mapElement = document.getElementById("listing-map");
+  if (mapElement) {
+    // Default coordinates (can be replaced with actual listing coordinates)
+    const defaultCoords = [20.5937, 78.9629]; // India coordinates
+    const map = L.map("listing-map").setView(defaultCoords, 5);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
+
+    // Try to geocode the location if available
+    const locationString = `<%= listing.location %>, <%= listing.country %>`;
+    if (locationString && locationString !== ", ") {
+      fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          locationString
+        )}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          if (data && data.length > 0) {
+            const lat = parseFloat(data[0].lat);
+            const lon = parseFloat(data[0].lon);
+            map.setView([lat, lon], 13);
+            L.marker([lat, lon])
+              .addTo(map)
+              .bindPopup(
+                `<b><%= listing.title %></b><br><%= listing.location %>`
+              )
+              .openPopup();
+          }
+        })
+        .catch((error) => {
+          console.error("Geocoding error:", error);
+          // Fallback marker
+          L.marker(defaultCoords)
+            .addTo(map)
+            .bindPopup(
+              `<b><%= listing.title %></b><br>Location not precisely mapped`
+            );
+        });
+    } else {
+      // Fallback marker if no location
+      L.marker(defaultCoords)
+        .addTo(map)
+        .bindPopup(`<b><%= listing.title %></b>`);
+    }
+  }
+</script>
