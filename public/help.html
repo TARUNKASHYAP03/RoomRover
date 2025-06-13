@@ -35,77 +35,243 @@
   <!-- Main Content -->
   <main class="help-container">
     <section class="hero-section" aria-labelledby="help-heading">
-      <h1 id="help-heading">Need Help?</h1>
-      <p class="intro">
-        Welcome to the RoomRover Help Center. Find answers to common questions or reach out to our support team. We’re here to ensure a seamless booking and stay experience!
-      </p>
-    </section>
-
-    <section class="faq-section" aria-labelledby="faq-heading">
-      <h2 id="faq-heading">Frequently Asked Questions</h2>
-      <ul class="faq-list">
-        <li class="faq-item">
-          <button class="faq-q" aria-expanded="false" aria-controls="faq1">How do I book a room?</button>
-          <div class="faq-a" id="faq1">Browse listings, select your preferred room, choose your dates, and follow the on-screen instructions to complete your booking.</div>
-        </li>
-        <li class="faq-item">
-          <button class="faq-q" aria-expanded="false" aria-controls="faq2">Can I cancel or modify my booking?</button>
-          <div class="faq-a" id="faq2">Yes, manage your bookings from your account dashboard. Review the cancellation policy for your selected room before making changes.</div>
-        </li>
-        <li class="faq-item">
-          <button class="faq-q" aria-expanded="false" aria-controls="faq3">What payment methods are accepted?</button>
-          <div class="faq-a" id="faq3">We accept major credit/debit cards, UPI, and select digital wallets for your convenience.</div>
-        </li>
-        <li class="faq-item">
-          <button class="faq-q" aria-expanded="false" aria-controls="faq4">Is customer support available 24/7?</button>
-          <div class="faq-a" id="faq4">Yes, our support team is available 24/7 to assist with any questions or issues.</div>
-        </li>
-      </ul>
-    </section>
-
-    <section class="contact-section" aria-labelledby="contact-heading">
-      <h2 id="contact-heading">Contact Us</h2>
-      <div class="contact-info">
-        <p>Email: <a href="mailto:support@roomrover.com">support@roomrover.com</a></p>
-        <p>Phone: <a href="tel:+911234567890">+91-91051-53165</a></p>
+      <div class="hero-content">
+        <h1 id="help-heading">How can we help you today?</h1>
+        <p class="intro">
+          Find quick answers in our help center or contact our support team for personalized assistance.
+        </p>
+        <div class="search-box">
+          <input type="text" placeholder="Search help articles..." aria-label="Search help articles">
+          <button type="submit"><i class="bi bi-search"></i></button>
+        </div>
       </div>
-      <form class="contact-form" id="helpContactForm" autocomplete="off" aria-describedby="form-success">
-        <div class="form-group">
-          <label for="name">Your Name</label>
-          <input type="text" id="name" name="name" placeholder="Your Name" required>
+    </section>
+
+    <section class="help-options">
+      <div class="option-card">
+        <i class="bi bi-question-circle"></i>
+        <h3>FAQs</h3>
+        <p>Browse our frequently asked questions for instant answers.</p>
+        <a href="#faq-section" class="btn-outline">View FAQs</a>
+      </div>
+      <div class="option-card">
+        <i class="bi bi-telephone"></i>
+        <h3>Contact Support</h3>
+        <p>Reach out to our 24/7 customer support team.</p>
+        <a href="#contact-section" class="btn-outline">Contact Us</a>
+      </div>
+      <div class="option-card">
+        <i class="bi bi-book"></i>
+        <h3>Guides</h3>
+        <p>Learn how to get the most out of RoomRover.</p>
+        <a href="#" class="btn-outline">View Guides</a>
+      </div>
+    </section>
+
+    <section class="faq-section" id="faq-section" aria-labelledby="faq-heading">
+      <div class="section-header">
+        <h2 id="faq-heading">Frequently Asked Questions</h2>
+        <p>Quick answers to common questions</p>
+      </div>
+      <div class="faq-grid">
+        <div class="faq-category">
+          <h3>Booking</h3>
+          <ul class="faq-list">
+            <li class="faq-item">
+              <button class="faq-q" aria-expanded="false" aria-controls="faq1">
+                How do I book a room?
+                <i class="bi bi-chevron-down"></i>
+              </button>
+              <div class="faq-a" id="faq1">
+                <p>Browse our listings, select your preferred room, choose your dates, and follow the on-screen instructions to complete your booking. You'll receive a confirmation email with all the details.</p>
+              </div>
+            </li>
+            <li class="faq-item">
+              <button class="faq-q" aria-expanded="false" aria-controls="faq2">
+                Can I modify my booking after confirmation?
+                <i class="bi bi-chevron-down"></i>
+              </button>
+              <div class="faq-a" id="faq2">
+                <p>Yes, you can modify your booking through your account dashboard. Changes are subject to availability and may incur additional charges depending on the property's policy.</p>
+              </div>
+            </li>
+          </ul>
         </div>
-        <div class="form-group">
-          <label for="email">Your Email</label>
-          <input type="email" id="email" name="email" placeholder="Your Email" required>
+        
+        <div class="faq-category">
+          <h3>Cancellations</h3>
+          <ul class="faq-list">
+            <li class="faq-item">
+              <button class="faq-q" aria-expanded="false" aria-controls="faq3">
+                What is your cancellation policy?
+                <i class="bi bi-chevron-down"></i>
+              </button>
+              <div class="faq-a" id="faq3">
+                <p>Cancellation policies vary by property. You can find the specific policy for your booking in the confirmation email or your account dashboard. Generally, cancellations made 48+ hours before check-in receive full refunds.</p>
+              </div>
+            </li>
+            <li class="faq-item">
+              <button class="faq-q" aria-expanded="false" aria-controls="faq4">
+                How long do refunds take to process?
+                <i class="bi bi-chevron-down"></i>
+              </button>
+              <div class="faq-a" id="faq4">
+                <p>Refunds typically process within 5-7 business days, depending on your bank or payment method. You'll receive an email confirmation once processed.</p>
+              </div>
+            </li>
+          </ul>
         </div>
-        <div class="form-group">
-          <label for="message">Your Message</label>
-          <textarea id="message" name="message" placeholder="Your Message" rows="4" required></textarea>
+        
+        <div class="faq-category">
+          <h3>Payments</h3>
+          <ul class="faq-list">
+            <li class="faq-item">
+              <button class="faq-q" aria-expanded="false" aria-controls="faq5">
+                What payment methods do you accept?
+                <i class="bi bi-chevron-down"></i>
+              </button>
+              <div class="faq-a" id="faq5">
+                <p>We accept all major credit/debit cards (Visa, Mastercard, American Express), UPI payments, and popular digital wallets like Paytm and PhonePe.</p>
+              </div>
+            </li>
+            <li class="faq-item">
+              <button class="faq-q" aria-expanded="false" aria-controls="faq6">
+                Is my payment information secure?
+                <i class="bi bi-chevron-down"></i>
+              </button>
+              <div class="faq-a" id="faq6">
+                <p>Absolutely. We use industry-standard encryption and never store your full payment details on our servers. All transactions are processed through PCI-compliant payment gateways.</p>
+              </div>
+            </li>
+          </ul>
         </div>
-        <button type="submit">Send Message</button>
-        <p class="form-success" id="form-success" role="alert" aria-live="polite">Thank you! Your message has been sent.</p>
-      </form>
+      </div>
+    </section>
+
+    <section class="contact-section" id="contact-section" aria-labelledby="contact-heading">
+      <div class="section-header">
+        <h2 id="contact-heading">Contact Our Support Team</h2>
+        <p>We're here to help 24/7</p>
+      </div>
+      <div class="contact-container">
+        <div class="contact-info">
+          <div class="contact-method">
+            <i class="bi bi-envelope"></i>
+            <h3>Email Us</h3>
+            <p>For general inquiries</p>
+            <a href="mailto:support@roomrover.com">support@roomrover.com</a>
+            <p>Response time: Within 2 hours</p>
+          </div>
+          <div class="contact-method">
+            <i class="bi bi-telephone"></i>
+            <h3>Call Us</h3>
+            <p>For urgent assistance</p>
+            <a href="tel:+919105153165">+91 91051 53165</a>
+            <p>Available 24/7</p>
+          </div>
+          <div class="contact-method">
+            <i class="bi bi-chat"></i>
+            <h3>Live Chat</h3>
+            <p>For instant help</p>
+            <button class="btn-outline">Start Chat</button>
+            <p>Available 8am-10pm IST</p>
+          </div>
+        </div>
+        
+        <form class="contact-form" id="helpContactForm" autocomplete="off" aria-describedby="form-success">
+          <h3>Send us a message</h3>
+          <div class="form-group">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" name="name" placeholder="Enter your name" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+          </div>
+          <div class="form-group">
+            <label for="subject">Subject</label>
+            <select id="subject" name="subject" required>
+              <option value="" disabled selected>Select a topic</option>
+              <option value="booking">Booking Assistance</option>
+              <option value="cancellation">Cancellation Request</option>
+              <option value="payment">Payment Issue</option>
+              <option value="other">Other Inquiry</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="message">Your Message</label>
+            <textarea id="message" name="message" placeholder="How can we help you?" rows="5" required></textarea>
+          </div>
+          <button type="submit" class="btn-primary">Send Message</button>
+          <div class="form-success" id="form-success" role="alert" aria-live="polite">
+            <i class="bi bi-check-circle"></i>
+            <span>Thank you! Your message has been sent. We'll respond within 2 hours.</span>
+          </div>
+        </form>
+      </div>
     </section>
   </main>
 
   <!-- Footer -->
   <footer class="footer">
-    <nav class="footer-links" aria-label="Footer navigation">
-      <a href="/listings">Home</a>
-      <a href="/listings">Rooms</a>
-      <a href="/contact.html">Contact</a>
-      <a href="help.html" aria-current="page">Help</a>
-    </nav>
-    <div class="footer-contact">
-      <p>Email: <a href="mailto:support@roomrover.com">support@roomrover.com</a></p>
-    </div>
-    <div class="footer-social" aria-label="Social media links">
-      <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-      <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-      <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
-    </div>
-    <div class="footer-copyright">
-      <p>© 2025 RoomRover. All rights reserved.</p>
+    <div class="footer-container">
+      <div class="footer-main">
+        <div class="footer-about">
+          <a class="footer-logo" href="/listings" aria-label="RoomRover Home">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="#007bff" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+            </svg>
+            <span>RoomRover</span>
+          </a>
+          <p>Finding you the perfect stay since 2020. Our mission is to make travel accommodation seamless and enjoyable.</p>
+          <div class="footer-social" aria-label="Social media links">
+            <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+            <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+            <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+            <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+        
+        <div class="footer-links">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="/listings">Browse Rooms</a></li>
+            <li><a href="#">Become a Host</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">About Us</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-links">
+          <h3>Support</h3>
+          <ul>
+            <li><a href="help.html">Help Center</a></li>
+            <li><a href="#">Safety Information</a></li>
+            <li><a href="#">Cancellation Options</a></li>
+            <li><a href="#">Report an Issue</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-newsletter">
+          <h3>Stay Updated</h3>
+          <p>Subscribe to our newsletter for deals and updates</p>
+          <form class="newsletter-form">
+            <input type="email" placeholder="Your email address" aria-label="Subscribe to newsletter">
+            <button type="submit" aria-label="Subscribe">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <div class="footer-legal">
+          <a href="#">Terms of Service</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Cookie Policy</a>
+        </div>
+        <div class="footer-copyright">
+          <p>&copy; 2025 RoomRover Technologies Pvt. Ltd. All rights reserved.</p>
+        </div>
+      </div>
     </div>
   </footer>
 
@@ -124,7 +290,17 @@
         const isExpanded = button.getAttribute('aria-expanded') === 'true';
         button.setAttribute('aria-expanded', !isExpanded);
         const answer = button.nextElementSibling;
-        answer.style.display = isExpanded ? 'none' : 'block';
+        const icon = button.querySelector('i');
+        
+        if (isExpanded) {
+          answer.style.maxHeight = null;
+          icon.classList.remove('bi-chevron-up');
+          icon.classList.add('bi-chevron-down');
+        } else {
+          answer.style.maxHeight = answer.scrollHeight + 'px';
+          icon.classList.remove('bi-chevron-down');
+          icon.classList.add('bi-chevron-up');
+        }
       });
     });
 
@@ -132,11 +308,18 @@
     document.getElementById('helpContactForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const successMsg = document.getElementById('form-success');
-      successMsg.style.display = 'block';
+      successMsg.style.display = 'flex';
       this.reset();
       setTimeout(() => {
         successMsg.style.display = 'none';
-      }, 3500);
+      }, 5000);
+    });
+
+    // Initialize FAQ answers to have maxHeight for animation
+    document.querySelectorAll('.faq-a').forEach(answer => {
+      answer.style.maxHeight = '0';
+      answer.style.overflow = 'hidden';
+      answer.style.transition = 'max-height 0.3s ease-out';
     });
   </script>
 </body>

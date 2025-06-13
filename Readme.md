@@ -39,7 +39,7 @@ Follow these steps to set up RoomRover locally:
 ### 1. Clone the Repository
 
 ```sh
-git clone https://github.com/yourusername/roomrover.git
+git clone https://github.com/TARUNKASHYAP03/roomrover.git
 cd RoomRover
 ```
 
@@ -210,7 +210,7 @@ This project is licensed under the [MIT License](LICENSE).
 
 - **Author:** [Your Name]
 - **Email:** support@roomrover.com
-- **GitHub:** [https://github.com/yourusername/roomrover](https://github.com/yourusername/roomrover)
+- **GitHub:** [https://github.com/TARUNKASHYAP03/roomrover](https://github.com/TARUNKASHYAP03/roomrover)
 
 ---
 

@@ -35,6 +35,56 @@
     </div>
   </section>
 
+  <footer>
+    <div class="footer-container">
+      <div class="footer-col">
+        <div class="footer-logo">RoomRover</div>
+        <p class="footer-about">Discover your perfect stay with RoomRover. We connect travelers with unique accommodations worldwide.</p>
+        <div class="social-links">
+          <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      
+      <div class="footer-col">
+        <h3 class="footer-title">Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="/rooms">Rooms</a></li>
+          <li><a href="/about">About Us</a></li>
+          <li><a href="/contact">Contact</a></li>
+          <li><a href="/blog">Blog</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-col">
+        <h3 class="footer-title">Support</h3>
+        <ul class="footer-links">
+          <li><a href="/help">Help Center</a></li>
+          <li><a href="/faq">FAQs</a></li>
+          <li><a href="/privacy">Privacy Policy</a></li>
+          <li><a href="/terms">Terms of Service</a></li>
+          <li><a href="/cancellation">Cancellation Policy</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-col">
+        <h3 class="footer-title">Contact Info</h3>
+        <ul class="footer-contact">
+          <li><i class="fas fa-map-marker-alt"></i> 123 Hotel Street, Mumbai, India</li>
+          <li><i class="fas fa-phone"></i> <a href="tel:+911234567890">+91-12345-67890</a></li>
+          <li><i class="fas fa-envelope"></i> <a href="mailto:info@roomrover.com">info@roomrover.com</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2023 RoomRover. All rights reserved.</p>
+    </div>
+  </footer>
+
   <style>
     :root {
       --primary: #4fd1c5;
@@ -216,12 +266,148 @@
       opacity: 1;
     }
 
+    footer {
+      background-color: var(--text-dark);
+      color: white;
+      padding: 60px 0 0;
+      font-family: 'Montserrat', 'Noto Sans', Arial, sans-serif;
+    }
+
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 40px;
+    }
+
+    .footer-col {
+      margin-bottom: 30px;
+    }
+
+    .footer-logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: var(--primary);
+    }
+
+    .footer-about {
+      color: #e2e8f0;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+    }
+
+    .footer-title {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      color: var(--primary);
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    .footer-title::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 50px;
+      height: 2px;
+      background-color: var(--primary);
+    }
+
+    .footer-links {
+      list-style: none;
+      padding: 0;
+    }
+
+    .footer-links li {
+      margin-bottom: 12px;
+    }
+
+    .footer-links a {
+      color: #e2e8f0;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+      display: inline-block;
+    }
+
+    .footer-links a:hover {
+      color: var(--primary);
+      transform: translateX(5px);
+    }
+
+    .footer-contact {
+      list-style: none;
+      padding: 0;
+    }
+
+    .footer-contact li {
+      margin-bottom: 15px;
+      color: #e2e8f0;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: flex-start;
+      line-height: 1.5;
+    }
+
+    .footer-contact i {
+      margin-right: 10px;
+      color: var(--primary);
+      margin-top: 3px;
+    }
+
+    .footer-contact a {
+      color: #e2e8f0;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-contact a:hover {
+      color: var(--primary);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .social-links a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+      background-color: var(--primary);
+      transform: translateY(-3px);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding: 25px 0;
+      margin-top: 40px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: #a0aec0;
+      font-size: 0.9rem;
+    }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
       .help-section {
         padding: 24px 16px;
       }
@@ -231,6 +417,25 @@
       .faq h2,
       .contact-us h2 {
         font-size: 1.3rem;
+      }
+      
+      .footer-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .footer-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .footer-col {
+        margin-bottom: 20px;
+      }
+      
+      .footer-title {
+        margin-bottom: 15px;
       }
     }
   </style>
