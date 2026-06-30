@@ -1,483 +1,598 @@
 <%- layout("layouts/boilerplate") %>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
 <style>
-:root {
-  --primary-color: #FF385C;
-  --text-dark: #222222;
-  --text-light: #717171;
-  --bg-light: #f7f7f7;
-  --border-color: #dddddd;
-  --shadow: 0 2px 8px rgba(0,0,0,0.08);
-  --hover-shadow: 0 4px 12px rgba(0,0,0,0.15);
+/* ══════════════════════════════════════
+   LISTINGS PAGE — FUTURISTIC REDESIGN
+══════════════════════════════════════ */
+
+/* ── Page wrapper ── */
+.rr-explore {
+  min-height: calc(100vh - 66px);
+  background: var(--off-white);
+}
+[data-theme="dark"] .rr-explore { background: #0a0e1a; }
+
+/* ── Top search + filter bar ── */
+.rr-topbar {
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  padding: 14px 24px;
+  position: sticky; top: 66px; z-index: 200;
+  backdrop-filter: blur(12px);
+}
+[data-theme="dark"] .rr-topbar {
+  background: rgba(10,14,26,0.92);
+  border-bottom-color: rgba(255,255,255,0.06);
+  backdrop-filter: blur(20px);
+}
+.rr-topbar-inner {
+  max-width: 1320px; margin: 0 auto;
+  display: flex; align-items: center; gap: 12px;
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  margin: 0;
-  padding: 0;
-  background: white;
+/* Search field */
+.rr-search-field {
+  flex: 1; max-width: 520px;
+  display: flex; align-items: center; gap: 0;
+  background: var(--gray-50);
+  border: 1.5px solid var(--gray-200);
+  border-radius: 50px; overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+[data-theme="dark"] .rr-search-field {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.08);
+}
+.rr-search-field:focus-within {
+  border-color: #4f6ef2;
+  box-shadow: 0 0 0 3px rgba(79,110,242,0.12);
+}
+.rr-search-field input {
+  flex: 1; border: none; background: transparent;
+  padding: 10px 18px; font-size: 0.875rem;
+  color: var(--gray-900); outline: none; font-family: inherit;
+}
+[data-theme="dark"] .rr-search-field input { color: #e2e8f0; }
+.rr-search-field input::placeholder { color: var(--gray-400); }
+[data-theme="dark"] .rr-search-field input::placeholder { color: #475569; }
+.rr-search-go {
+  width: 42px; height: 42px; flex-shrink: 0;
+  border: none; background: #4f6ef2;
+  color: #fff; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; transition: background 0.2s;
+  border-radius: 0 50px 50px 0;
+}
+.rr-search-go:hover { background: #3b5de8; }
+
+/* Filter pill button */
+.rr-filter-pill {
+  display: flex; align-items: center; gap: 7px;
+  padding: 9px 18px; border-radius: 50px;
+  border: 1.5px solid var(--gray-200);
+  background: var(--white);
+  font-size: 0.845rem; font-weight: 600; color: var(--gray-700);
+  cursor: pointer; font-family: inherit; transition: all 0.2s;
+  white-space: nowrap; position: relative;
+}
+[data-theme="dark"] .rr-filter-pill {
+  background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.09); color: #94a3b8;
+}
+.rr-filter-pill:hover { border-color: #4f6ef2; color: #4f6ef2; }
+[data-theme="dark"] .rr-filter-pill:hover { border-color: #4f6ef2; color: #93b4ff; }
+.rr-filter-pill.active { background: #4f6ef2; border-color: #4f6ef2; color: #fff; }
+[data-theme="dark"] .rr-filter-pill.active { background: #4f6ef2; }
+.rr-filter-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #f59e0b; position: absolute; top: 5px; right: 5px;
 }
 
-.container {
-  max-width: 1800px;
-  margin: 0 auto;
-  padding: 0;
+/* Category pill chips */
+.rr-cat-chips {
+  display: flex; align-items: center; gap: 8px;
+  margin-left: auto; overflow-x: auto; scrollbar-width: none;
+  flex-shrink: 0; max-width: 580px;
+}
+.rr-cat-chips::-webkit-scrollbar { display: none; }
+.rr-cat-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 7px 16px; border-radius: 50px;
+  border: 1.5px solid var(--gray-200);
+  background: var(--white);
+  font-size: 0.8rem; font-weight: 600; color: var(--gray-600);
+  cursor: pointer; white-space: nowrap; transition: all 0.2s;
+  font-family: inherit; flex-shrink: 0;
+}
+[data-theme="dark"] .rr-cat-chip {
+  background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); color: #64748b;
+}
+.rr-cat-chip:hover { border-color: #4f6ef2; color: #4f6ef2; background: rgba(79,110,242,0.06); }
+[data-theme="dark"] .rr-cat-chip:hover { color: #93b4ff; border-color: #4f6ef2; background: rgba(79,110,242,0.1); }
+.rr-cat-chip.active {
+  background: linear-gradient(135deg, #4f6ef2 0%, #8b5cf6 100%);
+  border-color: transparent; color: #fff;
+  box-shadow: 0 4px 14px rgba(79,110,242,0.35);
 }
 
-/* Filter Bar Styles */
-.filter-container {
-  background: white;
-  padding: 16px 0;
-  border-bottom: 1px solid var(--border-color);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  width: 100%;
+/* ── Advanced filter drawer ── */
+.rr-filter-drawer {
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  position: sticky; top: calc(66px + 70px); z-index: 199;
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.32s ease;
 }
-
-.filter-scroll-container {
-  width: 100%;
-  overflow-x: auto;
-  padding-bottom: 8px;
-  scrollbar-width: none;
+[data-theme="dark"] .rr-filter-drawer {
+  background: #0f1624; border-bottom-color: rgba(255,255,255,0.06);
 }
-
-.filter-scroll {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 0 24px;
-  width: max-content;
-  min-width: 100%;
+.rr-filter-drawer.open { max-height: 120px; }
+.rr-filter-drawer-inner {
+  max-width: 1320px; margin: 0 auto;
+  padding: 16px 24px;
+  display: flex; gap: 14px; align-items: flex-end; flex-wrap: wrap;
 }
-
-.filter-scroll-container::-webkit-scrollbar {
-  display: none;
+.rr-fg { display: flex; flex-direction: column; gap: 5px; }
+.rr-fg label {
+  font-size: 0.7rem; font-weight: 700; color: var(--gray-500);
+  text-transform: uppercase; letter-spacing: 0.6px;
 }
-
-.filter-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  min-width: 80px;
-  flex-shrink: 0;
+[data-theme="dark"] .rr-fg label { color: #475569; }
+.rr-fg input {
+  border: 1.5px solid var(--gray-200); border-radius: 10px;
+  padding: 8px 13px; font-size: 0.875rem; font-family: inherit;
+  background: var(--white); color: var(--gray-900);
+  width: 140px; outline: none; transition: border-color 0.2s;
 }
-
-.filter-item:hover {
-  background: var(--bg-light);
+[data-theme="dark"] .rr-fg input {
+  background: #1a2233; border-color: rgba(255,255,255,0.10); color: #e2e8f0;
 }
+.rr-fg input:focus { border-color: #4f6ef2; }
+.rr-filter-actions { display: flex; gap: 8px; padding-bottom: 1px; }
 
-.filter-item.active {
-  background: var(--bg-light);
-  color: var(--primary-color);
+/* ── Content area ── */
+.rr-content { max-width: 1320px; margin: 0 auto; padding: 36px 24px 80px; }
+
+/* ── Section header ── */
+.rr-exp-header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 32px; gap: 16px; flex-wrap: wrap;
 }
-
-.filter-item.active .filter-icon {
-  color: var(--primary-color);
+.rr-exp-title {
+  font-size: 2rem; font-weight: 800; line-height: 1.1; margin: 0;
+  background: linear-gradient(135deg, #e2e8f0 0%, #93b4ff 50%, #8b5cf6 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
-
-.filter-icon {
-  font-size: 24px;
-  color: var(--text-light);
-  transition: color 0.2s ease;
+[data-theme="light"] .rr-exp-title {
+  background: linear-gradient(135deg, #1e293b 0%, #4f6ef2 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
-
-.filter-label {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-light);
-  transition: color 0.2s ease;
+.rr-exp-meta { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.rr-exp-count {
+  font-size: 0.875rem; color: var(--gray-500); font-weight: 500;
 }
-
-.filter-item.active .filter-label {
-  color: var(--primary-color);
+[data-theme="dark"] .rr-exp-count { color: #475569; }
+.rr-active-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.rr-active-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(79,110,242,0.1); color: #4f6ef2;
+  border: 1px solid rgba(79,110,242,0.25);
+  font-size: 0.74rem; font-weight: 700; padding: 4px 10px; border-radius: 20px;
 }
+[data-theme="dark"] .rr-active-chip { background: rgba(79,110,242,0.15); color: #93b4ff; }
+.rr-active-chip a { color: inherit; opacity: 0.65; text-decoration: none; margin-left: 2px; }
+.rr-active-chip a:hover { opacity: 1; }
 
-/* Listings Grid */
-.listings-grid {
+/* ── Grid ── */
+.rr-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 24px;
-  padding: 24px;
-  width: 100%;
 }
 
-/* Listing Card */
-.listing-card {
-  background: white;
-  border-radius: 12px;
+/* ══════════════════════
+   CARD — FUTURISTIC
+══════════════════════ */
+.rr-card {
+  position: relative; border-radius: 22px;
+  background: var(--white);
+  border: 1px solid rgba(0,0,0,0.07);
   overflow: hidden;
-  box-shadow: var(--shadow);
-  transition: all 0.2s ease;
-  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+[data-theme="dark"] .rr-card {
+  background: #111827;
+  border-color: rgba(255,255,255,0.06);
+  box-shadow: 0 2px 20px rgba(0,0,0,0.4);
+}
+.rr-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.13), 0 0 0 1px rgba(79,110,242,0.1);
+}
+[data-theme="dark"] .rr-card:hover {
+  box-shadow: 0 20px 60px rgba(0,0,0,0.55), 0 0 0 1px rgba(79,110,242,0.2);
+  border-color: rgba(79,110,242,0.18);
 }
 
-.listing-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--hover-shadow);
+/* Image area */
+.rr-card-img-wrap {
+  position: relative; width: 100%; padding-top: 62%; overflow: hidden;
+  background: var(--gray-100);
+}
+[data-theme="dark"] .rr-card-img-wrap { background: #0a0e1a; }
+.rr-card-img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; transition: transform 0.55s ease;
+}
+.rr-card:hover .rr-card-img { transform: scale(1.07); }
+
+/* Gradient overlay bottom of image */
+.rr-card-img-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(6,9,15,0.7) 0%, transparent 55%);
+  pointer-events: none;
 }
 
-.listing-image-container {
-  position: relative;
-  width: 100%;
-  padding-top: 75%;
+/* Category badge */
+.rr-card-cat {
+  position: absolute; top: 13px; left: 13px;
+  background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
+  color: #fff; font-size: 0.68rem; font-weight: 700;
+  padding: 4px 11px; border-radius: 30px;
+  border: 1px solid rgba(255,255,255,0.2);
+  letter-spacing: 0.4px; text-transform: uppercase;
 }
 
-.listing-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
+/* New badge */
+.rr-card-new {
+  position: absolute; bottom: 13px; left: 13px;
+  background: linear-gradient(135deg, #4f6ef2 0%, #8b5cf6 100%);
+  color: #fff; font-size: 0.66rem; font-weight: 700;
+  padding: 4px 10px; border-radius: 20px;
+  box-shadow: 0 2px 12px rgba(79,110,242,0.5);
+  letter-spacing: 0.3px;
 }
 
-.listing-card:hover .listing-image {
-  transform: scale(1.03);
+/* Wishlist button */
+.rr-card-wishlist {
+  position: absolute; top: 13px; right: 13px;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(10,14,26,0.55); backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.15); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.22s; z-index: 2;
 }
+.rr-card-wishlist:hover { transform: scale(1.15); background: rgba(10,14,26,0.75); }
+.rr-card-wishlist i { font-size: 0.95rem; color: rgba(255,255,255,0.85); transition: color 0.2s; }
+.rr-card-wishlist.saved i { color: #ef4444; }
+.rr-card-wishlist.pop i { transform: scale(1.4); }
 
-.listing-details {
-  padding: 16px;
+/* Price overlay inside image (bottom right) */
+.rr-card-price-overlay {
+  position: absolute; bottom: 13px; right: 13px;
+  background: rgba(10,14,26,0.7); backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 12px; padding: 6px 12px;
+  display: flex; align-items: baseline; gap: 3px;
 }
-
-.listing-location {
-  font-size: 14px;
-  color: var(--text-light);
-  margin-bottom: 4px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.rr-card-price-overlay .amt {
+  font-size: 1rem; font-weight: 800; color: #fff; line-height: 1;
 }
+.rr-card-price-overlay .per { font-size: 0.72rem; color: rgba(255,255,255,0.55); }
 
-.listing-title {
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--text-dark);
-  margin-bottom: 8px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+/* Card body */
+.rr-card-body { padding: 16px 18px 18px; }
+.rr-card-loc {
+  font-size: 0.78rem; color: var(--gray-500);
+  display: flex; align-items: center; gap: 4px; margin-bottom: 5px;
 }
-
-.listing-price {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text-dark);
+[data-theme="dark"] .rr-card-loc { color: #475569; }
+.rr-card-loc i { color: #4f6ef2; font-size: 0.78rem; }
+.rr-card-name {
+  font-size: 0.975rem; font-weight: 700; color: var(--gray-900);
+  line-height: 1.4; margin-bottom: 12px;
+  display: -webkit-box; -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical; overflow: hidden;
 }
-
-.listing-price span {
-  font-weight: 400;
-  font-size: 16px;
-  color: var(--text-light);
+[data-theme="dark"] .rr-card-name { color: #f1f5f9; }
+.rr-card-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid var(--gray-200);
 }
-
-.wishlist-button {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: white;
-  border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+[data-theme="dark"] .rr-card-foot { border-top-color: rgba(255,255,255,0.06); }
+.rr-card-price-row {
+  font-size: 1rem; font-weight: 800; color: var(--gray-900);
 }
-
-.wishlist-button:hover {
-  transform: scale(1.1);
+[data-theme="dark"] .rr-card-price-row { color: #93c5fd; }
+.rr-card-price-row span { font-size: 0.78rem; font-weight: 400; color: var(--gray-400); }
+[data-theme="dark"] .rr-card-price-row span { color: #475569; }
+.rr-card-rating {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 0.82rem; font-weight: 600; color: var(--gray-700);
 }
+[data-theme="dark"] .rr-card-rating { color: #94a3b8; }
+.rr-card-rating i { color: #f59e0b; font-size: 0.78rem; }
+.rr-card-rating-ct { font-size: 0.75rem; color: var(--gray-400); font-weight: 400; }
+[data-theme="dark"] .rr-card-rating-ct { color: #334155; }
 
-.wishlist-button i {
-  color: var(--text-dark);
-  font-size: 16px;
+/* Admin actions */
+.rr-card-admin { display: flex; gap: 8px; padding: 0 14px 14px; }
+.rr-card-admin .btn { flex: 1; font-size: 0.8rem; padding: 7px 10px; }
+
+/* ── Empty state ── */
+.rr-empty {
+  grid-column: 1/-1; text-align: center; padding: 96px 20px;
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
 }
-
-.wishlist-button.saved i {
-  color: var(--primary-color);
+.rr-empty-icon {
+  width: 80px; height: 80px;
+  background: linear-gradient(135deg, rgba(79,110,242,0.12) 0%, rgba(139,92,246,0.12) 100%);
+  border: 1px solid rgba(79,110,242,0.2);
+  border-radius: 24px; display: flex; align-items: center; justify-content: center;
+  font-size: 2rem; color: #4f6ef2; margin-bottom: 4px;
 }
+.rr-empty h3 { font-size: 1.3rem; color: var(--gray-900); margin: 0; font-weight: 700; }
+[data-theme="dark"] .rr-empty h3 { color: #f1f5f9; }
+.rr-empty p { color: var(--gray-500); margin: 0; max-width: 340px; line-height: 1.65; }
+[data-theme="dark"] .rr-empty p { color: #475569; }
 
-.listing-rating {
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  backdrop-filter: blur(2px);
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .rr-cat-chips { display: none; }
+  .rr-content { padding: 24px 16px 60px; }
 }
-
-.listing-rating i {
-  color: var(--primary-color);
+@media (max-width: 640px) {
+  .rr-grid { grid-template-columns: 1fr; }
+  .rr-topbar { padding: 12px 16px; }
+  .rr-filter-drawer-inner { padding: 14px 16px; }
+  .rr-fg input { width: 120px; }
 }
-
-/* Admin Controls */
-.admin-controls {
-  padding: 16px;
-  display: flex;
-  gap: 8px;
-  border-top: 1px solid var(--border-color);
-  margin-top: 8px;
-}
-
-.admin-controls .btn {
-  flex: 1;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: all 0.2s ease;
-}
-
-/* No listings styles */
-.no-listings {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 60px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.no-listings-icon {
-  font-size: 48px;
-  color: var(--text-light);
-  margin-bottom: 16px;
-}
-
-.no-listings h3 {
-  margin-bottom: 8px;
-  color: var(--text-dark);
-}
-
-.no-listings p {
-  color: var(--text-light);
-  margin-bottom: 16px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .filter-scroll {
-    gap: 12px;
-    padding: 0 16px;
-  }
-  
-  .filter-item {
-    min-width: 70px;
-    padding: 8px 12px;
-  }
-  
-  .listings-grid {
-    padding: 16px;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  }
-}
-
 @media (max-width: 480px) {
-  .filter-scroll {
-    gap: 8px;
-  }
-  
-  .filter-item {
-    min-width: 60px;
-    padding: 8px;
-  }
-  
-  .filter-icon {
-    font-size: 20px;
-  }
-  
-  .filter-label {
-    font-size: 11px;
-  }
+  .rr-grid { grid-template-columns: 1fr; gap: 16px; }
+  .rr-exp-title { font-size: 1.5rem; }
 }
 </style>
 
-<div class="filter-container">
-  <div class="filter-scroll-container">
-    <div class="filter-scroll">
-      <div class="filter-item <%= !filters?.category ? 'active' : '' %>" onclick="setCategory('')">
-        <i class="fas fa-border-all filter-icon"></i>
-        <span class="filter-label">All</span>
-      </div>
-      
-      <div class="filter-item <%= filters?.category === 'Beach' ? 'active' : '' %>" onclick="setCategory('Beach')">
-        <i class="fas fa-umbrella-beach filter-icon"></i>
-        <span class="filter-label">Beach</span>
-      </div>
-      
-      <div class="filter-item <%= filters?.category === 'Mountain' ? 'active' : '' %>" onclick="setCategory('Mountain')">
-        <i class="fas fa-mountain filter-icon"></i>
-        <span class="filter-label">Mountain</span>
-      </div>
-      
-      <div class="filter-item <%= filters?.category === 'City' ? 'active' : '' %>" onclick="setCategory('City')">
-        <i class="fas fa-city filter-icon"></i>
-        <span class="filter-label">City</span>
-      </div>
-      
-      <div class="filter-item <%= filters?.category === 'Countryside' ? 'active' : '' %>" onclick="setCategory('Countryside')">
-        <i class="fas fa-tree filter-icon"></i>
-        <span class="filter-label">Countryside</span>
-      </div>
-      
-      <div class="filter-item <%= filters?.category === 'Apartment' ? 'active' : '' %>" onclick="setCategory('Apartment')">
-        <i class="fas fa-building filter-icon"></i>
-        <span class="filter-label">Apartment</span>
-      </div>
-      
-      <div class="filter-item <%= filters?.category === 'Villa' ? 'active' : '' %>" onclick="setCategory('Villa')">
-        <i class="fas fa-home filter-icon"></i>
-        <span class="filter-label">Villa</span>
-      </div>
+<div class="rr-explore">
+
+  <!-- ── Sticky top bar ── -->
+  <div class="rr-topbar">
+    <div class="rr-topbar-inner">
+
+      <!-- Search -->
+      <form class="rr-search-field" action="/listings" method="get" role="search">
+        <% if (filters?.category) { %>
+          <input type="hidden" name="category" value="<%= filters.category %>">
+        <% } %>
+        <% if (filters?.minPrice) { %><input type="hidden" name="minPrice" value="<%= filters.minPrice %>"><% } %>
+        <% if (filters?.maxPrice) { %><input type="hidden" name="maxPrice" value="<%= filters.maxPrice %>"><% } %>
+        <% if (filters?.guests)   { %><input type="hidden" name="guests"   value="<%= filters.guests %>"><% } %>
+        <label for="rr-search-q" class="sr-only">Search destinations</label>
+        <input id="rr-search-q" type="text" name="q"
+          placeholder="Search destinations, properties…"
+          value="<%= filters?.q || '' %>" autocomplete="off">
+        <button type="submit" class="rr-search-go" aria-label="Search listings">
+          <i class="bi bi-search" aria-hidden="true"></i>
+        </button>
+      </form>
+
+      <!-- Filter pill -->
+      <button class="rr-filter-pill <%= (filters?.minPrice || filters?.maxPrice || filters?.guests) ? '' : '' %>"
+        id="filterPillBtn" onclick="toggleDrawer()">
+        <i class="bi bi-sliders2"></i> Filters
+        <% if (filters?.minPrice || filters?.maxPrice || filters?.guests) { %>
+          <span class="rr-filter-dot"></span>
+        <% } %>
+      </button>
+
+      <!-- Category chips -->
+      <nav class="rr-cat-chips" aria-label="Property categories">
+        <button class="rr-cat-chip <%= !filters?.category ? 'active' : '' %>" onclick="setCategory('')">All</button>
+        <button class="rr-cat-chip <%= filters?.category === 'Beach'       ? 'active' : '' %>" onclick="setCategory('Beach')">Beach</button>
+        <button class="rr-cat-chip <%= filters?.category === 'Mountain'    ? 'active' : '' %>" onclick="setCategory('Mountain')">Mountain</button>
+        <button class="rr-cat-chip <%= filters?.category === 'City'        ? 'active' : '' %>" onclick="setCategory('City')">City</button>
+        <button class="rr-cat-chip <%= filters?.category === 'Countryside' ? 'active' : '' %>" onclick="setCategory('Countryside')">Countryside</button>
+        <button class="rr-cat-chip <%= filters?.category === 'Apartment'   ? 'active' : '' %>" onclick="setCategory('Apartment')">Apartment</button>
+        <button class="rr-cat-chip <%= filters?.category === 'Villa'       ? 'active' : '' %>" onclick="setCategory('Villa')">Villa</button>
+      </nav>
+
     </div>
   </div>
-</div>
 
-<div class="container">
-  <div class="listings-grid">
-    <% if (allListings.length === 0) { %>
-      <div class="no-listings">
-        <i class="fas fa-search no-listings-icon"></i>
-        <h3>No listings found</h3>
-        <p>Try adjusting your filters or search criteria</p>
-        <a href="/listings" class="btn btn-primary" style="display: inline-block; margin-top: 16px;">Clear all filters</a>
-      </div>
-    <% } else { %>
-      <% for (let listing of allListings) { %>
-        <div class="listing-card">
-          <a href="/listings/<%= listing._id %>" style="text-decoration: none; color: inherit;">
-            <div class="listing-image-container">
-              <img src="<%= listing.image?.url || listing.image || 'default-image.jpg' %>" 
-                   alt="<%= listing.title %>" 
-                   class="listing-image"
-                   loading="lazy">
-              
-              <button class="wishlist-button <%= listing.saved ? 'saved' : '' %>">
-                <i class="<%= listing.saved ? 'fas' : 'far' %> fa-heart"></i>
-              </button>
-              
-              <% if (listing.rating) { %>
-                <div class="listing-rating">
-                  <i class="fas fa-star"></i>
-                  <span><%= listing.rating.toFixed(1) %></span>
-                </div>
-              <% } %>
-            </div>
-            
-            <div class="listing-details">
-              <div class="listing-location">
-                <i class="fas fa-map-marker-alt"></i>
-                <%= listing.location %>
-              </div>
-              <h3 class="listing-title"><%= listing.title %></h3>
-              <div class="listing-price">
-                ₹<%= listing.price.toLocaleString() %> <span>night</span>
-              </div>
-            </div>
-          </a>
-          
-          <% if (currentUser && currentUser.isAdmin) { %>
-            <div class="admin-controls">
-              <a href="/listings/<%= listing._id %>/edit" class="btn btn-warning">
-                <i class="fas fa-edit"></i> Edit
-              </a>
-              <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST" style="display: inline;">
-                <button class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this listing?')">
-                  <i class="fas fa-trash"></i> Delete
-                </button>
-              </form>
-            </div>
-          <% } %>
+  <!-- ── Filter drawer ── -->
+  <div class="rr-filter-drawer" id="filterDrawer">
+    <div class="rr-filter-drawer-inner">
+      <form action="/listings" method="get" style="display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap;">
+        <% if (filters?.q)        { %><input type="hidden" name="q"        value="<%= filters.q %>"><% } %>
+        <% if (filters?.category) { %><input type="hidden" name="category" value="<%= filters.category %>"><% } %>
+        <div class="rr-fg">
+          <label>Min Price (₹/night)</label>
+          <input type="number" name="minPrice" value="<%= filters?.minPrice || '' %>" placeholder="0" min="0" step="500">
         </div>
+        <div class="rr-fg">
+          <label>Max Price (₹/night)</label>
+          <input type="number" name="maxPrice" value="<%= filters?.maxPrice || '' %>" placeholder="No limit" min="0" step="500">
+        </div>
+        <div class="rr-fg">
+          <label>Min Guests</label>
+          <input type="number" name="guests" value="<%= filters?.guests || '' %>" placeholder="Any" min="1" max="30">
+        </div>
+        <div class="rr-filter-actions">
+          <button type="submit" class="btn btn-primary btn-sm">Apply</button>
+          <a href="/listings<%= filters?.category ? '?category='+filters.category : '' %>" class="btn btn-outline btn-sm">Clear</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Main content ── -->
+  <div class="rr-content">
+
+    <!-- Section header -->
+    <div class="rr-exp-header">
+      <h1 class="rr-exp-title">
+        <% if (filters?.q) { %>Results for "<%= filters.q %>"
+        <% } else if (filters?.category) { %><%= filters.category %> Stays
+        <% } else { %>Explore Stays<% } %>
+      </h1>
+      <div class="rr-exp-meta">
+        <% if (filters?.minPrice || filters?.maxPrice || filters?.guests) { %>
+          <div class="rr-active-chips">
+            <% if (filters.minPrice) { %><span class="rr-active-chip">₹<%= Number(filters.minPrice).toLocaleString('en-IN') %>+</span><% } %>
+            <% if (filters.maxPrice) { %><span class="rr-active-chip">up to ₹<%= Number(filters.maxPrice).toLocaleString('en-IN') %></span><% } %>
+            <% if (filters.guests)   { %><span class="rr-active-chip"><%= filters.guests %>+ guests</span><% } %>
+          </div>
+        <% } %>
+        <span class="rr-exp-count"><%= allListings.length %> place<%= allListings.length !== 1 ? 's' : '' %></span>
+      </div>
+    </div>
+
+    <!-- Grid -->
+    <div class="rr-grid">
+      <% if (allListings.length === 0) { %>
+        <div class="rr-empty">
+          <div class="rr-empty-icon"><i class="bi bi-search"></i></div>
+          <h3>No listings found</h3>
+          <p>Try a different search or remove your filters to see all available stays.</p>
+          <a href="/listings" class="btn btn-primary btn-sm" style="margin-top:4px;">Clear filters</a>
+        </div>
+      <% } else { %>
+        <% for (let listing of allListings) { %>
+          <%
+            const ratings = (listing.reviews || []).map(r => r.rating).filter(Boolean);
+            const avgRating = ratings.length > 0 ? (ratings.reduce((a,b)=>a+b,0)/ratings.length) : null;
+            const reviewCount = ratings.length;
+            const isNew = listing.createdAt && (Date.now() - new Date(listing.createdAt).getTime()) < 7 * 24 * 60 * 60 * 1000;
+          %>
+          <div class="rr-card reveal" data-id="<%= listing._id %>">
+            <a href="/listings/<%= listing._id %>" style="text-decoration:none;color:inherit;display:block;">
+              <!-- Image -->
+              <div class="rr-card-img-wrap">
+                <img
+                  src="<%= listing.image?.url || listing.image || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&q=80' %>"
+                  alt="<%= listing.title %>" class="rr-card-img" loading="lazy">
+                <div class="rr-card-img-overlay"></div>
+                <% if (listing.category) { %>
+                  <span class="rr-card-cat"><%= listing.category %></span>
+                <% } %>
+                <% if (isNew) { %>
+                  <span class="rr-card-new">✦ New</span>
+                <% } %>
+                <!-- Price overlay on image -->
+                <div class="rr-card-price-overlay">
+                  <span class="amt">₹<%= listing.price.toLocaleString('en-IN') %></span>
+                  <span class="per">/night</span>
+                </div>
+              </div>
+              <!-- Wishlist btn (outside anchor to prevent nav) -->
+            </a>
+            <button class="rr-card-wishlist" onclick="toggleWishlist('<%= listing._id %>', this)" aria-label="Save to wishlist">
+              <i class="bi bi-heart"></i>
+            </button>
+            <a href="/listings/<%= listing._id %>" style="text-decoration:none;color:inherit;display:block;">
+              <!-- Body -->
+              <div class="rr-card-body">
+                <div class="rr-card-loc">
+                  <i class="bi bi-geo-alt-fill"></i>
+                  <%= listing.location %>, <%= listing.country %>
+                </div>
+                <div class="rr-card-name"><%= listing.title %></div>
+                <div class="rr-card-foot">
+                  <div class="rr-card-price-row">
+                    ₹<%= listing.price.toLocaleString('en-IN') %> <span>/ night</span>
+                  </div>
+                  <% if (avgRating) { %>
+                    <div class="rr-card-rating">
+                      <i class="bi bi-star-fill"></i>
+                      <%= avgRating.toFixed(1) %>
+                      <span class="rr-card-rating-ct">(<%= reviewCount %>)</span>
+                    </div>
+                  <% } %>
+                </div>
+              </div>
+            </a>
+            <% if (currentUser && currentUser.isAdmin) { %>
+              <div class="rr-card-admin">
+                <a href="/listings/<%= listing._id %>/edit" class="btn btn-outline btn-sm">
+                  <i class="bi bi-pencil"></i> Edit
+                </a>
+                <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST" style="flex:1;">
+                  <button class="btn btn-danger btn-sm" style="width:100%;" onclick="return confirm('Delete this listing?')">
+                    <i class="bi bi-trash"></i> Delete
+                  </button>
+                </form>
+              </div>
+            <% } %>
+          </div>
+        <% } %>
       <% } %>
-    <% } %>
+    </div>
+
   </div>
 </div>
 
 <script>
-function setCategory(category) {
+// ── Category filter ──
+function setCategory(cat) {
   const url = new URL(window.location);
-  if (category) {
-    url.searchParams.set('category', category);
-  } else {
-    url.searchParams.delete('category');
-  }
+  if (cat) url.searchParams.set('category', cat);
+  else url.searchParams.delete('category');
   window.location = url;
 }
 
-document.querySelectorAll('.wishlist-button').forEach(button => {
-  button.addEventListener('click', async function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    const listingId = this.closest('a').href.split('/').pop();
-    const isSaved = this.classList.contains('saved');
-    
-    // Optimistic UI update
-    this.classList.toggle('saved');
-    const icon = this.querySelector('i');
-    icon.classList.toggle('far');
-    icon.classList.toggle('fas');
-    
-    try {
-      const response = await fetch(`/listings/${listingId}/wishlist`, {
-        method: isSaved ? 'DELETE' : 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
-      
-      if (!response.ok) {
-        // Revert UI if request fails
-        this.classList.toggle('saved');
-        icon.classList.toggle('far');
-        icon.classList.toggle('fas');
-        throw new Error('Failed to update wishlist');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Failed to update wishlist. Please try again.');
+// ── Filter drawer ──
+const drawer = document.getElementById('filterDrawer');
+const pillBtn = document.getElementById('filterPillBtn');
+
+function toggleDrawer() {
+  const open = drawer.classList.toggle('open');
+  pillBtn.classList.toggle('active', open);
+}
+
+<% if (filters?.minPrice || filters?.maxPrice || filters?.guests) { %>
+document.addEventListener('DOMContentLoaded', () => {
+  drawer.classList.add('open');
+  pillBtn.classList.add('active');
+});
+<% } %>
+
+// ── Wishlist ──
+const WISHLIST_KEY = 'rr_wishlist';
+
+function getWishlist() {
+  try { return JSON.parse(localStorage.getItem(WISHLIST_KEY)) || []; }
+  catch { return []; }
+}
+function saveWishlist(list) {
+  localStorage.setItem(WISHLIST_KEY, JSON.stringify(list));
+  updateWishlistBadge();
+}
+function updateWishlistBadge() {
+  const count = getWishlist().length;
+  const badge = document.getElementById('rr-wishlist-badge');
+  if (badge) { badge.textContent = count || ''; badge.style.display = count ? 'flex' : 'none'; }
+}
+function toggleWishlist(id, btn) {
+  let list = getWishlist();
+  const idx = list.indexOf(id);
+  if (idx === -1) { list.push(id); btn.classList.add('saved'); }
+  else { list.splice(idx, 1); btn.classList.remove('saved'); }
+  btn.classList.add('pop');
+  setTimeout(() => btn.classList.remove('pop'), 300);
+  saveWishlist(list);
+}
+function initWishlist() {
+  const list = getWishlist();
+  document.querySelectorAll('.rr-card').forEach(card => {
+    const id = card.dataset.id;
+    if (id && list.includes(id)) {
+      const btn = card.querySelector('.rr-card-wishlist');
+      if (btn) btn.classList.add('saved');
     }
   });
-});
-
-// Add smooth scroll behavior for filter bar
-document.querySelectorAll('.filter-item').forEach(item => {
-  item.addEventListener('click', function() {
-    const scrollContainer = document.querySelector('.filter-scroll-container');
-    const itemLeft = this.offsetLeft;
-    const itemWidth = this.offsetWidth;
-    const containerWidth = scrollContainer.offsetWidth;
-    
-    scrollContainer.scrollTo({
-      left: itemLeft - (containerWidth / 2) + (itemWidth / 2),
-      behavior: 'smooth'
-    });
-  });
-});
+  updateWishlistBadge();
+}
+document.addEventListener('DOMContentLoaded', initWishlist);
 </script>

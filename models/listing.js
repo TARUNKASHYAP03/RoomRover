@@ -4,10 +4,15 @@ const Schema = mongoose.Schema;
 const listingSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
-  image: String,
+  image: mongoose.Schema.Types.Mixed,
   price: { type: Number, required: true },
   location: { type: String, required: true },
   country: { type: String, required: true },
+  category: {
+    type: String,
+    enum: ["Beach", "Mountain", "City", "Countryside", "Apartment", "Villa"],
+    default: null,
+  },
   reviews: [
     {
       type: Schema.Types.ObjectId,

@@ -1,24 +1,39 @@
-<% layout("layouts/boilerplate") %>
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Error</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div class="container mt-5 mb-5">
-      <div class="alert alert-danger" role="alert">
-        <h4 class="alert-heading">
-          <%= message || "An error occurred!" %>
-        </h4>
-        <hr />
-        <p class="mb-0">Please try again later or contact support.</p>
-      </div>
+<%- layout("layouts/boilerplate") %>
+<style>
+  .rr-error-page {
+    min-height: calc(100vh - 68px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 40px 16px;
+    text-align: center;
+  }
+  .rr-error-wrap { max-width: 500px; }
+  .rr-error-code {
+    font-size: 6rem; font-weight: 800; color: var(--gray-200);
+    line-height: 1; margin-bottom: 16px;
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+  .rr-error-wrap h2 { font-size: 1.6rem; color: var(--navy); margin-bottom: 10px; }
+  .rr-error-wrap p { color: var(--gray-600); margin-bottom: 28px; line-height: 1.6; }
+  .rr-error-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  [data-theme="dark"] .rr-error-page { background: #0f1624; }
+  [data-theme="dark"] .rr-error-code { color: rgba(255,255,255,0.06); }
+  [data-theme="dark"] .rr-error-wrap h2 { color: #f1f5f9; }
+  [data-theme="dark"] .rr-error-wrap p { color: #64748b; }
+</style>
+
+<div class="rr-error-page">
+  <div class="rr-error-wrap">
+    <div class="rr-error-code">!</div>
+    <h2><%= message || "Something went wrong" %></h2>
+    <p>We couldn't complete that request. Please try again or go back to browsing listings.</p>
+    <div class="rr-error-actions">
+      <a href="/listings" class="btn btn-primary">
+        <i class="bi bi-house-door"></i> Browse listings
+      </a>
+      <button onclick="history.back()" class="btn btn-outline">
+        <i class="bi bi-arrow-left"></i> Go back
+      </button>
     </div>
-  </body>
-</html>
+  </div>
+</div>

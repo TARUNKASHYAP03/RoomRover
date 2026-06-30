@@ -1,558 +1,299 @@
-<% layout("layouts/boilerplate") %>
+<%- layout("layouts/boilerplate") %>
 <style>
-  .trips-container {
-    max-width: 1200px;
-    margin: 50px auto;
-    padding: 25px;
+  .rr-trips-page {
+    min-height: calc(100vh - 66px);
+    background: var(--off-white);
+    padding: 48px 0 80px;
   }
-  
-  .trips-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2.5rem;
-    position: relative;
+  [data-theme="dark"] .rr-trips-page { background: #0f1624; }
+
+  .rr-trips { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  .rr-trips-header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 36px; flex-wrap: wrap; gap: 14px;
   }
-  
-  .trips-title {
-    font-size: 2.5rem;
-    font-weight: 800;
-    color: #2c3e50;
-    margin: 0;
-    position: relative;
-    display: inline-block;
-    background: linear-gradient(135deg, #3498db, #6a11cb);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  .rr-trips-header h1 { font-size: 2.1rem; font-weight: 800; color: var(--navy); margin: 0; line-height: 1.1; }
+  [data-theme="dark"] .rr-trips-header h1 { color: #f1f5f9; }
+  .rr-trips-header p { color: var(--gray-500); margin: 6px 0 0; font-size: 0.9rem; }
+  [data-theme="dark"] .rr-trips-header p { color: #64748b; }
+
+  .rr-trips-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
   }
-  
-  .trips-title::after {
-    content: '';
-    position: absolute;
-    bottom: -12px;
-    left: 0;
-    width: 80px;
-    height: 5px;
-    background: linear-gradient(90deg, #3498db, #6a11cb);
-    border-radius: 5px;
-    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+
+  /* ── Trip Card ── */
+  .rr-trip-card {
+    background: var(--white); border-radius: 20px;
+    border: 1px solid var(--gray-200); overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06); transition: all 0.3s ease;
+    display: flex; flex-direction: column;
   }
-  
-  .refresh-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 16px;
-    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ed 100%);
-    border-radius: 8px;
-    font-weight: 600;
-    color: #2c3e50;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    border: 1px solid rgba(0,0,0,0.05);
+  [data-theme="dark"] .rr-trip-card {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.07);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
   }
-  
-  .refresh-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    color: #3498db;
+  .rr-trip-card:hover {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    transform: translateY(-4px);
   }
-  
-  .trip-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-    gap: 2.5rem;
-    padding: 5px;
+  [data-theme="dark"] .rr-trip-card:hover {
+    box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+    border-color: rgba(79,110,242,0.25);
   }
-  
-  .trip-card {
-    background: #fff;
-    border-radius: 1.5rem;
-    box-shadow: 0 6px 25px rgba(0,0,0,0.08);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-    border: none;
-    position: relative;
+
+  .rr-trip-img-wrap { position: relative; height: 210px; overflow: hidden; background: var(--gray-100); }
+  [data-theme="dark"] .rr-trip-img-wrap { background: #1a2233; }
+  .rr-trip-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.45s ease; }
+  .rr-trip-card:hover .rr-trip-img { transform: scale(1.06); }
+
+  /* Status badges */
+  .rr-trip-status {
+    position: absolute; top: 14px; right: 14px;
+    padding: 5px 13px; border-radius: 20px;
+    font-size: 0.74rem; font-weight: 700;
+    letter-spacing: 0.4px; display: flex; align-items: center; gap: 5px;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
   }
-  
-  .trip-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 5px;
-    background: linear-gradient(90deg, #3498db, #6a11cb);
-  }
-  
-  .trip-card:hover {
-    box-shadow: 0 12px 35px rgba(34,34,34,0.15);
-    transform: translateY(-8px);
-  }
-  
-  .trip-card-img-container {
-    width: 100%;
-    height: 220px;
-    overflow: hidden;
-    position: relative;
-  }
-  
-  .trip-card-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s ease;
-    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ed 100%);
-  }
-  
-  .trip-card:hover .trip-card-img {
-    transform: scale(1.05);
-  }
-  
-  .trip-card-body {
-    padding: 1.8rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    flex-grow: 1;
-  }
-  
-  .trip-card-title {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #222;
-    margin-bottom: 0.3rem;
-    line-height: 1.4;
-  }
-  
-  .trip-card-location {
-    color: #555;
-    font-size: 1.05rem;
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-  }
-  
-  .trip-card-dates {
-    color: #666;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin-top: 0.4rem;
-  }
-  
-  .trip-card-guests {
-    color: #666;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-  }
-  
-  .trip-card-footer {
-    margin-top: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  .trip-card-link {
-    color: #fff;
-    background: linear-gradient(135deg, #3498db, #2575fc);
-    border-radius: 10px;
-    padding: 12px 0;
-    text-align: center;
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    display: block;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
-  }
-  
-  .trip-card-link:hover {
-    background: linear-gradient(135deg, #2980b9, #1a68e8);
-    box-shadow: 0 6px 16px rgba(52, 152, 219, 0.3);
-    transform: translateY(-2px);
-  }
-  
-  .cancel-btn {
-    color: #fff;
-    background: linear-gradient(135deg, #ff4757, #e84118);
-    border-radius: 10px;
-    padding: 12px 0;
-    text-align: center;
-    text-decoration: none;
-    font-weight: 600;
-    border: none;
-    width: 100%;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(255, 71, 87, 0.2);
-  }
-  
-  .cancel-btn:hover {
-    background: linear-gradient(135deg, #ff3f3f, #d63031);
-    box-shadow: 0 6px 16px rgba(255, 71, 87, 0.3);
-    transform: translateY(-2px);
-  }
-  
-  .no-trips {
-    text-align: center;
-    padding: 4rem 2rem;
-    background: #f8f9fa;
-    border-radius: 16px;
-    margin-top: 2rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-    border: 1px dashed rgba(0,0,0,0.08);
-  }
-  
-  .no-trips-icon {
-    font-size: 4rem;
-    color: #bdc3c7;
-    margin-bottom: 1.5rem;
-    opacity: 0.8;
-  }
-  
-  .no-trips-text {
-    font-size: 1.2rem;
-    color: #7f8c8d;
-    margin-bottom: 2rem;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
-    line-height: 1.6;
-  }
-  
-  .explore-link {
-    display: inline-flex;
-    align-items: center;
-    padding: 12px 28px;
-    background: linear-gradient(135deg, #3498db, #6a11cb);
-    color: white;
-    border-radius: 10px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
-  }
-  
-  .explore-link:hover {
-    background: linear-gradient(135deg, #2980b9, #5a0db3);
-    box-shadow: 0 6px 16px rgba(52, 152, 219, 0.3);
-    transform: translateY(-2px);
-  }
-  
-  /* Status badge */
-  .trip-status {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    z-index: 1;
-  }
-  
   .status-upcoming {
-    background: rgba(46, 213, 115, 0.2);
-    color: #2ecc71;
+    background: rgba(16,185,129,0.18); color: #d1fae5;
+    border: 1px solid rgba(16,185,129,0.4);
+    box-shadow: 0 0 16px rgba(16,185,129,0.25);
   }
-  
   .status-completed {
-    background: rgba(52, 152, 219, 0.2);
-    color: #3498db;
+    background: rgba(59,130,246,0.18); color: #bfdbfe;
+    border: 1px solid rgba(59,130,246,0.4);
+    box-shadow: 0 0 16px rgba(59,130,246,0.2);
   }
-  
-  .status-cancelled {
-    background: rgba(255, 71, 87, 0.2);
-    color: #ff4757;
+  .status-past {
+    background: rgba(100,116,139,0.18); color: #cbd5e1;
+    border: 1px solid rgba(100,116,139,0.3);
   }
-  
-  @media (max-width: 900px) {
-    .trip-cards {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-    
-    .trips-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1.5rem;
-    }
-    
-    .trips-title {
-      font-size: 2.2rem;
-    }
+
+  /* Night chip */
+  .rr-nights-chip {
+    position: absolute; bottom: 14px; left: 14px;
+    background: rgba(0,0,0,0.7); color: #fff;
+    padding: 4px 10px; border-radius: 10px;
+    font-size: 0.72rem; font-weight: 600;
+    backdrop-filter: blur(4px);
   }
-  
-  /* Enhanced loading animation */
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+
+  .rr-trip-body { padding: 20px 22px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+
+  .rr-trip-title {
+    font-size: 1.05rem; font-weight: 700; color: var(--navy); line-height: 1.35;
   }
-  
-  .loading-spinner {
-    display: inline-block;
-    width: 18px;
-    height: 18px;
-    border: 3px solid rgba(255,255,255,0.3);
-    border-radius: 50%;
-    border-top-color: #fff;
-    animation: spin 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
-    margin-right: 10px;
-    vertical-align: middle;
+  [data-theme="dark"] .rr-trip-title { color: #f1f5f9; }
+
+  .rr-trip-meta {
+    display: flex; flex-direction: column; gap: 6px;
+    font-size: 0.875rem; color: var(--gray-600);
   }
-  
-  /* Floating action button for mobile */
-  .fab {
-    display: none;
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 60px;
-    height: 60px;
-    background: linear-gradient(135deg, #3498db, #6a11cb);
-    color: white;
-    border-radius: 50%;
-    text-align: center;
-    box-shadow: 0 4px 20px rgba(52, 152, 219, 0.3);
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
+  [data-theme="dark"] .rr-trip-meta { color: #64748b; }
+  .rr-trip-meta span { display: flex; align-items: center; gap: 8px; }
+  .rr-trip-meta i { color: var(--gold); width: 14px; flex-shrink: 0; }
+
+  /* Price tag */
+  .rr-trip-price {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--gray-50); border: 1px solid var(--gray-200);
+    border-radius: 8px; padding: 5px 10px;
+    font-size: 0.82rem; font-weight: 700; color: var(--navy);
+    align-self: flex-start;
   }
-  
-  .fab:hover {
-    transform: scale(1.1);
+  [data-theme="dark"] .rr-trip-price {
+    background: rgba(79,110,242,0.08); border-color: rgba(79,110,242,0.2); color: #93c5fd;
   }
-  
+
+  .rr-trip-footer {
+    padding: 14px 22px; border-top: 1px solid var(--gray-200);
+    display: flex; gap: 10px;
+  }
+  [data-theme="dark"] .rr-trip-footer { border-color: rgba(255,255,255,0.06); }
+
+  /* Buttons in footer */
+  .rr-trip-btn {
+    flex: 1; padding: 9px 14px; border-radius: 10px;
+    font-size: 0.85rem; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    border: 1.5px solid var(--gray-300); background: var(--white); color: var(--gray-800);
+    text-decoration: none; font-family: inherit; transition: all 0.2s ease;
+  }
+  [data-theme="dark"] .rr-trip-btn {
+    border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #cbd5e1;
+  }
+  .rr-trip-btn:hover { border-color: var(--navy); color: var(--navy); background: var(--gray-50); }
+  [data-theme="dark"] .rr-trip-btn:hover { border-color: #4f6ef2; color: #93c5fd; background: rgba(79,110,242,0.1); }
+  .rr-trip-btn-cancel {
+    border-color: rgba(220,53,69,0.25); color: #dc3545;
+    background: rgba(220,53,69,0.05);
+  }
+  [data-theme="dark"] .rr-trip-btn-cancel {
+    border-color: rgba(220,53,69,0.2); color: #fca5a5; background: rgba(220,53,69,0.06);
+  }
+  .rr-trip-btn-cancel:hover { background: rgba(220,53,69,0.1); border-color: #dc3545; color: #dc3545; }
+  [data-theme="dark"] .rr-trip-btn-cancel:hover { background: rgba(220,53,69,0.15); }
+
+  /* ── Empty state ── */
+  .rr-trips-empty {
+    text-align: center; padding: 100px 24px;
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+  }
+  .rr-trips-empty-icon {
+    width: 88px; height: 88px; border-radius: 50%;
+    background: var(--gray-100); display: flex; align-items: center;
+    justify-content: center; font-size: 2.2rem; color: var(--gray-400);
+  }
+  [data-theme="dark"] .rr-trips-empty-icon {
+    background: rgba(255,255,255,0.05); color: #475569;
+  }
+  .rr-trips-empty h2 { font-size: 1.5rem; font-weight: 700; color: var(--navy); margin: 0; }
+  [data-theme="dark"] .rr-trips-empty h2 { color: #f1f5f9; }
+  .rr-trips-empty p { color: var(--gray-500); max-width: 380px; margin: 0; }
+  [data-theme="dark"] .rr-trips-empty p { color: #64748b; }
+
+  /* ── Toast ── */
+  .rr-notif {
+    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px);
+    padding: 13px 22px; border-radius: 12px; color: #fff; font-weight: 600;
+    font-size: 0.9rem; display: flex; align-items: center; gap: 9px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25); opacity: 0; transition: all 0.3s ease;
+    z-index: 9997; pointer-events: none;
+  }
+  .rr-notif.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .rr-notif.success { background: #10b981; }
+  .rr-notif.error   { background: #ef4444; }
+
   @media (max-width: 768px) {
-    .fab {
-      display: flex;
-    }
+    .rr-trips-page { padding: 28px 0 60px; }
+    .rr-trips { padding: 0 16px; }
+    .rr-trips-grid { grid-template-columns: 1fr; }
+    .rr-trips-header h1 { font-size: 1.7rem; }
   }
 </style>
 
-<div class="trips-container">
-  <div class="trips-header">
-    <h1 class="trips-title">My Adventures</h1>
-    <% if (currentUser) { %>
-      <a href="/trips" class="refresh-btn">
-        <i class="fas fa-sync-alt"></i> Refresh
+<div class="rr-trips-page">
+  <div class="rr-trips">
+    <div class="rr-trips-header">
+      <div>
+        <h1>My Trips</h1>
+        <p><%= bookings.length %> booking<%= bookings.length !== 1 ? 's' : '' %></p>
+      </div>
+      <a href="/listings" class="btn btn-outline btn-sm">
+        <i class="bi bi-search"></i> Find more places
       </a>
+    </div>
+
+    <% if (bookings.length === 0) { %>
+      <div class="rr-trips-empty reveal">
+        <div class="rr-trips-empty-icon"><i class="bi bi-suitcase2"></i></div>
+        <h2>No trips yet</h2>
+        <p>Your travel story is waiting to be written. Discover amazing places and create unforgettable memories.</p>
+        <a href="/listings" class="btn btn-primary" style="margin-top:8px;">
+          <i class="bi bi-compass"></i> Explore destinations
+        </a>
+      </div>
+    <% } else { %>
+      <div class="rr-trips-grid">
+        <% bookings.forEach(function(booking) { %>
+          <% if (booking.listing) { %>
+            <%
+              const now = new Date();
+              const start = new Date(booking.startDate);
+              const end = new Date(booking.endDate);
+              let statusClass, statusLabel, statusIcon;
+              if (booking.cancelled) {
+                statusClass='status-past'; statusLabel='Cancelled'; statusIcon='bi-x-circle-fill';
+              } else if (now > end) {
+                statusClass='status-completed'; statusLabel='Completed'; statusIcon='bi-check-circle-fill';
+              } else {
+                statusClass='status-upcoming'; statusLabel='Upcoming'; statusIcon='bi-calendar-check-fill';
+              }
+              const nights = Math.ceil((end - start) / (1000*60*60*24));
+              const total = (booking.listing.price || 0) * nights;
+            %>
+            <div class="rr-trip-card reveal" id="trip-<%= booking._id %>">
+              <div class="rr-trip-img-wrap">
+                <img class="rr-trip-img"
+                  src="<%= booking.listing.image?.url || booking.listing.image || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&q=80' %>"
+                  alt="<%= booking.listing.title %>" loading="lazy">
+                <span class="rr-trip-status <%= statusClass %>">
+                  <i class="bi <%= statusIcon %>"></i> <%= statusLabel %>
+                </span>
+                <span class="rr-nights-chip"><%= nights %> night<%= nights !== 1 ? 's' : '' %></span>
+              </div>
+
+              <div class="rr-trip-body">
+                <div class="rr-trip-title"><%= booking.listing.title %></div>
+                <div class="rr-trip-meta">
+                  <span><i class="bi bi-geo-alt-fill"></i> <%= booking.listing.location %></span>
+                  <span>
+                    <i class="bi bi-calendar3"></i>
+                    <%= start.toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) %>
+                    → <%= end.toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) %>
+                  </span>
+                  <span><i class="bi bi-people-fill"></i> <%= booking.guests %> guest<%= booking.guests > 1 ? 's' : '' %></span>
+                </div>
+                <% if (total > 0) { %>
+                  <div class="rr-trip-price">
+                    <i class="bi bi-currency-rupee"></i>
+                    ₹<%= total.toLocaleString('en-IN') %> total
+                  </div>
+                <% } %>
+              </div>
+
+              <div class="rr-trip-footer">
+                <a href="/listings/<%= booking.listing._id %>" class="rr-trip-btn">
+                  <i class="bi bi-eye"></i> View listing
+                </a>
+                <% if (!booking.cancelled && now < end) { %>
+                  <button class="rr-trip-btn rr-trip-btn-cancel"
+                    onclick="cancelBooking('<%= booking._id %>', this)">
+                    <i class="bi bi-x-lg"></i> Cancel
+                  </button>
+                <% } %>
+              </div>
+            </div>
+          <% } %>
+        <% }); %>
+      </div>
     <% } %>
   </div>
-  
-  <% if (bookings.length === 0) { %>
-    <div class="no-trips">
-      <div class="no-trips-icon">
-        <i class="fas fa-suitcase-rolling"></i>
-      </div>
-      <h3>No Adventures Planned Yet</h3>
-      <p class="no-trips-text">Your travel story is waiting to be written. Discover amazing places and create unforgettable memories.</p>
-      <a href="/listings" class="explore-link">
-        <i class="fas fa-search" style="margin-right: 10px;"></i>Explore Destinations
-      </a>
-    </div>
-  <% } else { %>
-    <div class="trip-cards">
-      <% bookings.forEach(booking => { %>
-        <% if (booking.listing) { %>
-        <div class="trip-card" id="trip-<%= booking._id %>">
-          <% const now = new Date();
-             const startDate = new Date(booking.startDate);
-             const endDate = new Date(booking.endDate);
-             let status, statusClass;
-             
-             if (booking.cancelled) {
-               status = 'Cancelled';
-               statusClass = 'status-cancelled';
-             } else if (now > endDate) {
-               status = 'Completed';
-               statusClass = 'status-completed';
-             } else {
-               status = 'Upcoming';
-               statusClass = 'status-upcoming';
-             }
-          %>
-          <span class="trip-status <%= statusClass %>">
-            <i class="fas <%= status === 'Upcoming' ? 'fa-calendar-check' : status === 'Completed' ? 'fa-check-circle' : 'fa-times-circle' %>"></i> <%= status %>
-          </span>
-          
-          <div class="trip-card-img-container">
-            <img 
-              class="trip-card-img" 
-              src="<%= booking.listing.image ? booking.listing.image : 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80' %>" 
-              alt="<%= booking.listing.title %>" 
-            />
-          </div>
-          <div class="trip-card-body">
-            <h3 class="trip-card-title"><%= booking.listing.title %></h3>
-            <div class="trip-card-location">
-              <i class="fas fa-map-marker-alt" style="color: #e74c3c;"></i> <%= booking.listing.location %>
-            </div>
-            <div class="trip-card-dates">
-              <i class="fas fa-calendar-alt" style="color: #3498db;"></i>
-              <%= new Date(booking.startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
-              &mdash;
-              <%= new Date(booking.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
-            </div>
-            <div class="trip-card-guests">
-              <i class="fas fa-user-friends" style="color: #9b59b6;"></i>
-              <%= booking.guests %> Guest<%= booking.guests > 1 ? 's' : '' %>
-            </div>
-            
-            <div class="trip-card-footer">
-              <a class="trip-card-link" href="/listings/<%= booking.listing._id %>">
-                <i class="fas fa-eye" style="margin-right: 10px;"></i>View Details
-              </a>
-              <% if (!booking.cancelled && now < endDate) { %>
-                <button class="cancel-btn" onclick="cancelBooking('<%= booking._id %>', this)">
-                  <i class="fas fa-times" style="margin-right: 10px;"></i>Cancel Trip
-                </button>
-              <% } %>
-            </div>
-          </div>
-        </div>
-        <% } %>
-      <% }) %>
-    </div>
-  <% } %>
 </div>
 
-<div class="fab" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-  <i class="fas fa-arrow-up"></i>
-</div>
+<div class="rr-notif" id="rr-notif"></div>
 
 <script>
-  function cancelBooking(bookingId, button) {
-    if (!confirm('Are you sure you want to cancel this trip? This action cannot be undone.')) return;
-    
-    // Enhanced loading state
-    const originalText = button.innerHTML;
-    button.innerHTML = '<span class="loading-spinner"></span> Processing...';
-    button.disabled = true;
-    button.style.opacity = '0.8';
-    
-    fetch(`/bookings/${bookingId}`, {
-      method: 'DELETE',
-      headers: {
-        'X-Requested-With': 'XMLHttpRequest',
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(res => {
-      if (res.ok) {
-        // Enhanced animation
-        const card = document.getElementById('trip-' + bookingId);
-        card.style.transition = 'all 0.4s ease';
-        card.style.transform = 'scale(0.95)';
-        card.style.opacity = '0';
-        
-        setTimeout(() => {
-          card.remove();
-          
-          // Check if no trips left
-          if (document.querySelectorAll('.trip-card').length === 0) {
-            const container = document.querySelector('.trips-container');
-            container.innerHTML = `
-              <div class="no-trips">
-                <div class="no-trips-icon">
-                  <i class="fas fa-check-circle" style="color: #2ecc71;"></i>
-                </div>
-                <h3>Trip Cancelled</h3>
-                <p class="no-trips-text">Your booking has been successfully cancelled. We hope to see you again soon!</p>
-                <a href="/listings" class="explore-link">
-                  <i class="fas fa-search" style="margin-right: 10px;"></i>Find New Adventures
-                </a>
-              </div>
-            `;
-          }
-        }, 400);
-        
-        // Show floating notification
-        showNotification('Trip cancelled successfully', 'success');
-      } else {
-        return res.json().then(data => { 
-          throw new Error(data.error || 'Failed to cancel booking'); 
-        });
-      }
-    })
-    .catch(err => {
-      // Restore button state
-      button.innerHTML = originalText;
-      button.disabled = false;
-      button.style.opacity = '1';
-      
-      // Show error notification
-      showNotification(err.message, 'error');
-    });
+  function cancelBooking(id, btn) {
+    if (!confirm('Cancel this booking? This cannot be undone.')) return;
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Cancelling…';
+    btn.disabled = true;
+    fetch(`/bookings/${id}`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' } })
+      .then(res => {
+        if (res.ok) {
+          const card = document.getElementById('trip-' + id);
+          card.style.transition = 'all 0.4s cubic-bezier(0.4,0,0.2,1)';
+          card.style.opacity = '0';
+          card.style.transform = 'scale(0.92) translateY(-8px)';
+          setTimeout(() => {
+            card.remove();
+            showNotif('Booking cancelled successfully', 'success');
+            if (!document.querySelector('.rr-trip-card')) location.reload();
+          }, 400);
+        } else throw new Error('Failed');
+      })
+      .catch(() => { btn.innerHTML = orig; btn.disabled = false; showNotif('Failed to cancel booking', 'error'); });
   }
-  
-  function showNotification(message, type) {
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.innerHTML = `
-      <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
-      ${message}
-    `;
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-      notification.classList.add('show');
-    }, 10);
-    
-    setTimeout(() => {
-      notification.classList.remove('show');
-      setTimeout(() => notification.remove(), 300);
-    }, 3000);
+
+  function showNotif(msg, type) {
+    const el = document.getElementById('rr-notif');
+    el.innerHTML = `<i class="bi bi-${type==='success'?'check-circle':'exclamation-circle'}-fill"></i> ${msg}`;
+    el.className = 'rr-notif ' + type;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 3500);
   }
 </script>
-
-<style>
-  .notification {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 15px 25px;
-    border-radius: 8px;
-    color: white;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    z-index: 1000;
-    opacity: 0;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-  }
-  
-  .notification.show {
-    opacity: 1;
-    bottom: 50px;
-  }
-  
-  .notification.success {
-    background: linear-gradient(135deg, #2ecc71, #27ae60);
-  }
-  
-  .notification.error {
-    background: linear-gradient(135deg, #ff4757, #e84118);
-  }
-  
-  .notification i {
-    font-size: 1.2rem;
-  }
-</style>

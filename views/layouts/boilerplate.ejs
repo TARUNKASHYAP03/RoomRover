@@ -1,399 +1,350 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RoomRover – Your AI-Powered Room Assistant</title>
-    <link rel="stylesheet" href="/css/style.css" />
-    <link rel="stylesheet" href="/css/navbar.css" />
-    <link rel="stylesheet" href="/css/footer.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7"
-      crossorigin="anonymous"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <!-- Bootstrap Icons -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RoomRover — Find Your Perfect Stay</title>
+  <script>if ('scrollRestoration' in history) history.scrollRestoration = 'manual';</script>
+  <script>(function(){var t=localStorage.getItem('rr-theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1a2332" />
+  <meta name="description" content="Discover and book unique stays across India — beaches, mountains, cities and more. RoomRover connects you with handpicked properties at the best prices." />
+  <meta name="keywords" content="vacation rental, hotel booking, India travel, beach stay, mountain cabin, villa rental, apartment, RoomRover" />
+  <link rel="canonical" href="/" />
+  <meta property="og:title" content="RoomRover — Find Your Perfect Stay" />
+  <meta property="og:description" content="Discover and book unique stays across India. Beachside retreats, mountain hideaways, city apartments and more." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="/" />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1200&q=80" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="RoomRover — Find Your Perfect Stay" />
+  <meta name="twitter:description" content="Discover and book unique stays across India." />
 
-    <!-- Montserrat Font (optional but recommended) -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap"
-      rel="stylesheet"
-    />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
 
-    <!-- Bootstrap CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
 
-    <!-- Bootstrap Icons -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
-    />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-    <!-- Bootstrap JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Our Styles -->
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/footer.css" />
+</head>
+<body>
 
-    <!-- Montserrat Font (Optional) -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght=600;700&display=swap"
-      rel="stylesheet"
-    />
+  <!-- Skip navigation for accessibility -->
+  <a href="#main-content" class="rr-skip-nav">Skip to main content</a>
 
-    <!-- Bootstrap Icons -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
-    />
+  <%- include("../includes/navbar.ejs") %>
 
-    <!-- Montserrat Font -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap"
-      rel="stylesheet"
-    />
+  <main id="main-content">
+    <%- include("../includes/flash.ejs") %>
+    <%- body %>
+  </main>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <%- include("../includes/footer.ejs") %>
 
-    <!-- Bootstrap CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Plus+Jakarta+Sans&family=Poppins:wght@300;400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="icon" type="image/png" sizes="192x192" href="./android-chrome-192x192.png">
-  </head>
-  <body>
-    <%- include("../includes/navbar.ejs") %> <%-
-    include("../includes/flash.ejs") %>
-    <div class="container"><%- body %></div>
-    <%- include("../includes/footer.ejs") %>
-    
-    <!-- RoomRover Chatbot Widget (Added your icon) -->
-    <style>
-      #rover-chatbot-btn {
+  <!-- Chatbot Widget -->
+  <style>
+    #rr-chat-btn {
+      position: fixed; bottom: 28px; right: 28px;
+      width: 54px; height: 54px;
+      background: var(--navy); color: #fff;
+      border: none; border-radius: 50%;
+      box-shadow: 0 4px 20px rgba(26,35,50,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; cursor: pointer; z-index: 9999;
+      transition: all 0.25s ease;
+    }
+    #rr-chat-btn:hover { transform: scale(1.08); background: #243044; }
+
+    #rr-chat-window {
+      position: fixed; bottom: 96px; right: 28px;
+      width: 340px; max-width: 94vw; max-height: 68vh;
+      background: #fff; border-radius: 16px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+      display: none; flex-direction: column; z-index: 10000;
+      overflow: hidden; border: 1px solid #e9ecef;
+    }
+    #rr-chat-header {
+      background: var(--navy); color: #fff;
+      padding: 14px 18px; font-weight: 600; font-size: 1rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    #rr-chat-header span { display: flex; align-items: center; gap: 8px; }
+    #rr-chat-close { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; opacity: 0.8; }
+    #rr-chat-close:hover { opacity: 1; }
+    #rr-chat-messages {
+      flex: 1; overflow-y: auto; padding: 14px;
+      display: flex; flex-direction: column; gap: 8px;
+      font-size: 0.9rem; background: #f8f9fb;
+    }
+    .rr-bubble {
+      max-width: 82%; padding: 9px 13px; border-radius: 12px;
+      line-height: 1.5; word-break: break-word;
+    }
+    .rr-bot  { align-self: flex-start; background: #fff; color: #1a2332; border: 1px solid #e9ecef; border-radius: 12px 12px 12px 3px; }
+    .rr-user { align-self: flex-end; background: var(--navy); color: #fff; border-radius: 12px 12px 3px 12px; }
+    #rr-chat-form {
+      display: flex; border-top: 1px solid #e9ecef;
+      padding: 10px 12px; gap: 8px; background: #fff;
+    }
+    #rr-chat-input {
+      flex: 1; border: 1.5px solid #dee2e6; border-radius: 8px;
+      padding: 8px 12px; font-size: 0.9rem; outline: none; font-family: inherit;
+    }
+    #rr-chat-input:focus { border-color: var(--navy); }
+    #rr-chat-send {
+      background: var(--navy); color: #fff; border: none;
+      border-radius: 8px; padding: 8px 16px; font-weight: 600;
+      font-size: 0.9rem; cursor: pointer; transition: background 0.2s;
+      font-family: inherit;
+    }
+    #rr-chat-send:hover { background: #243044; }
+    #rr-chat-send:disabled, #rr-chat-input:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    /* Typing indicator */
+    .rr-typing { display: flex; align-items: center; gap: 4px; padding: 12px 14px !important; }
+    .rr-typing span {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--navy); opacity: 0.4;
+      animation: rr-bounce 1.2s infinite ease-in-out;
+    }
+    .rr-typing span:nth-child(2) { animation-delay: 0.2s; }
+    .rr-typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes rr-bounce {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+      40% { transform: translateY(-6px); opacity: 1; }
+    }
+    @media (max-width: 540px) {
+      #rr-chat-btn { bottom: 18px; right: 18px; width: 50px; height: 50px; font-size: 20px; }
+      #rr-chat-window {
         position: fixed;
-        bottom: 24px;
-        right: 24px;
-        width: 60px;
-        height: 60px;
-        background: #007bff; /* Your brand color */
-        color: white;
-        border: none;
-        border-radius: 50%;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.18);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 28px;
-        cursor: pointer;
-        z-index: 9999;
-        transition: all 0.3s ease;
+        bottom: 0; left: 0; right: 0;
+        width: 100%; max-width: 100%;
+        max-height: 82vh;
+        border-radius: 22px 22px 0 0;
+        box-shadow: 0 -4px 40px rgba(0,0,0,0.2);
       }
-      #rover-chatbot-btn:hover { 
-        transform: scale(1.1);
-        box-shadow: 0 8px 32px rgba(0,0,0,0.22); 
-      }
-      #rover-chatbot-btn i {
-        color: white;
-      }
-      
-      /* Rest of your existing chatbot CSS remains unchanged */
-      #rover-chatbot-window {
-        position: fixed;
-        bottom: 100px;
-        right: 24px;
-        width: 340px;
-        max-width: 95vw;
-        max-height: 70vh;
-        background: #fff;
-        border-radius: 18px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-        display: none;
-        flex-direction: column;
-        z-index: 10000;
-        overflow: hidden;
-        animation: rover-slideup 0.3s;
-      }
-      @keyframes rover-slideup {
-        from { transform: translateY(40px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
-      }
-      #rover-chatbot-header {
-        background: linear-gradient(90deg,#2d3748,#4fd1c5);
-        color: #fff;
-        padding: 16px 20px;
-        font-weight: 700;
-        font-size: 18px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-      #rover-chatbot-header button {
-        background: none;
-        border: none;
-        color: #fff;
-        font-size: 22px;
-        cursor: pointer;
-      }
-      #rover-chatbot-messages {
-        flex: 1;
-        padding: 16px 12px;
-        overflow-y: auto;
-        background: #f7fafc;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
-        font-size: 15px;
-      }
-      .rover-bubble {
-        max-width: 80%;
-        padding: 10px 14px;
-        border-radius: 16px;
-        margin-bottom: 2px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        word-break: break-word;
-        line-height: 1.5;
-      }
-      .rover-bot {
-        align-self: flex-start;
-        background: #edf2f7;
-        color: #2d3748;
-        border-radius: 16px 16px 16px 4px;
-      }
-      .rover-user {
-        align-self: flex-end;
-        background: #4fd1c5;
-        color: #fff;
-        border-radius: 16px 16px 4px 16px;
-      }
-      #rover-chatbot-form {
-        display: flex;
-        border-top: 1px solid #e2e8f0;
-        padding: 10px 12px;
-        background: #fff;
-      }
-      #rover-chatbot-input {
-        flex: 1;
-        border: none;
-        outline: none;
-        font-size: 15px;
-        padding: 8px 10px;
-        border-radius: 8px;
-        background: #f1f5f9;
-        margin-right: 8px;
-      }
-      #rover-chatbot-send {
-        background: #4fd1c5;
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        padding: 8px 18px;
-        font-weight: 600;
-        font-size: 15px;
-        cursor: pointer;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        transition: background 0.2s;
-      }
-      #rover-chatbot-send:disabled { background: #b2f5ea; cursor: not-allowed; }
-      @media (max-width: 500px) {
-        #rover-chatbot-window { right: 2vw; width: 98vw; }
-      }
-    </style>
-    
-    <!-- Changed the icon to your preferred Font Awesome icon -->
-    <button id="rover-chatbot-btn" aria-label="Open chat">
-      <i class="fas fa-robot"></i> <!-- Your preferred icon -->
-    </button>
-    
-    <div id="rover-chatbot-window">
-      <div id="rover-chatbot-header">
-        <span><i class="fas fa-robot" style="margin-right:8px;"></i>Rover Support</span>
-        <button id="rover-chatbot-close" aria-label="Close chat">&times;</button>
-      </div>
-      <div id="rover-chatbot-messages"></div>
-      <form id="rover-chatbot-form" autocomplete="off">
-        <input id="rover-chatbot-input" type="text" placeholder="Type your message..." autocomplete="off" />
-        <button id="rover-chatbot-send" type="submit">Send</button>
-      </form>
-    </div>
-    
-    <!-- Your existing JavaScript remains unchanged -->
-    <script>
-    (function() {
-      // Dummy data
-      const ROOMS = [
-        { city: "Delhi", price: 1800, name: "Cozy Stay Delhi", dates: ["2025-06-01", "2025-06-05"] },
-        { city: "Jaipur", price: 1500, name: "Jaipur Palace Room", dates: ["2025-06-01", "2025-06-05"] },
-        { city: "Mumbai", price: 2500, name: "Mumbai Central Flat", dates: ["2025-06-10", "2025-06-15"] },
-      ];
-      const WELCOME = "Hi 👋, I'm Rover! Ask me about rooms by location, price, or dates.";
-
-      // Elements
-      const btn = document.getElementById('rover-chatbot-btn');
-      const win = document.getElementById('rover-chatbot-window');
-      const closeBtn = document.getElementById('rover-chatbot-close');
-      const messages = document.getElementById('rover-chatbot-messages');
-      const form = document.getElementById('rover-chatbot-form');
-      const input = document.getElementById('rover-chatbot-input');
-      const sendBtn = document.getElementById('rover-chatbot-send');
-
-      let closeTimeout = null;
-
-      function addMessage(text, from) {
-        const div = document.createElement('div');
-        div.className = 'rover-bubble ' + (from === 'user' ? 'rover-user' : 'rover-bot');
-        div.textContent = text;
-        messages.appendChild(div);
-        messages.scrollTop = messages.scrollHeight;
-      }
-
-      function botReply(userMsg) {
-        const msg = userMsg.trim().toLowerCase();
-
-        // Bye/exit
-        if (/bye|exit/.test(msg)) {
-          addMessage("Goodbye! Have a great day and happy booking! 👋", "bot");
-          closeTimeout = setTimeout(() => { win.style.display = "none"; }, 2000);
-          return;
-        }
-        // Location
-        if (/delhi/.test(msg)) {
-          const found = ROOMS.find(r => r.city.toLowerCase() === "delhi");
-          if (found)
-            return addMessage(`Yes! We have rooms in Delhi. Example: "${found.name}" for ₹${found.price}/night.`, "bot");
-          else
-            return addMessage("Sorry, no rooms found in Delhi right now.", "bot");
-        }
-        if (/jaipur/.test(msg)) {
-          const found = ROOMS.find(r => r.city.toLowerCase() === "jaipur");
-          if (found)
-            return addMessage(`Yes! We have rooms in Jaipur. Example: "${found.name}" for ₹${found.price}/night.`, "bot");
-          else
-            return addMessage("Sorry, no rooms found in Jaipur right now.", "bot");
-        }
-        // Price
-        if (/under ?₹?(\d+)/.test(msg)) {
-          const price = parseInt(msg.match(/under ?₹?(\d+)/)[1]);
-          const found = ROOMS.filter(r => r.price < price);
-          if (found.length)
-            return addMessage(`Rooms under ₹${price}: ${found.map(r => `"${r.name}" in ${r.city} (₹${r.price})`).join(", ")}.`, "bot");
-          else
-            return addMessage(`Sorry, no rooms found under ₹${price}.`, "bot");
-        }
-        // Dates + city
-        if (/(\d{1,2} ?[a-zA-Z]+).*to.*(\d{1,2} ?[a-zA-Z]+).*in (.+)/.test(msg)) {
-          return addMessage('Yes! We have rooms available in Jaipur from 1 June to 5 June. Example: "Jaipur Palace Room" for ₹1500/night.', "bot");
-        }
-        // General
-        if (/hello|hi|hey/.test(msg)) {
-          return addMessage("Hello! How can I assist you with your room search today?", "bot");
-        }
-        if (/room|rooms|listing|book/.test(msg)) {
-          return addMessage("You can ask me about available rooms by city, price, or dates!", "bot");
-        }
-        // Fallback
-        addMessage("Sorry, I didn't understand that. Try asking about rooms in a city, by price, or by date!", "bot");
-      }
-
-      // Open chat
-      btn.onclick = function() {
-        win.style.display = "flex";
-        messages.innerHTML = "";
-        addMessage(WELCOME, "bot");
-        input.value = "";
-        input.focus();
-        if (closeTimeout) clearTimeout(closeTimeout);
-      };
-      // Close chat
-      closeBtn.onclick = function() {
-        win.style.display = "none";
-        if (closeTimeout) clearTimeout(closeTimeout);
-      };
-
-      // Send message
-      form.onsubmit = function(e) {
-        e.preventDefault();
-        const userMsg = input.value.trim();
-        if (!userMsg) return;
-        addMessage(userMsg, "user");
-        input.value = "";
-        setTimeout(() => botReply(userMsg), 600 + Math.random() * 400);
-      };
-
-      // Enter key shortcut
-      input.onkeydown = function(e) {
-        if (e.key === "Enter" && !e.shiftKey) {
-          e.preventDefault();
-          sendBtn.click();
-        }
-      };
-    })();
-    </script>
-
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
-      crossorigin="anonymous"
-    ></script>
-    <script src="/js/script.js"></script>
-    
-    <!-- Google Translate (unchanged) -->
-    <div id="google_translate_element" style="display:none;"></div>
-    <script type="text/javascript">
-    function googleTranslateElementInit() {
-      new google.translate.TranslateElement({
-        pageLanguage: 'en',
-        includedLanguages: 'en,hi',
-        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-      }, 'google_translate_element');
+      #rr-chat-header { padding: 16px 18px; border-radius: 22px 22px 0 0; }
     }
 
+    /* Chat widget dark mode */
+    [data-theme="dark"] #rr-chat-window {
+      background: #1a2233; border-color: rgba(255,255,255,0.08);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+    }
+    [data-theme="dark"] #rr-chat-messages { background: #0f1624; }
+    [data-theme="dark"] .rr-bot {
+      background: #1a2233; color: #e2e8f0; border-color: rgba(255,255,255,0.08);
+    }
+    [data-theme="dark"] #rr-chat-form {
+      background: #1a2233; border-top-color: rgba(255,255,255,0.07);
+    }
+    [data-theme="dark"] #rr-chat-input {
+      background: #0f1624; border-color: rgba(255,255,255,0.10);
+      color: #e2e8f0;
+    }
+    [data-theme="dark"] #rr-chat-input::placeholder { color: #475569; }
+    [data-theme="dark"] .rr-typing span { background: #4f6ef2; }
+    [data-theme="dark"] #rr-chat-btn {
+      background: #4f6ef2;
+      box-shadow: 0 4px 20px rgba(79,110,242,0.4);
+    }
+    [data-theme="dark"] #rr-chat-btn:hover { background: #3b5de8; }
+  </style>
+
+  <!-- Back to Top -->
+  <button id="rr-top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
+    <i class="bi bi-arrow-up"></i>
+  </button>
+
+  <button id="rr-chat-btn" aria-label="Open chat support">
+    <i class="bi bi-chat-dots-fill"></i>
+  </button>
+
+  <div id="rr-chat-window">
+    <div id="rr-chat-header">
+      <span><i class="bi bi-robot"></i> Rover Assistant</span>
+      <button id="rr-chat-close" aria-label="Close">&times;</button>
+    </div>
+    <div id="rr-chat-messages"></div>
+    <form id="rr-chat-form" autocomplete="off">
+      <input id="rr-chat-input" type="text" placeholder="Ask me anything…" />
+      <button id="rr-chat-send" type="submit">Send</button>
+    </form>
+  </div>
+
+  <script>
+  (function() {
+    const btn = document.getElementById('rr-chat-btn');
+    const win = document.getElementById('rr-chat-window');
+    const closeBtn = document.getElementById('rr-chat-close');
+    const messages = document.getElementById('rr-chat-messages');
+    const form = document.getElementById('rr-chat-form');
+    const input = document.getElementById('rr-chat-input');
+    const sendBtn = document.getElementById('rr-chat-send');
+
+    function addMsg(text, from) {
+      const d = document.createElement('div');
+      d.className = 'rr-bubble ' + (from === 'user' ? 'rr-user' : 'rr-bot');
+      d.textContent = text;
+      messages.appendChild(d);
+      messages.scrollTop = messages.scrollHeight;
+      return d;
+    }
+
+    function addTyping() {
+      const d = document.createElement('div');
+      d.className = 'rr-bubble rr-bot rr-typing';
+      d.innerHTML = '<span></span><span></span><span></span>';
+      messages.appendChild(d);
+      messages.scrollTop = messages.scrollHeight;
+      return d;
+    }
+
+    async function askRover(msg) {
+      const typing = addTyping();
+      sendBtn.disabled = true;
+      input.disabled = true;
+      try {
+        const res = await fetch('/chatbot', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: msg })
+        });
+        const data = await res.json();
+        typing.remove();
+        addMsg(data.reply || "I didn't catch that. Try again!", 'bot');
+      } catch {
+        typing.remove();
+        addMsg('Network error. Please check your connection and try again.', 'bot');
+      } finally {
+        sendBtn.disabled = false;
+        input.disabled = false;
+        input.focus();
+      }
+    }
+
+    btn.onclick = function() {
+      win.style.display = 'flex';
+      messages.innerHTML = '';
+      addMsg("Hi! I'm Rover 👋 Ask me about rooms, bookings, or anything travel-related.", 'bot');
+      input.focus();
+    };
+    closeBtn.onclick = function() { win.style.display = 'none'; };
+
+    form.onsubmit = function(e) {
+      e.preventDefault();
+      const userMsg = input.value.trim();
+      if (!userMsg || sendBtn.disabled) return;
+      addMsg(userMsg, 'user');
+      input.value = '';
+      askRover(userMsg);
+    };
+  })();
+  </script>
+
+  <!-- Wishlist badge init (global) -->
+  <script>
+  (function() {
+    function updateWishlistBadge() {
+      try {
+        const list = JSON.parse(localStorage.getItem('rr_wishlist')) || [];
+        const badge = document.getElementById('rr-wishlist-badge');
+        if (badge) { badge.textContent = list.length || ''; badge.style.display = list.length ? 'flex' : 'none'; }
+      } catch(e) {}
+    }
+    document.addEventListener('DOMContentLoaded', updateWishlistBadge);
+  })();
+  </script>
+
+  <!-- Scroll Reveal + Back to Top + Page Transitions -->
+  <script>
+  (function() {
+    // Scroll Reveal
+    const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+    if (revealEls.length) {
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+      }, { threshold: 0.12 });
+      revealEls.forEach(el => obs.observe(el));
+    }
+    // Back to Top
+    const topBtn = document.getElementById('rr-top-btn');
+    window.addEventListener('scroll', () => {
+      topBtn.classList.toggle('show', window.scrollY > 320);
+    }, { passive: true });
+    // Page exit transitions
+    document.addEventListener('click', function(e) {
+      const a = e.target.closest('a[href]');
+      if (!a) return;
+      const href = a.getAttribute('href');
+      if (!href || href.startsWith('#') || href.startsWith('javascript') || a.target || e.ctrlKey || e.metaKey || e.shiftKey) return;
+      if (href.startsWith('http') && !href.includes(location.hostname)) return;
+      const main = document.querySelector('main');
+      if (main) {
+        e.preventDefault();
+        main.classList.add('rr-exit');
+        setTimeout(() => { window.location.href = href; }, 200);
+      }
+    });
+  })();
+  </script>
+
+  <!-- Dark Mode Toggle -->
+  <script>
+  (function() {
+    const toggleBtns = document.querySelectorAll('.rr-theme-toggle');
+    function applyTheme(t) {
+      document.documentElement.setAttribute('data-theme', t);
+      localStorage.setItem('rr-theme', t);
+      toggleBtns.forEach(btn => {
+        const icon = btn.querySelector('i');
+        if (icon) icon.className = t === 'dark' ? 'bi bi-sun' : 'bi bi-moon-stars';
+      });
+    }
+    toggleBtns.forEach(btn => {
+      const icon = btn.querySelector('i');
+      const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+      if (icon) icon.className = cur === 'dark' ? 'bi bi-sun' : 'bi bi-moon-stars';
+      btn.addEventListener('click', function() {
+        const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+        applyTheme(cur === 'dark' ? 'light' : 'dark');
+      });
+    });
+  })();
+  </script>
+
+  <!-- Google Translate (hidden, triggered by navbar) -->
+  <div id="google_translate_element" style="display:none;"></div>
+  <script>
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({ pageLanguage: 'en', includedLanguages: 'en,hi' }, 'google_translate_element');
+    }
     document.addEventListener('DOMContentLoaded', function() {
-      document.querySelectorAll('.lang-option').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          var lang = btn.getAttribute('data-lang');
-          var googleLang = lang === 'en' ? 'en' : 'hi';
-          var select = document.querySelector('.goog-te-combo');
-          if (select) {
-            select.value = googleLang;
-            select.dispatchEvent(new Event('change'));
-          }
-          document.getElementById('current-lang-label').textContent = lang === 'en' ? 'English' : 'हिन्दी';
+      document.querySelectorAll('.lang-option').forEach(function(b) {
+        b.addEventListener('click', function() {
+          var lang = b.getAttribute('data-lang');
+          var sel = document.querySelector('.goog-te-combo');
+          if (sel) { sel.value = lang; sel.dispatchEvent(new Event('change')); }
         });
       });
     });
-    </script>
-    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-    <style>
-    .goog-te-banner-frame.skiptranslate, .goog-logo-link, .goog-te-gadget span {
-      display: none !important;
-    }
-    body { top: 0px !important; }
-    </style>
-  </body>
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  <style>
+    .goog-te-banner-frame.skiptranslate, .goog-logo-link, .goog-te-gadget span { display: none !important; }
+    body { top: 0 !important; }
+  </style>
+
+</body>
 </html>

@@ -1,195 +1,325 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top border-bottom shadow-sm">
-  <div class="container-fluid px-4">
-    <!-- Logo -->
-    <a class="navbar-brand d-flex align-items-center animate__animated animate__fadeIn" href="/">
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#007bff" viewBox="0 0 24 24" class="me-2">
-        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-      </svg>
-      <span class="fw-bold text-gradient animate__animated animate__pulse animate__infinite" style="font-size: 1.5rem;">RoomRover</span>
+<style>
+  /* ── Navbar ── */
+  .rr-nav {
+    position: sticky; top: 0; z-index: 1000;
+    background: var(--white);
+    border-bottom: 1px solid var(--gray-200);
+    box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+    transition: background 0.3s ease, border-color 0.3s ease;
+  }
+  [data-theme="dark"] .rr-nav {
+    background: rgba(15,22,36,0.95);
+    border-color: rgba(255,255,255,0.07);
+    box-shadow: 0 1px 20px rgba(0,0,0,0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .rr-nav-inner {
+    display: flex; align-items: center;
+    padding: 0 28px; height: 66px;
+    max-width: 1280px; margin: 0 auto;
+    position: relative;
+  }
+
+  /* Logo — left */
+  .rr-logo {
+    display: flex; align-items: center;
+    font-size: 1.45rem; font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--navy); text-decoration: none;
+    flex-shrink: 0; line-height: 1;
+    z-index: 2;
+  }
+  [data-theme="dark"] .rr-logo { color: #f1f5f9; }
+  .rr-logo .rr-logo-r  { color: inherit; }
+  .rr-logo .rr-logo-oo { color: var(--gold); }
+
+  /* Center nav links */
+  .rr-nav-center {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 2px;
+  }
+  .rr-nav-center-link {
+    color: var(--gray-700); font-weight: 500; font-size: 0.875rem;
+    padding: 7px 14px; border-radius: var(--radius-sm);
+    transition: var(--transition); white-space: nowrap;
+    text-decoration: none;
+  }
+  [data-theme="dark"] .rr-nav-center-link { color: #94a3b8; }
+  .rr-nav-center-link:hover { background: var(--gray-100); color: var(--navy); }
+  [data-theme="dark"] .rr-nav-center-link:hover { background: rgba(255,255,255,0.07); color: #f1f5f9; }
+  .rr-nav-center-link.active { color: var(--navy); font-weight: 600; }
+  [data-theme="dark"] .rr-nav-center-link.active { color: #4f6ef2; }
+
+  /* Right side */
+  .rr-nav-actions { display: flex; align-items: center; gap: 6px; margin-left: auto; z-index: 2; }
+
+  /* Wishlist icon button */
+  .rr-wishlist-btn {
+    position: relative; width: 38px; height: 38px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1.5px solid var(--gray-300); border-radius: 50%;
+    background: var(--white); cursor: pointer; text-decoration: none;
+    color: var(--gray-700); font-size: 1.05rem;
+    transition: var(--transition);
+  }
+  [data-theme="dark"] .rr-wishlist-btn { border-color: rgba(255,255,255,0.12); background: transparent; color: #94a3b8; }
+  .rr-wishlist-btn:hover { border-color: var(--navy); color: #ef4444; transform: scale(1.05); }
+  [data-theme="dark"] .rr-wishlist-btn:hover { border-color: #ef4444; color: #ef4444; }
+  #rr-wishlist-badge {
+    position: absolute; top: -4px; right: -4px;
+    min-width: 17px; height: 17px; border-radius: 20px;
+    background: #ef4444; color: #fff;
+    font-size: 0.62rem; font-weight: 700;
+    display: none; align-items: center; justify-content: center;
+    padding: 0 4px; border: 1.5px solid var(--white);
+  }
+
+  /* Dropdown */
+  .rr-dropdown { position: relative; }
+  .rr-dropdown-toggle {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 13px; border-radius: 40px;
+    border: 1.5px solid var(--gray-300); background: var(--white);
+    cursor: pointer; font-size: 0.875rem; font-weight: 500;
+    color: var(--gray-800); transition: var(--transition);
+    font-family: inherit;
+  }
+  [data-theme="dark"] .rr-dropdown-toggle {
+    border-color: rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); color: #e2e8f0;
+  }
+  .rr-dropdown-toggle:hover { border-color: var(--navy); }
+  [data-theme="dark"] .rr-dropdown-toggle:hover { border-color: #4f6ef2; }
+  .rr-dropdown-toggle .rr-user-icon { font-size: 1.3rem; color: var(--navy); }
+  [data-theme="dark"] .rr-dropdown-toggle .rr-user-icon { color: #94a3b8; }
+
+  .rr-dropdown-menu {
+    position: absolute; top: calc(100% + 8px); right: 0;
+    min-width: 215px; background: var(--white);
+    border-radius: var(--radius); border: var(--border);
+    box-shadow: var(--shadow-lg); padding: 5px;
+    opacity: 0; visibility: hidden; transform: translateY(-8px);
+    transition: all 0.18s ease; z-index: 500;
+  }
+  [data-theme="dark"] .rr-dropdown-menu {
+    background: #1a2233; border-color: rgba(255,255,255,0.08);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.7);
+  }
+  .rr-dropdown.open .rr-dropdown-menu {
+    opacity: 1; visibility: visible; transform: translateY(0);
+  }
+  .rr-dropdown-header {
+    padding: 8px 12px 6px; font-size: 0.78rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-400);
+  }
+  .rr-dropdown-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px; border-radius: 7px;
+    font-size: 0.875rem; color: var(--gray-800);
+    text-decoration: none; transition: background 0.15s;
+    cursor: pointer; font-family: inherit;
+    background: none; border: none; width: 100%; text-align: left;
+  }
+  [data-theme="dark"] .rr-dropdown-item { color: #cbd5e1; }
+  .rr-dropdown-item:hover { background: var(--gray-100); color: var(--navy); }
+  [data-theme="dark"] .rr-dropdown-item:hover { background: rgba(255,255,255,0.07); color: #f1f5f9; }
+  .rr-dropdown-item i { width: 16px; color: var(--gray-500); flex-shrink: 0; }
+  [data-theme="dark"] .rr-dropdown-item i { color: #64748b; }
+  .rr-dropdown-item.danger { color: var(--red); }
+  .rr-dropdown-item.danger i { color: var(--red); }
+  .rr-dropdown-item.danger:hover { background: #fee2e2; color: var(--red); }
+  [data-theme="dark"] .rr-dropdown-item.danger:hover { background: rgba(220,53,69,0.15); }
+  .rr-dropdown-divider { height: 1px; background: var(--gray-200); margin: 4px 0; }
+
+  /* Hamburger */
+  .rr-hamburger {
+    display: none; flex-direction: column;
+    justify-content: center; gap: 5px;
+    cursor: pointer; padding: 6px;
+    border: 1.5px solid var(--gray-300);
+    border-radius: 8px; background: none;
+    width: 38px; height: 38px;
+  }
+  [data-theme="dark"] .rr-hamburger { border-color: rgba(255,255,255,0.12); }
+  .rr-hamburger span {
+    display: block; width: 18px; height: 2px;
+    background: var(--navy); border-radius: 2px;
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.2s ease;
+    margin: 0 auto;
+    transform-origin: center;
+  }
+  [data-theme="dark"] .rr-hamburger span { background: #cbd5e1; }
+  /* Hamburger → X animation */
+  .rr-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .rr-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .rr-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* Mobile menu — smooth slide */
+  .rr-mobile-menu {
+    display: flex; flex-direction: column;
+    padding: 0 16px; border-top: 1px solid var(--gray-200);
+    gap: 2px; background: var(--white);
+    max-height: 0; overflow: hidden; opacity: 0;
+    transition: max-height 0.38s cubic-bezier(0.4,0,0.2,1), opacity 0.28s ease, padding 0.3s ease;
+    pointer-events: none;
+  }
+  [data-theme="dark"] .rr-mobile-menu {
+    background: rgba(15,22,36,0.98); border-color: rgba(255,255,255,0.07);
+  }
+  .rr-mobile-menu.open {
+    max-height: 600px; opacity: 1;
+    padding: 10px 16px 16px;
+    pointer-events: auto;
+  }
+
+  .rr-mobile-menu a, .rr-mobile-menu button.as-link {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: var(--radius-sm);
+    font-size: 0.925rem; color: var(--gray-800);
+    text-decoration: none; transition: background 0.15s;
+    background: none; border: none; cursor: pointer;
+    font-family: inherit; font-weight: 500;
+    width: 100%; text-align: left;
+  }
+  [data-theme="dark"] .rr-mobile-menu a,
+  [data-theme="dark"] .rr-mobile-menu button.as-link { color: #cbd5e1; }
+  .rr-mobile-menu a:hover, .rr-mobile-menu button.as-link:hover {
+    background: var(--gray-100); color: var(--navy);
+  }
+  [data-theme="dark"] .rr-mobile-menu a:hover,
+  [data-theme="dark"] .rr-mobile-menu button.as-link:hover {
+    background: rgba(255,255,255,0.07); color: #f1f5f9;
+  }
+  .rr-mobile-menu .danger { color: var(--red); }
+  .rr-mobile-menu .danger:hover { background: #fee2e2; }
+  [data-theme="dark"] .rr-mobile-menu .danger:hover { background: rgba(220,53,69,0.15); }
+  .rr-mobile-menu .divider { height: 1px; background: var(--gray-200); margin: 4px 0; flex-shrink: 0; }
+  [data-theme="dark"] .rr-mobile-menu .divider { background: rgba(255,255,255,0.07); }
+
+  @media (max-width: 900px) {
+    .rr-nav-center-link { padding: 7px 10px; font-size: 0.825rem; }
+  }
+  @media (max-width: 700px) {
+    .rr-nav-center { display: none; }
+    .rr-hamburger { display: flex; }
+    .rr-dropdown { display: none; }
+  }
+</style>
+
+<nav class="rr-nav" id="rr-nav">
+  <div class="rr-nav-inner">
+
+    <!-- Logo: left -->
+    <a href="/" class="rr-logo">
+      <span class="rr-logo-r">Room</span><span class="rr-logo-oo">Rover</span>
     </a>
 
-    <!-- Search Bar (Centered) -->
-    <form class="d-none d-lg-flex justify-content-center position-absolute start-0 end-0 mx-auto"
-          style="width: fit-content;"
-          action="/listings"
-          method="get">
-      <div class="input-group rounded-pill border shadow-sm animate__animated animate__fadeInUp" style="width: 450px; border: 2px solid #007bff; transition: all 0.3s ease;">
-        <input type="text" class="form-control border-0 py-2" name="q" placeholder="Search by location or title..." aria-label="Search">
-        <button class="btn rounded-pill ms-auto search-btn" type="submit" style="padding: 8px 16px; background: linear-gradient(45deg, #007bff, #00ddeb); color: #fff; transition: transform 0.2s;">
-          <i class="bi bi-search"></i>
-        </button>
-      </div>
-    </form>
-
-    <!-- Right Side Menu -->
-    <div class="d-flex align-items-center ms-auto">
-      <!-- Become Host Link -->
-      <a href="/host" class="text-dark text-decoration-none me-3 d-none d-md-block fw-medium animate__animated animate__fadeInRight" data-i18n="become_host" style="transition: color 0.3s;">Become a Host</a>
-      
-      <!-- Language Switcher Dropdown -->
-      <div class="dropdown me-2 animate__animated animate__fadeInRight">
-        <button class="btn btn-light rounded-pill p-2 dropdown-toggle d-flex align-items-center glow-effect" type="button" id="langDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-          <i class="bi bi-globe me-1"></i>
-          <span id="current-lang-label">English</span>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end shadow-lg mt-2 rounded-3" aria-labelledby="langDropdown">
-          <li>
-            <button class="dropdown-item lang-option hover-scale" data-lang="en">English</button>
-          </li>
-          <li>
-            <button class="dropdown-item lang-option hover-scale" data-lang="hi">हिन्दी</button>
-          </li>
-        </ul>
-      </div>
-
-      <!-- User Menu -->
-      <div class="dropdown animate__animated animate__fadeInRight">
-        <button class="btn btn-light rounded-pill p-2 dropdown-toggle d-flex align-items-center glow-effect" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-          <i class="bi bi-list me-1"></i>
-          <i class="bi bi-person-circle ms-1"></i>
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-user shadow-lg mt-2" aria-labelledby="userDropdown">
-          <% if (!currentUser) { %>
-            <li><a class="dropdown-item hover-scale" href="/login"><i class="bi bi-box-arrow-in-right me-2"></i><span data-i18n="login">Log in</span></a></li>
-            <li><a class="dropdown-item hover-scale" href="/signup"><i class="bi bi-person-plus me-2"></i><span data-i18n="signup">Sign up</span></a></li>
-            <li><hr class="dropdown-divider"></li>
-          <% } else { %>
-            <li><h6 class="dropdown-header"><span data-i18n="welcome">Welcome</span>, <%= currentUser.username %></h6></li>
-            <li>
-              <a class="dropdown-item hover-scale" href="/profile">
-                <i class="bi bi-person me-2"></i>
-                <span data-i18n="profile">Profile</span>
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item hover-scale" href="/trips">
-                <i class="bi bi-suitcase me-2"></i><i class="bi bi-house-door me-2"></i>
-                <span data-i18n="my_trips">My Trips</span>
-              </a>
-            </li>
-            <li><hr class="dropdown-divider"></li>
-            <li>
-              <a class="dropdown-item hover-scale" href="/listings/new">
-                <i class="bi bi-house-door me-2"></i>
-                <span data-i18n="host_home">Host your home</span>
-              </a>
-            </li>
-          <% } %>
-          <li>
-            <a class="dropdown-item hover-scale" href="/help.html">
-              <i class="bi bi-question-circle me-2"></i>
-              <span data-i18n="help">Help</span>
-            </a>
-          </li>
-          <% if (currentUser) { %>
-            <li>
-              <a class="dropdown-item text-danger hover-scale" href="/logout">
-                <i class="bi bi-box-arrow-right me-2"></i>
-                <span data-i18n="logout">Log out</span>
-              </a>
-            </li>
-          <% } %>
-        </ul>
-      </div>
+    <!-- Center nav links -->
+    <div class="rr-nav-center">
+      <a href="/" class="rr-nav-center-link">Home</a>
+      <a href="/listings" class="rr-nav-center-link">Explore</a>
+      <a href="/#about" class="rr-nav-center-link">About</a>
+      <a href="/help.html" class="rr-nav-center-link">Contact</a>
+      <a href="/listings/new" class="rr-nav-center-link">List your place</a>
     </div>
+
+    <!-- Right: theme toggle + wishlist + user dropdown + hamburger -->
+    <div class="rr-nav-actions">
+      <!-- Dark/Light toggle -->
+      <button class="rr-theme-toggle" aria-label="Toggle dark/light mode">
+        <i class="bi bi-sun"></i>
+      </button>
+
+      <a href="/wishlist" class="rr-wishlist-btn" title="Wishlist" aria-label="Wishlist">
+        <i class="bi bi-heart" aria-hidden="true"></i>
+        <span id="rr-wishlist-badge" aria-label="wishlist count"></span>
+      </a>
+
+      <div class="rr-dropdown" id="userDropdown">
+        <button class="rr-dropdown-toggle" onclick="toggleDropdown('userDropdown')">
+          <i class="bi bi-list" style="font-size:1rem;"></i>
+          <i class="bi bi-person-circle rr-user-icon"></i>
+        </button>
+        <div class="rr-dropdown-menu">
+          <% if (!currentUser) { %>
+            <a href="/signup" class="rr-dropdown-item"><i class="bi bi-person-plus"></i> Sign up</a>
+            <a href="/login"  class="rr-dropdown-item"><i class="bi bi-box-arrow-in-right"></i> Log in</a>
+            <div class="rr-dropdown-divider"></div>
+            <a href="/listings" class="rr-dropdown-item"><i class="bi bi-compass"></i> Explore</a>
+            <a href="/help.html" class="rr-dropdown-item"><i class="bi bi-question-circle"></i> Help</a>
+          <% } else { %>
+            <div class="rr-dropdown-header">Hi, <%= currentUser.username %></div>
+            <div class="rr-dropdown-divider"></div>
+            <a href="/profile"      class="rr-dropdown-item"><i class="bi bi-person"></i> Profile</a>
+            <a href="/trips"        class="rr-dropdown-item"><i class="bi bi-suitcase"></i> My Trips</a>
+            <a href="/listings/new" class="rr-dropdown-item"><i class="bi bi-plus-circle"></i> List your place</a>
+            <a href="/wishlist"     class="rr-dropdown-item"><i class="bi bi-heart"></i> Wishlist</a>
+            <% if (currentUser.isAdmin) { %>
+              <div class="rr-dropdown-divider"></div>
+              <a href="/admin" class="rr-dropdown-item"><i class="bi bi-speedometer2" style="color:var(--gold);"></i> Admin Dashboard</a>
+            <% } %>
+            <div class="rr-dropdown-divider"></div>
+            <a href="/help.html"    class="rr-dropdown-item"><i class="bi bi-question-circle"></i> Help</a>
+            <a href="/logout"       class="rr-dropdown-item danger"><i class="bi bi-box-arrow-right"></i> Log out</a>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Hamburger (mobile only) -->
+      <button class="rr-hamburger" id="rr-hamburger" onclick="toggleMobileMenu()" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div><!-- /.rr-nav-actions -->
+  </div><!-- /.rr-nav-inner -->
+
+  <!-- Mobile slide-down menu -->
+  <div class="rr-mobile-menu" id="rr-mobile-menu">
+    <div class="divider"></div>
+    <a href="/"><i class="bi bi-house-door"></i> Home</a>
+    <a href="/listings"><i class="bi bi-compass"></i> Explore</a>
+    <a href="/#about"><i class="bi bi-info-circle"></i> About</a>
+    <a href="/help.html"><i class="bi bi-question-circle"></i> Contact / Help</a>
+    <div class="divider"></div>
+    <% if (!currentUser) { %>
+      <a href="/signup"><i class="bi bi-person-plus"></i> Sign up</a>
+      <a href="/login"><i class="bi bi-box-arrow-in-right"></i> Log in</a>
+    <% } else { %>
+      <a href="/profile"><i class="bi bi-person"></i> Profile</a>
+      <a href="/trips"><i class="bi bi-suitcase"></i> My Trips</a>
+      <a href="/wishlist"><i class="bi bi-heart"></i> Wishlist</a>
+      <a href="/listings/new"><i class="bi bi-plus-circle"></i> List your place</a>
+      <div class="divider"></div>
+      <a href="/logout" class="danger"><i class="bi bi-box-arrow-right"></i> Log out</a>
+    <% } %>
   </div>
 </nav>
 
-<style>
-  /* Enhanced Dropdown Styling */
-  .dropdown-menu-user {
-    min-width: 240px;
-    border-radius: 1rem;
-    border: 1px solid #e3e6ee;
-    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
-    padding: 0.5rem 0;
-    font-size: 1rem;
-    background: #fff;
-    animation: slideIn 0.3s ease;
+<script>
+  function toggleDropdown(id) {
+    const el = document.getElementById(id);
+    const wasOpen = el.classList.contains('open');
+    document.querySelectorAll('.rr-dropdown').forEach(d => d.classList.remove('open'));
+    if (!wasOpen) el.classList.add('open');
   }
-
-  .dropdown-menu-user .dropdown-header {
-    font-weight: 600;
-    color: #375aee;
-    background: linear-gradient(45deg, #f5f7ff, #e7edff);
-    border-bottom: 1px solid #e3e6ee;
-    padding: 0.75rem 1.25rem;
-    margin-bottom: 0.25rem;
-    border-radius: 1rem 1rem 0 0;
-  }
-
-  .dropdown-menu-user .dropdown-item {
-    padding: 0.75rem 1.25rem;
-    transition: all 0.2s ease;
-    border-radius: 0.5rem;
-    margin: 0 0.25rem;
-  }
-
-  .dropdown-menu-user .dropdown-item:hover,
-  .dropdown-menu-user .dropdown-item:focus {
-    background: linear-gradient(45deg, #e7edff, #d6e0ff);
-    color: #375aee;
-    transform: translateX(5px);
-  }
-
-  .dropdown-menu-user .dropdown-divider {
-    margin: 0.5rem 0;
-    border-color: #e3e6ee;
-  }
-
-  .dropdown-menu-user .text-danger {
-    color: #d32f2f !important;
-  }
-
-  /* Gradient Text for Logo */
-  .text-gradient {
-    background: linear-gradient(45deg, #007bff, #00ddeb);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  /* Glow Effect for Buttons */
-  .glow-effect {
-    transition: box-shadow 0.3s ease;
-  }
-
-  .glow-effect:hover {
-    box-shadow: 0 0 15px rgba(0, 123, 255, 0.3);
-  }
-
-  /* Hover Scale Effect */
-  .hover-scale {
-    transition: transform 0.2s ease;
-  }
-
-  .hover-scale:hover {
-    transform: scale(1.05);
-  }
-
-  /* Search Button Hover */
-  .search-btn:hover {
-    transform: scale(1.1);
-  }
-
-  /* Animation for Dropdown */
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.rr-dropdown')) {
+      document.querySelectorAll('.rr-dropdown').forEach(d => d.classList.remove('open'));
     }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  });
+  function toggleMobileMenu() {
+    const menu = document.getElementById('rr-mobile-menu');
+    const ham  = document.getElementById('rr-hamburger');
+    menu.classList.toggle('open');
+    ham.classList.toggle('open');
   }
-
-  /* Responsive Adjustments */
-  @media (max-width: 991px) {
-    .navbar-brand {
-      font-size: 1.2rem;
-    }
-    .input-group {
-      width: 300px !important;
-    }
-  }
-</style>
+  // Highlight active nav link
+  (function() {
+    const path = window.location.pathname;
+    document.querySelectorAll('.rr-nav-center-link').forEach(link => {
+      const href = link.getAttribute('href');
+      if (href === path || (href === '/listings' && path.startsWith('/listings'))) {
+        link.classList.add('active');
+      }
+    });
+  })();
+</script>

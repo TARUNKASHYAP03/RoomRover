@@ -1,13 +1,102 @@
-<% layout("layouts/boilerplate") %>
+<%- layout("layouts/boilerplate") %>
 <% if (success && success.length) { %>
   <div class="alert alert-success"><%= success[0] %></div>
 <% } %>
-<% if (error && error.length) { %>
-  <div class="alert alert-danger"><%= error[0] %></div>
-<% } %>
-<div style="max-width:500px;margin:3rem auto;background:#fff;padding:2.5rem 2rem;border-radius:1.5rem;box-shadow:0 4px 24px rgba(34,34,34,0.07);text-align:center;">
-  <i class="fa fa-check-circle" style="color:#38d39f;font-size:3rem;margin-bottom:1rem;"></i>
-  <h2 style="margin-bottom:1rem;">Booking Confirmed!</h2>
-  <p style="font-size:1.1em;">Your stay at <b><%= booking.listing.title %></b> is booked from <b><%= booking.startDate.toDateString() %></b> to <b><%= booking.endDate.toDateString() %></b> for <b><%= booking.guests %></b> guest<%= booking.guests > 1 ? 's' : '' %>.</p>
-  <a href="/listings/<%= booking.listing._id %>" class="filter-chip" style="background:#222;color:#fff;margin-top:1.5rem;display:inline-block;">Back to Listing</a>
+<style>
+  .rr-confirm-page {
+    min-height: calc(100vh - 68px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 40px 16px;
+    background: linear-gradient(135deg, var(--off-white) 0%, #eef2f7 100%);
+  }
+  [data-theme="dark"] .rr-confirm-page {
+    background: radial-gradient(ellipse at 50% 30%, rgba(16,185,129,0.1) 0%, transparent 60%), #0f1624;
+  }
+  .rr-confirm-card {
+    width: 100%; max-width: 500px;
+    background: var(--white); border-radius: var(--radius-xl);
+    border: var(--border); box-shadow: var(--shadow-lg);
+    padding: 40px; text-align: center;
+  }
+  [data-theme="dark"] .rr-confirm-card {
+    background: rgba(255,255,255,0.04); border-color: rgba(16,185,129,0.2);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    backdrop-filter: blur(16px);
+  }
+  .rr-confirm-icon {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: #d1fae5; display: flex; align-items: center;
+    justify-content: center; margin: 0 auto 20px;
+    font-size: 2rem; color: #10b981;
+  }
+  .rr-confirm-card h2 { font-size: 1.6rem; color: var(--navy); margin-bottom: 8px; }
+  .rr-confirm-card > p { color: var(--gray-600); margin-bottom: 28px; font-size: 0.95rem; }
+
+  .rr-confirm-details {
+    background: var(--gray-50); border-radius: var(--radius);
+    border: var(--border); padding: 20px; margin-bottom: 24px;
+    text-align: left;
+  }
+  .rr-confirm-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 9px 0; border-bottom: var(--border); font-size: 0.9rem;
+  }
+  .rr-confirm-row:last-child { border-bottom: none; }
+  .rr-confirm-row .label { color: var(--gray-500); }
+  .rr-confirm-row .value { font-weight: 600; color: var(--navy); }
+
+  .rr-confirm-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  [data-theme="dark"] .rr-confirm-card h2 { color: #f1f5f9; }
+  [data-theme="dark"] .rr-confirm-card > p { color: #94a3b8; }
+  [data-theme="dark"] .rr-confirm-details { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.07); }
+  [data-theme="dark"] .rr-confirm-row .label { color: #64748b; }
+  [data-theme="dark"] .rr-confirm-row .value { color: #e2e8f0; }
+  [data-theme="dark"] .rr-confirm-row { border-bottom-color: rgba(255,255,255,0.06); }
+  [data-theme="dark"] .rr-confirm-icon { background: rgba(16,185,129,0.15); }
+</style>
+
+<div class="rr-confirm-page">
+  <div class="rr-confirm-card">
+    <div class="rr-confirm-icon">
+      <i class="bi bi-check-lg"></i>
+    </div>
+    <h2>Booking Confirmed!</h2>
+    <p>Your stay has been booked successfully. Get ready for a great experience!</p>
+
+    <div class="rr-confirm-details">
+      <div class="rr-confirm-row">
+        <span class="label"><i class="bi bi-house-door"></i> Property</span>
+        <span class="value"><%= booking.listing.title %></span>
+      </div>
+      <div class="rr-confirm-row">
+        <span class="label"><i class="bi bi-calendar-check"></i> Check-in</span>
+        <span class="value"><%= booking.startDate.toLocaleDateString('en-IN', {weekday:'short', day:'numeric', month:'short', year:'numeric'}) %></span>
+      </div>
+      <div class="rr-confirm-row">
+        <span class="label"><i class="bi bi-calendar-x"></i> Check-out</span>
+        <span class="value"><%= booking.endDate.toLocaleDateString('en-IN', {weekday:'short', day:'numeric', month:'short', year:'numeric'}) %></span>
+      </div>
+      <div class="rr-confirm-row">
+        <span class="label"><i class="bi bi-people"></i> Guests</span>
+        <span class="value"><%= booking.guests %> guest<%= booking.guests > 1 ? 's' : '' %></span>
+      </div>
+      <%
+        const nights = Math.ceil((new Date(booking.endDate) - new Date(booking.startDate)) / (1000*60*60*24));
+      %>
+      <div class="rr-confirm-row">
+        <span class="label"><i class="bi bi-moon-stars"></i> Duration</span>
+        <span class="value"><%= nights %> night<%= nights !== 1 ? 's' : '' %></span>
+      </div>
+    </div>
+
+    <div class="rr-confirm-actions">
+      <a href="/trips" class="btn btn-primary">
+        <i class="bi bi-suitcase"></i> View my trips
+      </a>
+      <a href="/listings/<%= booking.listing._id %>" class="btn btn-outline">
+        <i class="bi bi-house-door"></i> Back to listing
+      </a>
+    </div>
+  </div>
 </div>

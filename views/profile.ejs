@@ -1,716 +1,287 @@
-<% layout('/layouts/boilerplate') %>
-<div class="classic-profile-container" id="profile-container">
-  <div class="classic-profile-header">
-    <div class="classic-profile-portrait" data-aos="zoom-in">
-      <div class="portrait-frame">
-        <div class="portrait-inner">
-          <i class="bi bi-person-circle"></i>
-          <div class="portrait-shine"></div>
+<%- layout('/layouts/boilerplate') %>
+<style>
+  .rr-profile-page {
+    min-height: calc(100vh - 66px);
+    background: var(--off-white);
+    padding: 48px 0 80px;
+  }
+  [data-theme="dark"] .rr-profile-page { background: #0f1624; }
+
+  .rr-profile { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+  /* ── Hero ── */
+  .rr-profile-hero {
+    border-radius: 24px; padding: 40px 44px; margin-bottom: 32px;
+    display: flex; align-items: center; gap: 32px;
+    position: relative; overflow: hidden;
+    background: linear-gradient(135deg, var(--navy) 0%, #243044 100%);
+    color: #fff;
+  }
+  [data-theme="dark"] .rr-profile-hero {
+    background: linear-gradient(135deg, rgba(79,110,242,0.18) 0%, rgba(139,92,246,0.12) 100%);
+    border: 1px solid rgba(79,110,242,0.2);
+    box-shadow: 0 4px 40px rgba(79,110,242,0.12);
+  }
+  .rr-profile-hero::before {
+    content: '';
+    position: absolute; top: -60px; right: -60px;
+    width: 240px; height: 240px; border-radius: 50%;
+    background: rgba(201,168,76,0.07); pointer-events: none;
+  }
+  .rr-profile-hero::after {
+    content: '';
+    position: absolute; bottom: -40px; left: -20px;
+    width: 160px; height: 160px; border-radius: 50%;
+    background: rgba(255,255,255,0.03); pointer-events: none;
+  }
+
+  .rr-profile-avatar {
+    width: 96px; height: 96px; border-radius: 50%;
+    background: rgba(201,168,76,0.18); border: 3px solid var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.4rem; color: var(--gold); flex-shrink: 0; font-weight: 800;
+    position: relative; z-index: 1;
+  }
+  [data-theme="dark"] .rr-profile-avatar {
+    background: rgba(79,110,242,0.2); border-color: #4f6ef2; color: #93c5fd;
+  }
+
+  .rr-profile-hero-info { position: relative; z-index: 1; }
+  .rr-profile-hero-info h1 { font-size: 1.8rem; color: #fff; margin: 0 0 4px; font-weight: 800; }
+  .rr-profile-hero-info p { color: rgba(255,255,255,0.6); font-size: 0.9rem; margin: 0 0 12px; }
+
+  .rr-profile-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(201,168,76,0.18); border: 1px solid rgba(201,168,76,0.35);
+    color: var(--gold); padding: 5px 14px; border-radius: 20px;
+    font-size: 0.78rem; font-weight: 700;
+  }
+  [data-theme="dark"] .rr-profile-badge {
+    background: rgba(79,110,242,0.18); border-color: rgba(79,110,242,0.3); color: #93c5fd;
+  }
+
+  /* ── Grid ── */
+  .rr-profile-grid {
+    display: grid; grid-template-columns: 1fr 300px; gap: 24px;
+  }
+
+  /* ── Card ── */
+  .rr-pcard {
+    background: var(--white); border-radius: 18px;
+    border: 1px solid var(--gray-200);
+    padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    transition: background 0.3s ease, border-color 0.3s ease;
+  }
+  [data-theme="dark"] .rr-pcard {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.07);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
+  }
+  .rr-pcard-title {
+    font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; color: var(--gray-500);
+    margin-bottom: 18px; display: flex; align-items: center; gap: 8px;
+  }
+  [data-theme="dark"] .rr-pcard-title { color: #4f6ef2; }
+  .rr-pcard-title i { font-size: 0.9rem; }
+
+  /* ── Detail rows ── */
+  .rr-detail-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 0; border-bottom: 1px solid var(--gray-200);
+  }
+  [data-theme="dark"] .rr-detail-row { border-color: rgba(255,255,255,0.06); }
+  .rr-detail-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .rr-detail-label { font-size: 0.85rem; color: var(--gray-500); font-weight: 500; }
+  [data-theme="dark"] .rr-detail-label { color: #64748b; }
+  .rr-detail-value { font-size: 0.93rem; font-weight: 600; color: var(--navy); }
+  [data-theme="dark"] .rr-detail-value { color: #e2e8f0; }
+
+  /* ── Stats ── */
+  .rr-stats-row { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .rr-stat {
+    text-align: center; padding: 20px 8px;
+    border-right: 1px solid var(--gray-200);
+  }
+  [data-theme="dark"] .rr-stat { border-color: rgba(255,255,255,0.06); }
+  .rr-stat:last-child { border-right: none; }
+  .rr-stat-num {
+    font-size: 1.8rem; font-weight: 800; color: var(--navy);
+    line-height: 1; margin-bottom: 4px;
+  }
+  [data-theme="dark"] .rr-stat-num { color: #4f6ef2; }
+  .rr-stat-label { font-size: 0.75rem; color: var(--gray-500); font-weight: 500; }
+  [data-theme="dark"] .rr-stat-label { color: #64748b; }
+
+  /* ── Action buttons ── */
+  .rr-action-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 16px; border-radius: 12px;
+    font-size: 0.9rem; font-weight: 600; text-decoration: none;
+    border: 1.5px solid var(--gray-200);
+    color: var(--gray-800); background: var(--white);
+    transition: all 0.2s ease; width: 100%; cursor: pointer;
+    font-family: inherit;
+  }
+  [data-theme="dark"] .rr-action-btn {
+    border-color: rgba(255,255,255,0.09); color: #cbd5e1;
+    background: rgba(255,255,255,0.04);
+  }
+  .rr-action-btn:hover {
+    border-color: var(--navy); color: var(--navy);
+    background: var(--gray-50); transform: translateX(3px);
+  }
+  [data-theme="dark"] .rr-action-btn:hover {
+    border-color: #4f6ef2; color: #93c5fd;
+    background: rgba(79,110,242,0.08);
+  }
+  .rr-action-btn.danger { color: var(--red); }
+  [data-theme="dark"] .rr-action-btn.danger { color: #fca5a5; border-color: rgba(220,53,69,0.2); }
+  .rr-action-btn.danger:hover { border-color: var(--red); background: #fee2e2; transform: translateX(3px); }
+  [data-theme="dark"] .rr-action-btn.danger:hover { background: rgba(220,53,69,0.12); border-color: rgba(220,53,69,0.4); }
+  .rr-action-btn i { width: 18px; flex-shrink: 0; }
+
+  /* ── Security card ── */
+  .rr-security-card {
+    background: linear-gradient(135deg, rgba(201,168,76,0.06) 0%, rgba(201,168,76,0.02) 100%);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 14px; padding: 18px;
+    display: flex; gap: 12px; align-items: flex-start;
+    margin-top: 8px;
+  }
+  [data-theme="dark"] .rr-security-card {
+    background: rgba(79,110,242,0.06);
+    border-color: rgba(79,110,242,0.15);
+  }
+  .rr-security-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: rgba(201,168,76,0.15); display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; color: var(--gold); flex-shrink: 0;
+  }
+  [data-theme="dark"] .rr-security-icon { background: rgba(79,110,242,0.2); color: #93c5fd; }
+  .rr-security-text { font-size: 0.83rem; color: var(--gray-600); line-height: 1.6; }
+  [data-theme="dark"] .rr-security-text { color: #64748b; }
+  .rr-security-text strong { color: var(--gray-800); font-weight: 600; display: block; margin-bottom: 2px; }
+  [data-theme="dark"] .rr-security-text strong { color: #cbd5e1; }
+
+  @media (max-width: 768px) {
+    .rr-profile-hero { flex-direction: column; text-align: center; gap: 16px; padding: 32px 24px; }
+    .rr-profile-grid { grid-template-columns: 1fr; }
+    .rr-profile { padding: 0 16px; }
+    .rr-profile-page { padding: 32px 0 60px; }
+  }
+</style>
+
+<div class="rr-profile-page">
+  <div class="rr-profile">
+    <!-- Hero -->
+    <div class="rr-profile-hero reveal">
+      <div class="rr-profile-avatar">
+        <%= currentUser.username ? currentUser.username[0].toUpperCase() : 'U' %>
+      </div>
+      <div class="rr-profile-hero-info">
+        <h1><%= currentUser.username %></h1>
+        <p><%= currentUser.email %></p>
+        <div class="rr-profile-badge">
+          <% if (currentUser.isAdmin) { %>
+            <i class="bi bi-shield-fill-check"></i> Administrator
+          <% } else { %>
+            <i class="bi bi-star-fill"></i> RoomRover Member
+          <% } %>
         </div>
       </div>
-      <div class="portrait-ornament">
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <path d="M50,5 C60,5 70,10 75,20 C80,30 85,40 90,50 C95,60 95,70 85,75 C75,80 65,85 50,90 C35,85 25,80 15,75 C5,70 5,60 10,50 C15,40 20,30 25,20 C30,10 40,5 50,5 Z" fill="none" stroke="var(--classic-gold)" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-      </div>
     </div>
-    <h1 class="classic-profile-name" data-aos="fade-up"><%= currentUser.username %></h1>
-    <p class="classic-profile-title">Esteemed Member Since <span class="join-date">January 2023</span></p>
-    <div class="header-divider">
-      <svg viewBox="0 0 100 10" preserveAspectRatio="none">
-        <path d="M0,5 Q25,10 50,5 T100,5" fill="none" stroke="var(--classic-gold)" stroke-width="1"/>
-      </svg>
-    </div>
-  </div>
 
-  <div class="classic-profile-body">
-    <div class="classic-profile-main">
-      <div class="classic-detail-section" data-aos="fade-right">
-        <h2 class="section-title">
-          <i class="bi bi-person-lines-fill"></i>
-          <span>Personal Details</span>
-        </h2>
-        <div class="detail-grid">
-          <div class="detail-item">
-            <div class="detail-label">Username:</div>
-            <div class="detail-value"><%= currentUser.username %></div>
+    <div class="rr-profile-grid">
+      <!-- Left column -->
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <!-- Personal info -->
+        <div class="rr-pcard reveal reveal-d1">
+          <div class="rr-pcard-title"><i class="bi bi-person-lines-fill"></i> Personal Information</div>
+          <div class="rr-detail-row">
+            <span class="rr-detail-label">Username</span>
+            <span class="rr-detail-value"><%= currentUser.username %></span>
           </div>
-          <div class="detail-item">
-            <div class="detail-label">Email Address:</div>
-            <div class="detail-value"><%= currentUser.email %></div>
+          <div class="rr-detail-row">
+            <span class="rr-detail-label">Email</span>
+            <span class="rr-detail-value"><%= currentUser.email %></span>
           </div>
-          <div class="detail-item">
-            <div class="detail-label">Last Active:</div>
-            <div class="detail-value">2 hours ago</div>
+          <div class="rr-detail-row">
+            <span class="rr-detail-label">Account type</span>
+            <span class="rr-detail-value">
+              <% if (currentUser.isAdmin) { %>
+                <span class="badge badge-gold"><i class="bi bi-shield-check"></i> Administrator</span>
+              <% } else { %>
+                <span class="badge badge-gray">Member</span>
+              <% } %>
+            </span>
           </div>
-          <div class="detail-item">
-            <div class="detail-label">Member Status:</div>
-            <div class="detail-value premium-badge">
-              <i class="bi bi-star-fill"></i> Premium Member
+          <div class="rr-detail-row">
+            <span class="rr-detail-label">Status</span>
+            <span class="rr-detail-value">
+              <span class="badge badge-green"><i class="bi bi-circle-fill" style="font-size:0.55rem;"></i> Active</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Activity stats -->
+        <div class="rr-pcard reveal reveal-d2">
+          <div class="rr-pcard-title"><i class="bi bi-bar-chart-fill"></i> Activity Summary</div>
+          <div class="rr-stats-row">
+            <div class="rr-stat">
+              <div class="rr-stat-num">0</div>
+              <div class="rr-stat-label">Reviews</div>
+            </div>
+            <div class="rr-stat">
+              <div class="rr-stat-num">0</div>
+              <div class="rr-stat-label">Bookings</div>
+            </div>
+            <div class="rr-stat">
+              <div class="rr-stat-num">0</div>
+              <div class="rr-stat-label">Listings</div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="classic-detail-section" data-aos="fade-right" data-aos-delay="200">
-        <h2 class="section-title">
-          <i class="bi bi-activity"></i>
-          <span>Community Engagement</span>
-        </h2>
-        <div class="engagement-stats">
-          <div class="stat-column">
-            <div class="stat-figure" data-count="142">0</div>
-            <div class="stat-caption">Thoughtful Posts</div>
-            <div class="stat-divider"></div>
-          </div>
-          <div class="stat-column">
-            <div class="stat-figure" data-count="3200">0</div>
-            <div class="stat-caption">Admirers</div>
-            <div class="stat-divider"></div>
-          </div>
-          <div class="stat-column">
-            <div class="stat-figure" data-count="256">0</div>
-            <div class="stat-caption">Inspired By</div>
-            <div class="stat-divider"></div>
+      <!-- Right column -->
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <div class="rr-pcard reveal reveal-d1">
+          <div class="rr-pcard-title"><i class="bi bi-lightning-charge-fill"></i> Quick Actions</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <a href="/trips" class="rr-action-btn">
+              <i class="bi bi-suitcase2"></i> My Trips
+            </a>
+            <a href="/listings/new" class="rr-action-btn">
+              <i class="bi bi-plus-circle"></i> List a property
+            </a>
+            <a href="/wishlist" class="rr-action-btn">
+              <i class="bi bi-heart"></i> Wishlist
+            </a>
+            <a href="/listings" class="rr-action-btn">
+              <i class="bi bi-compass"></i> Browse listings
+            </a>
+            <% if (currentUser.isAdmin) { %>
+            <a href="/admin" class="rr-action-btn" style="color:var(--gold);border-color:rgba(201,168,76,0.25);">
+              <i class="bi bi-speedometer2"></i> Admin Dashboard
+            </a>
+            <% } %>
+            <a href="/logout" class="rr-action-btn danger" style="margin-top:4px;">
+              <i class="bi bi-box-arrow-right"></i> Sign out
+            </a>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div class="classic-profile-sidebar">
-      <div class="sidebar-card" data-aos="fade-left">
-        <h3 class="sidebar-title">
-          <i class="bi bi-pen-fill"></i>
-          <span>Personal Chronicle</span>
-        </h3>
-        <div class="bio-content">
-          <p>A distinguished member of our community since 2023. Your insightful contributions illuminate discussions and inspire fellow members.</p>
-          <div class="signature">
-            <svg viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg">
-              <path d="M10,20 Q30,5 50,20 T90,20 T130,20 T170,20" fill="none" stroke="var(--classic-accent)" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
+        <!-- Security info -->
+        <div class="rr-security-card reveal reveal-d2">
+          <div class="rr-security-icon"><i class="bi bi-shield-check"></i></div>
+          <div class="rr-security-text">
+            <strong>Account secured</strong>
+            Keep your password private. Never share login credentials with anyone.
           </div>
         </div>
-      </div>
-      
-      <div class="sidebar-actions" data-aos="fade-left" data-aos-delay="200">
-        <button class="classic-edit-btn" onclick="location.href='/profile/edit'">
-          <i class="bi bi-pencil-square"></i> Refine Profile
-        </button>
-        <button class="classic-settings-btn" onclick="location.href='/settings'">
-          <i class="bi bi-gear-fill"></i> Preferences
-        </button>
       </div>
     </div>
   </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-<script>
-  // Initialize AOS for animations
-  AOS.init({
-    duration: 800,
-    easing: 'ease-in-out',
-    once: true,
-  });
-
-  // Smooth number counting animation for stats
-  document.addEventListener('DOMContentLoaded', () => {
-    const counters = document.querySelectorAll('.stat-figure');
-    counters.forEach(counter => {
-      const updateCount = () => {
-        const target = +counter.getAttribute('data-count');
-        const count = +counter.innerText;
-        const increment = target / 100;
-        if (count < target) {
-          counter.innerText = Math.ceil(count + increment);
-          setTimeout(updateCount, 20);
-        } else {
-          counter.innerText = target.toLocaleString();
-        }
-      };
-      updateCount();
-    });
-  });
-
-  // Parallax effect on scroll
-  window.addEventListener('scroll', () => {
-    const container = document.getElementById('profile-container');
-    const scrollPosition = window.scrollY;
-    container.style.backgroundPositionY = `${scrollPosition * 0.3}px`;
-  });
-
-  // Hover effect for buttons
-  const buttons = document.querySelectorAll('.classic-edit-btn, .classic-settings-btn');
-  buttons.forEach(btn => {
-    btn.addEventListener('mousemove', (e) => {
-      const rect = btn.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      btn.style.setProperty('--x', `${x}px`);
-      btn.style.setProperty('--y', `${y}px`);
-    });
-  });
-</script>
-
-<style>
-  :root {
-    --classic-primary: #2c3e50;
-    --classic-secondary: #7f5a2a;
-    --classic-accent: #8b5d33;
-    --classic-light: #f5f0e6;
-    --classic-paper: #f9f6f0;
-    --classic-border: #d4c9b8;
-    --classic-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
-    --classic-gold: #c9a66b;
-    --classic-gold-light: #e8d9b5;
-    --classic-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  @font-face {
-    font-family: 'Cormorant Garamond';
-    src: url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap');
-  }
-
-  .classic-profile-container {
-    max-width: 1000px;
-    margin: 3rem auto;
-    font-family: 'Cormorant Garamond', 'Palatino Linotype', 'Book Antiqua', serif;
-    color: var(--classic-primary);
-    background: var(--classic-paper) url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80') no-repeat center center;
-    background-size: cover;
-    border: 1px solid var(--classic-border);
-    box-shadow: var(--classic-shadow);
-    padding: 3rem;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.5s ease;
-  }
-
-  .classic-profile-container:hover {
-    transform: translateY(-5px);
-  }
-
-  .classic-profile-container::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 150px;
-    height: 150px;
-    background: radial-gradient(circle, var(--classic-gold-light) 0%, transparent 70%);
-    opacity: 0.2;
-    z-index: 0;
-  }
-
-  .classic-profile-header {
-    text-align: center;
-    position: relative;
-    padding-bottom: 2.5rem;
-    margin-bottom: 3rem;
-    z-index: 1;
-    background: linear-gradient(rgba(249, 246, 240, 0.95), rgba(249, 246, 240, 0.95));
-    border-radius: 12px;
-  }
-
-  .classic-profile-portrait {
-    position: relative;
-    width: 160px;
-    height: 160px;
-    margin: 0 auto 2rem;
-    transition: transform 0.5s ease;
-  }
-
-  .classic-profile-portrait:hover {
-    transform: scale(1.05) rotate(2deg);
-  }
-
-  .portrait-frame {
-    width: 100%;
-    height: 100%;
-    border: 10px solid var(--classic-light);
-    border-radius: 50%;
-    overflow: hidden;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-    position: relative;
-    z-index: 2;
-    background: linear-gradient(135deg, #e6e2d9, #f4f0e8);
-    transition: var(--classic-transition);
-  }
-
-  .portrait-inner {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .portrait-shine {
-    position: absolute;
-    top: -20%;
-    left: -20%;
-    width: 140%;
-    height: 140%;
-    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 60%);
-    opacity: 0.6;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-  }
-
-  .portrait-frame:hover .portrait-shine {
-    opacity: 0.8;
-  }
-
-  .portrait-frame i.bi-person-circle {
-    font-size: 6.5rem;
-    color: var(--classic-primary);
-    position: relative;
-    z-index: 1;
-    opacity: 0.9;
-    transition: color 0.3s ease;
-  }
-
-  .portrait-frame:hover i.bi-person-circle {
-    color: var(--classic-secondary);
-  }
-
-  .portrait-ornament {
-    position: absolute;
-    top: -15px;
-    left: -15px;
-    right: -15px;
-    bottom: -15px;
-    z-index: 1;
-    animation: rotate 60s linear infinite;
-  }
-
-  @keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-
-  .classic-profile-name {
-    font-size: 2.8rem;
-    font-weight: 600;
-    margin: 1rem 0 0.5rem;
-    color: var(--classic-primary);
-    letter-spacing: 0.5px;
-    text-shadow: 1px 1px 1px rgba(0,0,0,0.05);
-    position: relative;
-    display: inline-block;
-    transition: color 0.3s ease;
-  }
-
-  .classic-profile-name:hover {
-    color: var(--classic-gold);
-  }
-
-  .classic-profile-name::after {
-    content: "";
-    position: absolute;
-    bottom: -5px;
-    left: 25%;
-    width: 50%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--classic-gold), transparent);
-    transition: width 0.3s ease;
-  }
-
-  .classic-profile-name:hover::after {
-    width: 75%;
-  }
-
-  .classic-profile-title {
-    font-size: 1.2rem;
-    color: var(--classic-accent);
-    font-style: italic;
-    margin: 0.5rem 0;
-    letter-spacing: 0.5px;
-    transition: color 0.3s ease;
-  }
-
-  .classic-profile-title:hover {
-    color: var(--classic-gold);
-  }
-
-  .join-date {
-    font-weight: 600;
-    color: var(--classic-secondary);
-  }
-
-  .header-divider {
-    margin-top: 2rem;
-    height: 20px;
-    overflow: hidden;
-    animation: divider-pulse 3s ease-in-out infinite;
-  }
-
-  @keyframes divider-pulse {
-    0%, 100% { transform: scaleY(1); }
-    50% { transform: scaleY(1.2); }
-  }
-
-  .classic-profile-body {
-    display: flex;
-    gap: 3rem;
-    position: relative;
-    z-index: 1;
-  }
-
-  .classic-profile-main {
-    flex: 2;
-  }
-
-  .classic-profile-sidebar {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-
-  .classic-detail-section {
-    margin-bottom: 3rem;
-    position: relative;
-    background: rgba(255, 255, 255, 0.95);
-    padding: 1.5rem;
-    border-radius: 12px;
-    transition: transform 0.3s ease;
-  }
-
-  .classic-detail-section:hover {
-    transform: translateY(-5px);
-  }
-
-  .section-title {
-    font-size: 1.6rem;
-    font-weight: 600;
-    color: var(--classic-secondary);
-    border-bottom: 1px solid var(--classic-border);
-    padding-bottom: 0.75rem;
-    margin-bottom: 2rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    letter-spacing: 0.5px;
-  }
-
-  .section-title i {
-    color: var(--classic-gold);
-    font-size: 1.4rem;
-    transition: transform 0.3s ease;
-  }
-
-  .section-title:hover i {
-    transform: rotate(360deg);
-  }
-
-  .detail-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.75rem;
-  }
-
-  .detail-item {
-    margin-bottom: 1.25rem;
-    position: relative;
-    padding-left: 1.5rem;
-    transition: transform 0.3s ease;
-  }
-
-  .detail-item:hover {
-    transform: translateX(5px);
-  }
-
-  .detail-item::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0.4em;
-    width: 8px;
-    height: 8px;
-    background: var(--classic-gold);
-    transform: rotate(45deg);
-    transition: background 0.3s ease;
-  }
-
-  .detail-item:hover::before {
-    background: var(--classic-secondary);
-  }
-
-  .detail-label {
-    font-size: 0.95rem;
-    color: var(--classic-accent);
-    margin-bottom: 0.3rem;
-    font-style: italic;
-    letter-spacing: 0.3px;
-  }
-
-  .detail-value {
-    font-size: 1.15rem;
-    font-weight: 500;
-    line-height: 1.4;
-  }
-
-  .premium-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: linear-gradient(135deg, var(--classic-gold-light), var(--classic-gold));
-    color: #3a2a0a;
-    padding: 0.25rem 0.75rem;
-    border-radius: 12px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    animation: badge-pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes badge-pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-  }
-
-  .premium-badge i {
-    font-size: 0.8rem;
-  }
-
-  .engagement-stats {
-    display: flex;
-    justify-content: space-between;
-    text-align: center;
-    margin-top: 2rem;
-  }
-
-  .stat-column {
-    padding: 0 1.5rem;
-    position: relative;
-    flex: 1;
-    transition: transform 0.3s ease;
-  }
-
-  .stat-column:hover {
-    transform: scale(1.1);
-  }
-
-  .stat-divider {
-    position: absolute;
-    right: 0;
-    top: 20%;
-    height: 60%;
-    width: 1px;
-    background: linear-gradient(transparent, var(--classic-border), transparent);
-  }
-
-  .stat-column:last-child .stat-divider {
-    display: none;
-  }
-
-  .stat-figure {
-    font-size: 2.2rem;
-    font-weight: 600;
-    color: var(--classic-secondary);
-    margin-bottom: 0.5rem;
-    position: relative;
-    display: inline-block;
-  }
-
-  .stat-figure::after {
-    content: "";
-    position: absolute;
-    bottom: -5px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 30px;
-    height: 2px;
-    background: var(--classic-gold);
-  }
-
-  .stat-caption {
-    font-size: 0.95rem;
-    color: var(--classic-accent);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: 500;
-  }
-
-  .sidebar-card {
-    background: var(--classic-light);
-    border: 1px solid var(--classic-border);
-    padding: 2rem;
-    margin-bottom: 0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.3s ease;
-  }
-
-  .sidebar-card:hover {
-    transform: translateY(-5px);
-  }
-
-  .sidebar-card::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: linear-gradient(to bottom, var(--classic-gold), var(--classic-secondary));
-  }
-
-  .sidebar-title {
-    font-size: 1.3rem;
-    color: var(--classic-secondary);
-    margin-top: 0;
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    letter-spacing: 0.5px;
-  }
-
-  .sidebar-title i {
-    color: var(--classic-gold);
-  }
-
-  .bio-content {
-    font-size: 1.05rem;
-    line-height: 1.7;
-    color: var(--classic-primary);
-    position: relative;
-  }
-
-  .signature {
-    margin-top: 1.5rem;
-    height: 40px;
-    opacity: 0.8;
-    transition: opacity 0.3s ease;
-  }
-
-  .signature:hover {
-    opacity: 1;
-  }
-
-  .signature svg {
-    width: 150px;
-    height: 100%;
-  }
-
-  .sidebar-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .classic-edit-btn, .classic-settings-btn {
-    width: 100%;
-    padding: 0.85rem;
-    font-family: inherit;
-    font-size: 1.05rem;
-    cursor: pointer;
-    transition: var(--classic-transition);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    letter-spacing: 0.5px;
-    border: none;
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
-  }
-
-  .classic-edit-btn::before, .classic-settings-btn::before {
-    content: "";
-    position: absolute;
-    top: var(--y, 50%);
-    left: var(--x, 50%);
-    width: 0;
-    height: 0;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: width 0.6s ease, height 0.6s ease;
-    z-index: -1;
-  }
-
-  .classic-edit-btn:hover::before, .classic-settings-btn:hover::before {
-    width: 300px;
-    height: 300px;
-  }
-
-  .classic-edit-btn {
-    background: var(--classic-primary);
-    color: white;
-  }
-
-  .classic-edit-btn:hover {
-    background: var(--classic-secondary);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  }
-
-  .classic-settings-btn {
-    background: white;
-    color: var(--classic-primary);
-    border: 1px solid var(--classic-border);
-  }
-
-  .classic-settings-btn:hover {
-    background: var(--classic-light);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-
-  @media (max-width: 900px) {
-    .classic-profile-container {
-      padding: 2rem;
-    }
-    
-    .classic-profile-body {
-      flex-direction: column;
-    }
-    
-    .detail-grid {
-      grid-template-columns: 1fr;
-    }
-    
-    .engagement-stats {
-      flex-direction: column;
-      gap: 2rem;
-    }
-    
-    .stat-column {
-      padding: 0;
-    }
-    
-    .stat-divider {
-      display: none;
-    }
-    
-    .classic-profile-name {
-      font-size: 2.2rem;
-    }
-  }
-
-  @media (max-width: 600px) {
-    .classic-profile-container {
-      padding: 1.5rem;
-      margin: 1.5rem auto;
-    }
-    
-    .classic-profile-portrait {
-      width: 120px;
-      height: 120px;
-    }
-    
-    .classic-profile-name {
-      font-size: 1.8rem;
-    }
-    
-    .section-title {
-      font-size: 1.4rem;
-    }
-  }
-</style>

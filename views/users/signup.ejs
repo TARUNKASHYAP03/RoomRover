@@ -1,156 +1,382 @@
-<% layout('/layouts/boilerplate') %>
-
+<%- layout('/layouts/boilerplate') %>
 <style>
-  body {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #f5f3ff 0%, #e0e7ff 100%);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  .signup-card {
-    max-width: 400px;
-    margin: 48px auto;
-    background: #fff;
-    border-radius: 1.25rem;
-    border: 1px solid #e3e6ee;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10);
-    padding: 2.5rem 2rem 2rem 2rem;
-  }
-  .signup-icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 1rem;
-    color: #375aee;
-    font-size: 2.5rem;
-  }
-  .signup-title {
-    font-family: 'Georgia', serif;
-    font-weight: 700;
-    font-size: 2.1rem;
-    text-align: center;
-    margin-bottom: 0.25rem;
-    color: #222;
-  }
-  .signup-subtitle {
-    text-align: center;
-    color: #375aee;
-    margin-bottom: 1.5rem;
-    font-size: 1rem;
-  }
-  .signup-subtitle a {
-    color: #375aee;
-    text-decoration: underline;
-    transition: color 0.2s;
-  }
-  .signup-subtitle a:hover {
-    color: #223a8a;
-  }
-  .form-label {
-    font-size: 1rem;
-    color: #222;
-  }
-  .form-control:focus {
-    border-color: #375aee;
-    box-shadow: 0 0 0 0.2rem rgba(55, 90, 238, 0.10);
-  }
-  .input-group-text {
-    background: #f3f4f6;
-    border: none;
-    color: #375aee;
-  }
-  .btn-signup {
-    background: #375aee;
-    border: none;
-    font-weight: 600;
-    font-size: 1.1rem;
-    transition: background 0.2s;
-  }
-  .btn-signup:hover {
-    background: #223a8a;
-  }
-  .password-mismatch {
-    color: #d32f2f;
-    font-size: 0.95rem;
-    margin-top: 0.25rem;
-    display: none;
-    text-align: left;
-  }
+/* ── Split-screen Auth Layout ── */
+.rr-auth-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: calc(100vh - 66px);
+}
+
+/* ── LEFT PANEL ── */
+.rr-auth-left {
+  position: relative; overflow: hidden;
+  background: #06090f;
+  display: flex; flex-direction: column;
+  padding: 48px 52px;
+}
+.rr-auth-orbs { position: absolute; inset: 0; pointer-events: none; }
+.rr-auth-orb { position: absolute; border-radius: 50%; filter: blur(80px); }
+.rr-auth-orb-1 { width: 420px; height: 420px; background: rgba(139,92,246,0.22); top: -80px; right: -80px; animation: rr-orb-drift 11s ease-in-out infinite; }
+.rr-auth-orb-2 { width: 360px; height: 360px; background: rgba(79,110,242,0.22); bottom: -60px; left: -60px; animation: rr-orb-drift 9s ease-in-out infinite reverse; }
+.rr-auth-orb-3 { width: 220px; height: 220px; background: rgba(34,211,238,0.13); top: 38%; left: 30%; animation: rr-orb-drift 13s ease-in-out infinite; animation-delay: -6s; }
+@keyframes rr-orb-drift {
+  0%,100% { transform: translate(0,0) scale(1); }
+  33%      { transform: translate(20px,-16px) scale(1.06); }
+  66%      { transform: translate(-14px,10px) scale(0.94); }
+}
+.rr-auth-left::before {
+  content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+.rr-auth-left-inner { position: relative; z-index: 2; display: flex; flex-direction: column; height: 100%; }
+.rr-auth-logo-link {
+  font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px;
+  color: #fff; text-decoration: none; display: inline-block; margin-bottom: auto;
+}
+.rr-auth-logo-link span { color: #c9a84c; }
+
+.rr-auth-left-body { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 48px 0; }
+
+.rr-auth-left-tag {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3);
+  color: #c4b5fd; font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.9px; text-transform: uppercase;
+  padding: 6px 14px; border-radius: 30px; margin-bottom: 24px; width: fit-content;
+}
+.rr-auth-left-tag-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: #8b5cf6; box-shadow: 0 0 6px rgba(139,92,246,0.9);
+  animation: rr-blink 2s ease-in-out infinite;
+}
+@keyframes rr-blink { 0%,100%{opacity:1;} 50%{opacity:0.25;} }
+
+.rr-auth-left-h {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 2.3rem; font-weight: 700; color: #f8fafc;
+  line-height: 1.18; margin-bottom: 16px;
+}
+.rr-auth-left-h span {
+  background: linear-gradient(135deg,#8b5cf6,#4f6ef2,#22d3ee);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.rr-auth-left-sub {
+  color: rgba(248,250,252,0.52); font-size: 0.95rem; line-height: 1.75;
+  max-width: 340px; margin-bottom: 36px;
+}
+
+/* Stats row */
+.rr-auth-stats {
+  display: flex; gap: 0; margin-bottom: 36px;
+  border: 1px solid rgba(255,255,255,0.07); border-radius: 14px;
+  overflow: hidden; background: rgba(255,255,255,0.03);
+}
+.rr-auth-stat {
+  flex: 1; padding: 16px 12px; text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+.rr-auth-stat:last-child { border-right: none; }
+.rr-auth-stat-num {
+  font-size: 1.5rem; font-weight: 800;
+  background: linear-gradient(135deg,#8b5cf6,#4f6ef2);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.rr-auth-stat-lbl { font-size: 0.68rem; color: rgba(255,255,255,0.4); margin-top: 2px; letter-spacing: 0.3px; }
+
+/* Benefits list */
+.rr-auth-benefits { display: flex; flex-direction: column; gap: 10px; }
+.rr-auth-benefit {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 0.875rem; color: rgba(248,250,252,0.72);
+}
+.rr-auth-benefit-check {
+  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+  background: rgba(16,185,129,0.18); border: 1px solid rgba(16,185,129,0.3);
+  display: flex; align-items: center; justify-content: center;
+  color: #6ee7b7; font-size: 0.7rem;
+}
+
+/* ── RIGHT PANEL ── */
+.rr-auth-right {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 40px 40px;
+  background: var(--off-white); overflow-y: auto;
+}
+[data-theme="dark"] .rr-auth-right { background: #0f1624; }
+
+.rr-auth-form-wrap { width: 100%; max-width: 400px; }
+
+.rr-auth-heading { margin-bottom: 28px; }
+.rr-auth-heading h1 { font-size: 1.8rem; font-weight: 800; color: var(--navy); margin: 0 0 6px; line-height: 1.15; }
+[data-theme="dark"] .rr-auth-heading h1 { color: #f1f5f9; }
+.rr-auth-heading p { color: var(--gray-500); font-size: 0.9rem; margin: 0; }
+[data-theme="dark"] .rr-auth-heading p { color: #64748b; }
+
+.rr-auth-card {
+  background: var(--white); border-radius: 20px;
+  border: 1px solid var(--gray-200);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+  padding: 28px;
+}
+[data-theme="dark"] .rr-auth-card {
+  background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.07);
+  box-shadow: 0 4px 32px rgba(0,0,0,0.5); backdrop-filter: blur(16px);
+}
+
+.form-label {
+  display: block; font-size: 0.78rem; font-weight: 700;
+  color: var(--gray-600); margin-bottom: 6px;
+  text-transform: uppercase; letter-spacing: 0.7px;
+}
+[data-theme="dark"] .form-label { color: #64748b; }
+
+.rr-input-wrap { position: relative; }
+.rr-input-wrap .rr-fi {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  color: var(--gray-400); font-size: 0.95rem; pointer-events: none; z-index: 1;
+}
+[data-theme="dark"] .rr-input-wrap .rr-fi { color: #8b5cf6; }
+.rr-input-wrap .form-control { padding-left: 38px; }
+.rr-input-wrap .rr-eye-btn {
+  position: absolute; right: 11px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer;
+  color: var(--gray-400); font-size: 0.9rem; padding: 4px;
+}
+.rr-input-wrap .rr-eye-btn:hover { color: var(--navy); }
+[data-theme="dark"] .rr-input-wrap .rr-eye-btn:hover { color: #8b5cf6; }
+
+/* Password strength */
+.pwd-meter { height: 3px; border-radius: 2px; margin-top: 7px; background: var(--gray-200); overflow: hidden; }
+[data-theme="dark"] .pwd-meter { background: rgba(255,255,255,0.07); }
+.pwd-meter-fill { height: 100%; border-radius: 2px; transition: all 0.35s ease; width: 0; }
+.pwd-hint { font-size: 0.77rem; margin-top: 5px; }
+.mismatch-msg { font-size: 0.78rem; color: var(--red); margin-top: 4px; display: none; }
+[data-theme="dark"] .mismatch-msg { color: #fca5a5; }
+
+.rr-auth-btn {
+  width: 100%; padding: 13px; border: none; border-radius: 12px;
+  font-weight: 700; font-size: 0.975rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--navy); color: #fff;
+  transition: all 0.22s ease; font-family: inherit; margin-top: 20px;
+}
+[data-theme="dark"] .rr-auth-btn {
+  background: linear-gradient(135deg, #8b5cf6 0%, #4f6ef2 100%);
+  box-shadow: 0 4px 20px rgba(139,92,246,0.35);
+}
+.rr-auth-btn:hover { transform: translateY(-2px); opacity: 0.91; }
+[data-theme="dark"] .rr-auth-btn:hover { box-shadow: 0 8px 28px rgba(139,92,246,0.5); }
+
+.rr-auth-sep {
+  display: flex; align-items: center; gap: 12px;
+  margin: 18px 0; color: var(--gray-400); font-size: 0.8rem;
+}
+[data-theme="dark"] .rr-auth-sep { color: #334155; }
+.rr-auth-sep::before, .rr-auth-sep::after { content: ''; flex: 1; height: 1px; background: var(--gray-200); }
+[data-theme="dark"] .rr-auth-sep::before,
+[data-theme="dark"] .rr-auth-sep::after { background: rgba(255,255,255,0.07); }
+
+.rr-auth-switch { text-align: center; font-size: 0.875rem; color: var(--gray-600); }
+[data-theme="dark"] .rr-auth-switch { color: #64748b; }
+.rr-auth-switch a { color: var(--navy); font-weight: 700; }
+[data-theme="dark"] .rr-auth-switch a { color: #8b5cf6; }
+
+.rr-auth-trust {
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+  margin-top: 20px; font-size: 0.75rem; color: var(--gray-500);
+}
+[data-theme="dark"] .rr-auth-trust { color: #475569; }
+.rr-auth-trust span { display: flex; align-items: center; gap: 5px; }
+
+@media (max-width: 820px) {
+  .rr-auth-wrap { grid-template-columns: 1fr; }
+  .rr-auth-left { display: none; }
+  .rr-auth-right { padding: 32px 20px; min-height: calc(100vh - 66px); }
+}
 </style>
 
-<div class="signup-card">
-  <div class="signup-icon">
-    <i class="bi bi-person-plus"></i>
-  </div>
-  <div class="signup-title">Create your account</div>
-  <div class="signup-subtitle">
-    Or <a href="/login">sign in to your existing account</a>
+<div class="rr-auth-wrap">
+  <!-- ── LEFT PANEL ── -->
+  <div class="rr-auth-left" aria-hidden="true">
+    <div class="rr-auth-orbs">
+      <div class="rr-auth-orb rr-auth-orb-1"></div>
+      <div class="rr-auth-orb rr-auth-orb-2"></div>
+      <div class="rr-auth-orb rr-auth-orb-3"></div>
+    </div>
+    <div class="rr-auth-left-inner">
+      <a href="/" class="rr-auth-logo-link">Room<span>Rover</span></a>
+
+      <div class="rr-auth-left-body">
+        <div class="rr-auth-left-tag">
+          <span class="rr-auth-left-tag-dot"></span> Join 10,000+ travelers
+        </div>
+        <h2 class="rr-auth-left-h">
+          Start your <span>travel story</span><br>today
+        </h2>
+        <p class="rr-auth-left-sub">
+          Create a free account and unlock 60+ curated properties across India's most beautiful destinations.
+        </p>
+
+        <div class="rr-auth-stats">
+          <div class="rr-auth-stat">
+            <div class="rr-auth-stat-num">60+</div>
+            <div class="rr-auth-stat-lbl">Properties</div>
+          </div>
+          <div class="rr-auth-stat">
+            <div class="rr-auth-stat-num">6</div>
+            <div class="rr-auth-stat-lbl">Categories</div>
+          </div>
+          <div class="rr-auth-stat">
+            <div class="rr-auth-stat-num">4.9★</div>
+            <div class="rr-auth-stat-lbl">Avg. Rating</div>
+          </div>
+        </div>
+
+        <div class="rr-auth-benefits">
+          <div class="rr-auth-benefit">
+            <div class="rr-auth-benefit-check"><i class="bi bi-check-lg"></i></div>
+            Free to join — no credit card required
+          </div>
+          <div class="rr-auth-benefit">
+            <div class="rr-auth-benefit-check"><i class="bi bi-check-lg"></i></div>
+            Instant booking confirmation
+          </div>
+          <div class="rr-auth-benefit">
+            <div class="rr-auth-benefit-check"><i class="bi bi-check-lg"></i></div>
+            Manage all trips from one dashboard
+          </div>
+          <div class="rr-auth-benefit">
+            <div class="rr-auth-benefit-check"><i class="bi bi-check-lg"></i></div>
+            Wishlist and save favorites
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <% if (error) { %>
-    <div class="alert alert-danger text-center"><%= error %></div>
-  <% } %>
-  <% if (success) { %>
-    <div class="alert alert-success text-center"><%= success %></div>
-  <% } %>
+  <!-- ── RIGHT PANEL ── -->
+  <div class="rr-auth-right">
+    <div class="rr-auth-form-wrap">
+      <div class="rr-auth-heading">
+        <h1>Create account</h1>
+        <p>Join RoomRover and start exploring India</p>
+      </div>
 
-  <form id="signupForm" action="/signup" method="POST" novalidate>
-    <div class="mb-3">
-      <label for="username" class="form-label fw-bold">Full Name</label>
-      <div class="input-group">
-        <span class="input-group-text"><i class="bi bi-person"></i></span>
-        <input type="text" class="form-control" id="username" name="username" required>
+      <div class="rr-auth-card">
+        <% if (error) { %>
+          <div class="alert alert-danger" style="margin-bottom:16px;">
+            <i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i> <%= error %>
+          </div>
+        <% } %>
+        <% if (success) { %>
+          <div class="alert alert-success" style="margin-bottom:16px;">
+            <i class="bi bi-check-circle-fill" aria-hidden="true"></i> <%= success %>
+          </div>
+        <% } %>
+
+        <form id="signupForm" action="/signup" method="POST" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="su-name">Full name</label>
+            <div class="rr-input-wrap">
+              <i class="bi bi-person rr-fi" aria-hidden="true"></i>
+              <input id="su-name" type="text" name="username" class="form-control"
+                placeholder="Your name" required autocomplete="name">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="su-email">Email address</label>
+            <div class="rr-input-wrap">
+              <i class="bi bi-envelope rr-fi" aria-hidden="true"></i>
+              <input id="su-email" type="email" name="email" class="form-control"
+                placeholder="you@example.com" required autocomplete="email">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="su-pwd">Password</label>
+            <div class="rr-input-wrap">
+              <i class="bi bi-lock rr-fi" aria-hidden="true"></i>
+              <input id="su-pwd" type="password" name="password" class="form-control"
+                placeholder="Create a strong password" required autocomplete="new-password">
+              <button type="button" class="rr-eye-btn" onclick="togglePwd('su-pwd','eye1')"
+                tabindex="-1" aria-label="Toggle password visibility">
+                <i class="bi bi-eye" id="eye1" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="pwd-meter"><div class="pwd-meter-fill" id="pwdBar"></div></div>
+            <div class="pwd-hint" id="pwdHint"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="su-cpwd">Confirm password</label>
+            <div class="rr-input-wrap">
+              <i class="bi bi-lock-fill rr-fi" aria-hidden="true"></i>
+              <input id="su-cpwd" type="password" name="confirmPassword" class="form-control"
+                placeholder="Repeat your password" required autocomplete="new-password">
+              <button type="button" class="rr-eye-btn" onclick="togglePwd('su-cpwd','eye2')"
+                tabindex="-1" aria-label="Toggle confirm password visibility">
+                <i class="bi bi-eye" id="eye2" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div class="mismatch-msg" id="mismatch" role="alert">Passwords do not match</div>
+          </div>
+
+          <button type="submit" class="rr-auth-btn">
+            <i class="bi bi-person-plus" aria-hidden="true"></i> Create account
+          </button>
+        </form>
+      </div>
+
+      <div class="rr-auth-sep">or</div>
+      <div class="rr-auth-switch">
+        Already have an account? <a href="/login">Sign in</a>
+      </div>
+
+      <div class="rr-auth-trust">
+        <span><i class="bi bi-shield-check" aria-hidden="true"></i> Free forever</span>
+        <span><i class="bi bi-lock" aria-hidden="true"></i> Encrypted</span>
+        <span><i class="bi bi-people" aria-hidden="true"></i> 10k+ users</span>
       </div>
     </div>
-    <div class="mb-3">
-      <label for="email" class="form-label fw-bold">Email address</label>
-      <div class="input-group">
-        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-        <input type="email" class="form-control" id="email" name="email" required>
-      </div>
-    </div>
-    <div class="mb-3">
-      <label for="password" class="form-label fw-bold">Password</label>
-      <div class="input-group">
-        <span class="input-group-text"><i class="bi bi-lock"></i></span>
-        <input type="password" class="form-control" id="password" name="password" required>
-      </div>
-    </div>
-    <div class="mb-4">
-      <label for="confirmPassword" class="form-label fw-bold">Confirm Password</label>
-      <div class="input-group">
-        <span class="input-group-text"><i class="bi bi-lock"></i></span>
-        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
-      </div>
-      <div id="passwordMismatch" class="password-mismatch">Passwords do not match.</div>
-    </div>
-    <button type="submit" class="btn btn-signup w-100 mb-2">
-      <i class="bi bi-person-plus me-1"></i> Create Account
-    </button>
-  </form>
+  </div>
 </div>
 
 <script>
-  // Client-side password confirmation check
-  const form = document.getElementById('signupForm');
-  const password = document.getElementById('password');
-  const confirmPassword = document.getElementById('confirmPassword');
-  const mismatchMsg = document.getElementById('passwordMismatch');
+  function togglePwd(id, iconId) {
+    const f = document.getElementById(id), icon = document.getElementById(iconId);
+    if (f.type === 'password') { f.type = 'text'; icon.className = 'bi bi-eye-slash'; }
+    else { f.type = 'password'; icon.className = 'bi bi-eye'; }
+  }
 
-  form.addEventListener('submit', function(e) {
-    if (password.value !== confirmPassword.value) {
-      mismatchMsg.style.display = 'block';
-      confirmPassword.classList.add('is-invalid');
-      e.preventDefault();
-    } else {
-      mismatchMsg.style.display = 'none';
-      confirmPassword.classList.remove('is-invalid');
-    }
+  const pwd = document.getElementById('su-pwd');
+  const bar = document.getElementById('pwdBar');
+  const hint = document.getElementById('pwdHint');
+  const levels = [
+    { min:0,  color:'#ef4444', text:'Too short',   pct:'12%' },
+    { min:6,  color:'#f59e0b', text:'Weak',         pct:'35%' },
+    { min:8,  color:'#3b82f6', text:'Fair',         pct:'65%' },
+    { min:10, color:'#10b981', text:'Strong ✓',     pct:'100%' },
+  ];
+  pwd.addEventListener('input', () => {
+    const len = pwd.value.length;
+    const lvl = levels.filter(l => len >= l.min).pop() || levels[0];
+    bar.style.width = len ? lvl.pct : '0';
+    bar.style.background = lvl.color;
+    hint.textContent = len ? lvl.text : '';
+    hint.style.color = lvl.color;
   });
 
-  confirmPassword.addEventListener('input', function() {
-    if (password.value === confirmPassword.value) {
-      mismatchMsg.style.display = 'none';
-      confirmPassword.classList.remove('is-invalid');
+  const conf = document.getElementById('su-cpwd');
+  const mismatch = document.getElementById('mismatch');
+  conf.addEventListener('input', () => {
+    mismatch.style.display = (conf.value && conf.value !== pwd.value) ? 'block' : 'none';
+  });
+
+  document.getElementById('signupForm').addEventListener('submit', e => {
+    if (pwd.value !== conf.value) {
+      mismatch.style.display = 'block';
+      e.preventDefault();
     }
   });
 </script>

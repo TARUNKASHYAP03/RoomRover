@@ -1,288 +1,160 @@
-<% layout("layouts/boilerplate") %>
-<body style="background-color: #f5f7fa">
-  <!-- Decorative Background Elements -->
-  <div class="position-fixed top-0 end-0" style="z-index: -1; width: 300px; height: 300px; background: radial-gradient(circle, rgba(106,17,203,0.05) 0%, rgba(255,255,255,0) 70%); transform: translate(100px,-100px);"></div>
-  <div class="position-fixed bottom-0 start-0" style="z-index: -1; width: 400px; height: 400px; background: radial-gradient(circle, rgba(37,117,252,0.05) 0%, rgba(255,255,255,0) 70%); transform: translate(-150px,150px);"></div>
+<%- layout("layouts/boilerplate") %>
+<style>
+  .rr-form-page { max-width: 720px; margin: 0 auto; padding: 40px 24px 80px; }
+  .rr-form-header { text-align: center; margin-bottom: 36px; }
+  .rr-form-header h1 { font-size: 1.9rem; color: var(--navy); margin-bottom: 6px; }
+  .rr-form-header p { color: var(--gray-600); }
+  .rr-form-card {
+    background: var(--white); border-radius: var(--radius-lg);
+    border: var(--border); padding: 36px; box-shadow: var(--shadow-sm);
+  }
+  .rr-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .rr-current-img {
+    width: 100%; height: 180px; object-fit: cover;
+    border-radius: var(--radius-sm); border: var(--border);
+    margin-bottom: 12px;
+  }
+  .rr-char-counter { font-size: 0.78rem; color: var(--gray-500); float: right; }
+  .rr-form-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 28px; padding-top: 24px; border-top: var(--border);
+  }
+  /* Dark mode */
+  [data-theme="dark"] .rr-form-page { background: #0f1624; }
+  [data-theme="dark"] .rr-form-header h1 { color: #f1f5f9; }
+  [data-theme="dark"] .rr-form-header p { color: #64748b; }
+  [data-theme="dark"] .rr-form-card {
+    background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.07);
+    box-shadow: 0 4px 32px rgba(0,0,0,0.5);
+  }
+  [data-theme="dark"] .rr-current-img { border-color: rgba(255,255,255,0.08); }
+  @media (max-width: 560px) {
+    .rr-form-card { padding: 20px; }
+    .rr-row { grid-template-columns: 1fr; }
+    .rr-form-page { padding: 24px 16px 60px; }
+  }
+</style>
 
-  <div class="container my-5">
-    <div class="row justify-content-center">
-      <div class="col-lg-8">
-        <!-- Enhanced Card Design -->
-        <div class="card shadow-lg border-0 rounded-4 overflow-hidden" style="background-color: #ffffff; border: 1px solid rgba(0,0,0,0.05);">
-          <!-- Card Header with Gradient -->
-          <div class="card-header py-4" style="background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);">
-            <div class="text-center">
-              <h1 class="h3 mb-2 text-white fw-bold"><i class="bi bi-pencil-square me-2"></i>Edit Your Listing</h1>
-              <p class="mb-0 text-white-75">Make your property stand out</p>
-            </div>
-          </div>
-          
-          <!-- Card Body -->
-          <div class="card-body p-4">
-            <form action="/listings/<%= listing._id %>?_method=PUT" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
-              <!-- Title Section -->
-              <div class="mb-4">
-                <label for="title" class="form-label fw-medium text-dark d-flex align-items-center">
-                  <i class="bi bi-card-heading me-2 text-primary"></i>Title
-                </label>
-                <input
-                  type="text"
-                  name="listing[title]"
-                  id="title"
-                  value="<%= listing.title %>"
-                  required
-                  class="form-control border-2 py-2"
-                  placeholder="Beautiful beachfront villa"
-                  style="border-radius: 8px; border-color: #e0e6ed;"
-                />
-              </div>
-
-              <!-- Description with Character Counter -->
-              <div class="mb-4">
-                <label for="description" class="form-label fw-medium text-dark d-flex justify-content-between align-items-center">
-                  <span><i class="bi bi-text-paragraph me-2 text-primary"></i>Description</span>
-                  <span class="badge bg-light text-dark fs-7"><span id="char-count"><%= listing.description.length %></span>/500</span>
-                </label>
-                <textarea
-                  name="listing[description]"
-                  id="description"
-                  required
-                  class="form-control"
-                  rows="5"
-                  placeholder="Describe what makes your place special..."
-                  style="border-radius: 12px; min-height: 120px; border: 2px solid #e0e6ed;"
-                  maxlength="500"
-                ><%= listing.description %></textarea>
-                <div class="form-text mt-1">Tip: Highlight unique amenities and nearby attractions</div>
-              </div>
-
-              <!-- Price & Location -->
-              <div class="row g-3 mb-4">
-                <div class="col-md-6">
-                  <div class="p-3 rounded-3" style="background-color: rgba(106,17,203,0.03); border: 1px dashed rgba(106,17,203,0.2);">
-                    <label for="price" class="form-label fw-medium text-dark d-flex align-items-center">
-                      <i class="bi bi-currency-rupee me-2 text-primary"></i>Price per night (₹)
-                    </label>
-                    <div class="input-group">
-                      <span class="input-group-text bg-light border-end-0">₹</span>
-                      <input
-                        type="number"
-                        name="listing[price]"
-                        id="price"
-                        required
-                        min="0"
-                        step="100"
-                        class="form-control border-start-0"
-                        value="<%= listing.price %>"
-                        placeholder="2500"
-                        style="font-weight: 500;"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="p-3 rounded-3" style="background-color: rgba(37,117,252,0.03); border: 1px dashed rgba(37,117,252,0.2);">
-                    <label for="location" class="form-label fw-medium text-dark d-flex align-items-center">
-                      <i class="bi bi-geo-alt me-2 text-primary"></i>Location
-                    </label>
-                    <input
-                      type="text"
-                      name="listing[location]"
-                      id="location"
-                      required
-                      class="form-control"
-                      value="<%= listing.location %>"
-                      placeholder="Goa"
-                      style="font-weight: 500;"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <!-- Country & Image URL -->
-              <div class="row g-3 mb-4">
-                <div class="col-md-6">
-                  <div class="p-3 rounded-3" style="background-color: rgba(13,110,253,0.03); border: 1px dashed rgba(13,110,253,0.2);">
-                    <label for="country" class="form-label fw-medium text-dark d-flex align-items-center">
-                      <i class="bi bi-globe me-2 text-primary"></i>Country
-                    </label>
-                    <input
-                      type="text"
-                      name="listing[country]"
-                      id="country"
-                      required
-                      class="form-control"
-                      value="<%= listing.country %>"
-                      placeholder="India"
-                      list="countrySuggestions"
-                    />
-                    <datalist id="countrySuggestions">
-                      <option value="India"></option>
-                      <option value="United States"></option>
-                      <option value="Canada"></option>
-                      <option value="Australia"></option>
-                      <option value="United Kingdom"></option>
-                      <option value="Germany"></option>
-                      <option value="France"></option>
-                      <option value="Japan"></option>
-                      <option value="China"></option>
-                      <option value="Brazil"></option>
-                    </datalist>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="p-3 rounded-3" style="background-color: rgba(25,135,84,0.03); border: 1px dashed rgba(25,135,84,0.2);">
-                    <label for="image_url" class="form-label fw-medium text-dark d-flex align-items-center">
-                      <i class="bi bi-link-45deg me-2 text-primary"></i>Image URL
-                    </label>
-                    <input
-                      type="url"
-                      name="listing[image][url]"
-                      id="image_url"
-                      class="form-control"
-                      value="<%= listing.image?.url || '' %>"
-                      placeholder="https://example.com/image.jpg"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <!-- Image Upload Section -->
-              <div class="mb-4">
-                <label class="form-label fw-medium text-dark d-flex align-items-center">
-                  <i class="bi bi-image me-2 text-primary"></i>Property Image
-                </label>
-                
-                <div class="border rounded-3 p-3" style="border-style: dashed !important; background-color: #f9fafc;">
-                  <!-- Current Image Preview -->
-                  <% if (listing.image?.url || listing.image) { %>
-                    <div class="mb-3 text-center">
-                      <p class="fw-medium mb-2">Current Image:</p>
-                      <img 
-                        src="<%= listing.image?.url || listing.image %>" 
-                        alt="Current Listing Image" 
-                        class="img-thumbnail rounded-3 shadow-sm" 
-                        style="max-width: 100%; max-height: 250px; object-fit: contain;"
-                      >
-                    </div>
-                  <% } %>
-                  
-                  <!-- Image Uploader -->
-                  <div class="text-center">
-                    <input type="file" class="form-control d-none" id="image" name="image" accept="image/*">
-                    <button type="button" class="btn btn-outline-primary rounded-pill px-4" onclick="document.getElementById('image').click()">
-                      <i class="bi bi-upload me-2"></i>Upload New Image
-                    </button>
-                    <div class="form-text mt-2">Recommended size: 1200x800 pixels (max 5MB)</div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Form Actions -->
-              <div class="d-flex justify-content-between align-items-center mt-5 pt-4 border-top">
-                <a href="/listings" class="btn btn-outline-secondary px-4 rounded-pill">
-                  <i class="bi bi-x-lg me-2"></i>Cancel
-                </a>
-                <button type="submit" class="btn btn-primary px-4 rounded-pill fw-medium" style="background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); border: none;">
-                  <i class="bi bi-check-lg me-2"></i>Update Listing
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
+<div class="rr-form-page">
+  <div style="margin-bottom: 16px;">
+    <a href="/listings/<%= listing._id %>" class="btn btn-ghost btn-sm">
+      <i class="bi bi-arrow-left"></i> Back to listing
+    </a>
   </div>
 
-  <!-- Custom Styling -->
-  <style>
-    .card {
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    
-    .card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
-    }
-    
-    .form-control, .form-select, .input-group-text {
-      border-color: #e0e6ed;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-    
-    .form-control:focus, .form-select:focus {
-      border-color: #6a11cb !important;
-      box-shadow: 0 0 0 0.25rem rgba(106, 17, 203, 0.15) !important;
-    }
-    
-    .input-group-text {
-      background-color: #f8fafc;
-    }
-    
-    .form-label {
-      color: #3b4863;
-    }
-    
-    .btn-outline-secondary {
-      border-color: #e0e6ed;
-    }
-    
-    .btn-outline-secondary:hover {
-      background-color: #f8fafc;
-    }
-    
-    textarea::-webkit-scrollbar {
-      width: 6px;
-    }
-    
-    textarea::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 10px;
-    }
-    
-    textarea::-webkit-scrollbar-thumb {
-      background: linear-gradient(#6a11cb, #2575fc);
-      border-radius: 10px;
-    }
-  </style>
+  <div class="rr-form-header">
+    <h1>Edit listing</h1>
+    <p>Update your property details</p>
+  </div>
 
-  <!-- JavaScript Enhancements -->
-  <script>
-    // Character counter for description
-    const description = document.getElementById('description');
-    const charCount = document.getElementById('char-count');
-    
-    description.addEventListener('input', () => {
-      charCount.textContent = description.value.length;
-    });
-    
-    // Image preview functionality
-    const imageInput = document.getElementById('image');
-    const currentImage = document.querySelector('img[alt="Current Listing Image"]');
-    
-    imageInput.addEventListener('change', (e) => {
-      if (e.target.files.length > 0 && currentImage) {
-        const file = e.target.files[0];
-        if (file.size > 5 * 1024 * 1024) {
-          alert('File size should be less than 5MB');
-          return;
-        }
-        
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          currentImage.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-    
-    // Form submission feedback
-    const form = document.querySelector('form');
-    
-    form.addEventListener('submit', () => {
-      const submitBtn = form.querySelector('button[type="submit"]');
-      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Updating...';
-      submitBtn.disabled = true;
-    });
-  </script>
-</body>
+  <div class="rr-form-card">
+    <form action="/listings/<%= listing._id %>?_method=PUT" method="POST" enctype="multipart/form-data" id="editForm">
+
+      <div class="form-group">
+        <label class="form-label">Listing title *</label>
+        <input type="text" name="listing[title]" class="form-control"
+          value="<%= listing.title %>" required maxlength="80">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          Description *
+          <span class="rr-char-counter"><span id="desc-count"><%= listing.description.length %></span>/500</span>
+        </label>
+        <textarea name="listing[description]" id="description" class="form-control"
+          rows="5" required maxlength="500"><%= listing.description %></textarea>
+      </div>
+
+      <div class="rr-row">
+        <div class="form-group">
+          <label class="form-label">Price per night (₹) *</label>
+          <input type="number" name="listing[price]" class="form-control"
+            value="<%= listing.price %>" min="0" step="50" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Location *</label>
+          <input type="text" name="listing[location]" class="form-control"
+            value="<%= listing.location %>" required>
+        </div>
+      </div>
+
+      <div class="rr-row">
+        <div class="form-group">
+          <label class="form-label">Country *</label>
+          <input type="text" name="listing[country]" class="form-control"
+            value="<%= listing.country %>" required list="countries">
+          <datalist id="countries">
+            <option value="India"></option>
+            <option value="United States"></option>
+            <option value="Canada"></option>
+            <option value="Australia"></option>
+            <option value="United Kingdom"></option>
+            <option value="Germany"></option>
+            <option value="France"></option>
+            <option value="Japan"></option>
+            <option value="Brazil"></option>
+          </datalist>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select name="listing[category]" class="form-control">
+            <option value="">Select type</option>
+            <% ['Beach','Mountain','City','Countryside','Apartment','Villa'].forEach(cat => { %>
+              <option value="<%= cat %>" <%= listing.category === cat ? 'selected' : '' %>><%= cat %></option>
+            <% }); %>
+          </select>
+        </div>
+      </div>
+
+      <!-- Current image -->
+      <div class="form-group">
+        <label class="form-label">Property photo</label>
+        <% const imgSrc = listing.image?.url || listing.image; %>
+        <% if (imgSrc) { %>
+          <img src="<%= imgSrc %>" alt="Current image" class="rr-current-img" id="current-img">
+          <p style="font-size:0.82rem;color:var(--gray-500);margin-bottom:10px;">Current image — upload a new one to replace</p>
+        <% } %>
+        <input type="file" name="image" id="imageInput" accept="image/*" class="form-control"
+          style="padding: 8px 10px; cursor:pointer;">
+        <p class="form-hint">JPG, PNG — max 5MB</p>
+      </div>
+
+      <div class="rr-form-footer">
+        <a href="/listings/<%= listing._id %>" class="btn btn-outline">
+          <i class="bi bi-x-lg"></i> Cancel
+        </a>
+        <button type="submit" id="submitBtn" class="btn btn-gold btn-lg">
+          <i class="bi bi-check-lg"></i> Save changes
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Char counter
+  const desc = document.getElementById('description');
+  const cnt = document.getElementById('desc-count');
+  desc.addEventListener('input', () => { cnt.textContent = desc.value.length; });
+
+  // Image preview on change
+  const imgInput = document.getElementById('imageInput');
+  const curImg = document.getElementById('current-img');
+  imgInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { alert('File must be under 5MB'); imgInput.value=''; return; }
+    if (curImg) {
+      const reader = new FileReader();
+      reader.onload = ev => { curImg.src = ev.target.result; };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Submit feedback
+  document.getElementById('editForm').addEventListener('submit', function() {
+    const btn = document.getElementById('submitBtn');
+    btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Saving…';
+    btn.disabled = true;
+  });
+</script>

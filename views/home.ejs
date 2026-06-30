@@ -1,0 +1,984 @@
+<%- layout("layouts/boilerplate") %>
+<style>
+/* ══════════════════════════════════════════════
+   ROOMROVER HOME — 2025 DESIGN
+   Dark glass · Gradient · Alive
+══════════════════════════════════════════════ */
+
+/* ── Design tokens ── */
+:root {
+  --p:   #4f6ef2;
+  --p2:  #8b5cf6;
+  --p3:  #22d3ee;
+  --dark: #06090f;
+  --dark-2: #0d1117;
+  --dark-3: #161b27;
+  --glass:  rgba(255,255,255,0.05);
+  --glass-b: rgba(255,255,255,0.09);
+}
+
+/* ── Transparent navbar when at top ── */
+.rr-home-page #rr-nav {
+  background: transparent !important;
+  border-bottom-color: rgba(255,255,255,0.07) !important;
+  transition: background 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease;
+}
+.rr-home-page #rr-nav.rr-nav-solid {
+  background: rgba(6,9,15,0.88) !important;
+  backdrop-filter: blur(18px) !important;
+  border-bottom-color: rgba(255,255,255,0.06) !important;
+}
+.rr-home-page #rr-nav:not(.rr-nav-solid) .rr-logo,
+.rr-home-page #rr-nav:not(.rr-nav-solid) .rr-logo-r,
+.rr-home-page #rr-nav:not(.rr-nav-solid) .rr-logo-oo { color: #fff !important; }
+.rr-home-page #rr-nav:not(.rr-nav-solid) .rr-nav-center-link { color: rgba(255,255,255,0.82); }
+.rr-home-page #rr-nav:not(.rr-nav-solid) .rr-nav-center-link:hover { background: rgba(255,255,255,0.09); color: #fff; }
+.rr-home-page #rr-nav:not(.rr-nav-solid) .rr-dropdown-toggle { border-color: rgba(255,255,255,0.2); color: #fff; background: transparent; }
+.rr-home-page #rr-nav:not(.rr-nav-solid) .rr-wishlist-btn { border-color: rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); background: transparent; }
+.rr-home-page #rr-nav:not(.rr-nav-solid) .rr-hamburger span { background: #fff; }
+.rr-home-page #rr-nav:not(.rr-nav-solid) .rr-hamburger { border-color: rgba(255,255,255,0.25); }
+
+/* ── Gradient text ── */
+.rr-g { background: linear-gradient(135deg, var(--p) 0%, var(--p2) 55%, var(--p3) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.rr-g2 { background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+/* ════════════════════════
+   HERO
+════════════════════════ */
+.rr-hero {
+  position: relative; min-height: 100svh;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--dark); overflow: hidden;
+}
+
+/* Animated gradient orbs */
+.rr-orbs { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.rr-orb {
+  position: absolute; border-radius: 50%; filter: blur(90px);
+  animation: rr-float 10s ease-in-out infinite;
+}
+.rr-orb-1 { width: 560px; height: 560px; background: rgba(79,110,242,0.28); top: -120px; left: -80px; animation-duration: 12s; }
+.rr-orb-2 { width: 440px; height: 440px; background: rgba(139,92,246,0.22); bottom: -60px; right: -60px; animation-duration: 9s; animation-delay: -4s; }
+.rr-orb-3 { width: 320px; height: 320px; background: rgba(34,211,238,0.16); top: 40%; left: 55%; animation-duration: 11s; animation-delay: -7s; }
+@keyframes rr-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(28px, -22px) scale(1.06); }
+  66%       { transform: translate(-18px, 12px) scale(0.94); }
+}
+
+/* Noise overlay for texture */
+.rr-hero-noise {
+  position: absolute; inset: 0; z-index: 1; opacity: 0.04; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+}
+
+/* Grid lines decoration */
+.rr-hero-grid {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 40%, transparent 100%);
+}
+
+.rr-hero-content {
+  position: relative; z-index: 2;
+  text-align: center; padding: 80px 20px 60px;
+  max-width: 860px; width: 100%;
+}
+
+/* Pre-heading pill */
+.rr-hero-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(79,110,242,0.12);
+  border: 1px solid rgba(79,110,242,0.3);
+  color: #93b4ff; font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.8px; text-transform: uppercase;
+  padding: 7px 18px; border-radius: 40px; margin-bottom: 32px;
+  animation: rr-fadein 0.7s ease both;
+}
+.rr-hero-pill .rr-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #4f6ef2;
+  box-shadow: 0 0 8px rgba(79,110,242,0.9);
+  animation: rr-blink 2s ease-in-out infinite;
+}
+@keyframes rr-blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+/* Main heading */
+.rr-hero-h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(2.8rem, 7vw, 5rem);
+  font-weight: 700; color: #f8fafc;
+  line-height: 1.1; margin-bottom: 24px;
+  animation: rr-fadein 0.7s 0.15s ease both;
+}
+.rr-hero-h1 .rr-h1-dim { color: rgba(248,250,252,0.5); font-style: italic; }
+
+/* Sub text */
+.rr-hero-sub {
+  font-size: 1.08rem; color: rgba(248,250,252,0.58);
+  line-height: 1.75; max-width: 540px;
+  margin: 0 auto 44px;
+  animation: rr-fadein 0.7s 0.28s ease both;
+}
+
+/* Glass search box */
+.rr-hero-search {
+  display: flex; align-items: center;
+  background: rgba(255,255,255,0.07);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 60px;
+  max-width: 640px; margin: 0 auto 20px;
+  padding: 6px 6px 6px 22px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08);
+  animation: rr-fadein 0.7s 0.4s ease both;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+.rr-hero-search:focus-within {
+  border-color: rgba(79,110,242,0.5);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.35), 0 0 0 3px rgba(79,110,242,0.15), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.rr-hero-search input {
+  flex: 1; border: none; background: transparent;
+  padding: 14px 0; font-size: 1rem; color: #f8fafc;
+  outline: none; font-family: inherit;
+}
+.rr-hero-search input::placeholder { color: rgba(248,250,252,0.35); }
+.rr-hero-search-btn {
+  padding: 13px 28px; background: var(--p);
+  background: linear-gradient(135deg, var(--p) 0%, var(--p2) 100%);
+  color: #fff; border: none; border-radius: 50px;
+  font-size: 0.95rem; font-weight: 600; cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
+  font-family: inherit; white-space: nowrap;
+  transition: opacity 0.2s, transform 0.2s;
+  box-shadow: 0 4px 20px rgba(79,110,242,0.4);
+}
+.rr-hero-search-btn:hover { opacity: 0.88; transform: scale(1.02); }
+
+/* Quick category pills below search */
+.rr-hero-cats {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 8px; margin-bottom: 52px;
+  animation: rr-fadein 0.7s 0.52s ease both;
+}
+.rr-hero-cat-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 14px; border-radius: 30px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.05);
+  color: rgba(248,250,252,0.7); font-size: 0.8rem; font-weight: 500;
+  text-decoration: none; transition: all 0.2s; backdrop-filter: blur(8px);
+}
+.rr-hero-cat-pill:hover { border-color: rgba(79,110,242,0.5); background: rgba(79,110,242,0.12); color: #93b4ff; }
+
+/* Hero stats */
+.rr-hero-stats {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0;
+  animation: rr-fadein 0.7s 0.65s ease both;
+}
+.rr-hero-stat-card {
+  padding: 16px 28px; text-align: center;
+  border: 1px solid rgba(255,255,255,0.07);
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(10px);
+}
+.rr-hero-stat-card:first-child { border-radius: 16px 0 0 16px; }
+.rr-hero-stat-card:last-child  { border-radius: 0 16px 16px 0; }
+.rr-hero-stat-card:not(:last-child) { border-right: none; }
+.rr-hero-stat-num {
+  font-size: 1.6rem; font-weight: 800; line-height: 1;
+  background: linear-gradient(135deg, var(--p) 0%, var(--p2) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.rr-hero-stat-lbl { font-size: 0.72rem; color: rgba(255,255,255,0.45); margin-top: 4px; letter-spacing: 0.3px; }
+
+/* Scroll hint */
+.rr-scroll-hint {
+  position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+  z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  color: rgba(255,255,255,0.3); font-size: 0.72rem; letter-spacing: 0.8px;
+  text-transform: uppercase; animation: rr-fadein 1s 1s ease both;
+}
+.rr-scroll-hint span { width: 20px; height: 34px; border: 1.5px solid rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: flex-start; justify-content: center; padding-top: 5px; }
+.rr-scroll-hint span::after { content: ''; width: 3px; height: 7px; background: rgba(255,255,255,0.4); border-radius: 2px; animation: rr-scroll 1.8s ease-in-out infinite; }
+@keyframes rr-scroll { 0%{transform:translateY(0);opacity:1;} 100%{transform:translateY(10px);opacity:0;} }
+
+@keyframes rr-fadein { from{opacity:0;transform:translateY(22px);} to{opacity:1;transform:translateY(0);} }
+
+/* ════════════════════════
+   MARQUEE TRUST BAR
+════════════════════════ */
+.rr-marquee-strip {
+  background: var(--dark-2);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 14px 0; overflow: hidden;
+}
+.rr-marquee-track {
+  display: flex; width: max-content;
+  animation: rr-marquee 28s linear infinite;
+  gap: 0;
+}
+.rr-marquee-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 40px; white-space: nowrap;
+  font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.35);
+  letter-spacing: 0.3px;
+}
+.rr-marquee-item i { font-size: 0.9rem; }
+.rr-marquee-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.15); }
+@keyframes rr-marquee { from{transform:translateX(0);} to{transform:translateX(-50%);} }
+
+/* ════════════════════════
+   SECTION BASE
+════════════════════════ */
+.rr-s { padding: 96px 0; }
+.rr-si { max-width: 1280px; margin: 0 auto; padding: 0 28px; }
+.rr-s-head { text-align: center; margin-bottom: 60px; }
+.rr-s-tag {
+  display: inline-block; font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--p); margin-bottom: 14px;
+  background: rgba(79,110,242,0.1); border: 1px solid rgba(79,110,242,0.2);
+  padding: 5px 14px; border-radius: 30px;
+}
+.rr-s-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.7rem, 3.5vw, 2.6rem);
+  color: #111827; line-height: 1.2; margin: 0 0 14px;
+}
+.rr-s-sub { color: var(--gray-500); font-size: 1rem; max-width: 520px; margin: 0 auto; line-height: 1.7; }
+
+/* ════════════════════════
+   CATEGORIES BENTO
+════════════════════════ */
+.rr-cats-s { background: #f8f9fb; }
+
+.rr-cats-bento {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: 220px 220px;
+  gap: 14px;
+}
+.rr-cat-tile {
+  position: relative; border-radius: 20px; overflow: hidden;
+  text-decoration: none; cursor: pointer;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+.rr-cat-tile:hover { transform: scale(1.02); box-shadow: 0 20px 60px rgba(0,0,0,0.22); }
+.rr-cat-tile:first-child { grid-row: span 2; } /* Beach: large */
+
+.rr-cat-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.rr-cat-tile:hover .rr-cat-img { transform: scale(1.07); }
+
+.rr-cat-shade {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(6,9,15,0.88) 0%, rgba(6,9,15,0.1) 50%, transparent 100%);
+}
+.rr-cat-body {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 18px 18px;
+  display: flex; align-items: flex-end; justify-content: space-between;
+}
+.rr-cat-info { display: flex; flex-direction: column; gap: 4px; }
+.rr-cat-emoji { font-size: 1.5rem; line-height: 1; }
+.rr-cat-name {
+  font-size: 1rem; font-weight: 700; color: #fff;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.5);
+  line-height: 1;
+}
+.rr-cat-tile:first-child .rr-cat-emoji { font-size: 2rem; }
+.rr-cat-tile:first-child .rr-cat-name { font-size: 1.35rem; }
+.rr-cat-arrow {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,0.15); backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.25);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 0.9rem; flex-shrink: 0;
+  transform: translateX(8px); opacity: 0;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+.rr-cat-tile:hover .rr-cat-arrow { transform: translateX(0); opacity: 1; }
+
+/* Row 2 single wide card for Villa */
+.rr-cats-extra { margin-top: 14px; }
+.rr-cat-wide {
+  display: flex; align-items: center; justify-content: space-between;
+  background: linear-gradient(135deg, #0d1117 0%, #161b27 100%);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px; padding: 28px 36px;
+  text-decoration: none; transition: all 0.25s ease;
+  gap: 20px;
+}
+.rr-cat-wide:hover { border-color: rgba(79,110,242,0.4); box-shadow: 0 0 0 1px rgba(79,110,242,0.2), 0 12px 40px rgba(0,0,0,0.25); }
+.rr-cat-wide-left { display: flex; align-items: center; gap: 18px; }
+.rr-cat-wide-icon {
+  width: 52px; height: 52px; border-radius: 14px; flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(79,110,242,0.2) 0%, rgba(139,92,246,0.2) 100%);
+  border: 1px solid rgba(79,110,242,0.2);
+  display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+}
+.rr-cat-wide h3 { font-size: 1.1rem; font-weight: 700; color: #f8fafc; margin: 0 0 4px; }
+.rr-cat-wide p { font-size: 0.85rem; color: rgba(255,255,255,0.45); margin: 0; }
+.rr-cat-wide-cta {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 20px; border-radius: 30px;
+  background: linear-gradient(135deg, var(--p) 0%, var(--p2) 100%);
+  color: #fff; font-size: 0.85rem; font-weight: 600;
+  white-space: nowrap; box-shadow: 0 4px 16px rgba(79,110,242,0.3);
+  transition: opacity 0.2s;
+}
+.rr-cat-wide:hover .rr-cat-wide-cta { opacity: 0.88; }
+
+/* ════════════════════════
+   HOW IT WORKS — DARK
+════════════════════════ */
+.rr-how-s { background: var(--dark); }
+.rr-how-s .rr-s-tag { color: #93b4ff; background: rgba(79,110,242,0.1); border-color: rgba(79,110,242,0.2); }
+.rr-how-s .rr-s-title { color: #f8fafc; }
+.rr-how-s .rr-s-sub { color: rgba(248,250,252,0.45); }
+
+.rr-how-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 2px; position: relative;
+}
+.rr-how-connector {
+  position: absolute; top: 52px; left: calc(16.66% + 40px); right: calc(16.66% + 40px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(79,110,242,0.5) 30%, rgba(139,92,246,0.5) 70%, transparent);
+  z-index: 0;
+}
+.rr-how-connector::before,
+.rr-how-connector::after {
+  content: '';
+  position: absolute; top: -3px;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--p);
+  box-shadow: 0 0 12px rgba(79,110,242,0.8);
+}
+.rr-how-connector::before { left: 0; }
+.rr-how-connector::after  { right: 0; }
+
+.rr-how-step {
+  position: relative; z-index: 1;
+  background: var(--glass);
+  border: 1px solid var(--glass-b);
+  border-radius: 24px; padding: 36px 28px;
+  text-align: center;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+.rr-how-step:hover {
+  border-color: rgba(79,110,242,0.35);
+  box-shadow: 0 0 0 1px rgba(79,110,242,0.1), 0 20px 60px rgba(0,0,0,0.3);
+}
+.rr-how-num {
+  font-size: 0.75rem; font-weight: 800; letter-spacing: 2px;
+  text-transform: uppercase; margin-bottom: 18px;
+  background: linear-gradient(135deg, var(--p) 0%, var(--p2) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.rr-how-icon-wrap {
+  width: 68px; height: 68px; border-radius: 20px;
+  background: linear-gradient(135deg, rgba(79,110,242,0.15) 0%, rgba(139,92,246,0.15) 100%);
+  border: 1px solid rgba(79,110,242,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem; margin: 0 auto 20px;
+  box-shadow: 0 8px 24px rgba(79,110,242,0.15);
+}
+.rr-how-step h3 { font-size: 1.05rem; font-weight: 700; color: #f8fafc; margin: 0 0 10px; }
+.rr-how-step p  { font-size: 0.875rem; color: rgba(248,250,252,0.45); line-height: 1.65; margin: 0; }
+
+/* ════════════════════════
+   AI FEATURES
+════════════════════════ */
+.rr-ai-s {
+  background: var(--dark-2); position: relative; overflow: hidden;
+}
+.rr-ai-s::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 10%, rgba(79,110,242,0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 10% 90%, rgba(139,92,246,0.1) 0%, transparent 70%);
+}
+.rr-ai-s .rr-si { position: relative; z-index: 1; }
+.rr-ai-s .rr-s-tag  { color: #93b4ff; background: rgba(79,110,242,0.1); border-color: rgba(79,110,242,0.2); }
+.rr-ai-s .rr-s-title { color: #f8fafc; }
+.rr-ai-s .rr-s-sub   { color: rgba(248,250,252,0.45); }
+
+.rr-ai-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.rr-ai-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px; padding: 28px 22px;
+  position: relative; overflow: hidden;
+  transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+}
+.rr-ai-card::before {
+  content: ''; position: absolute; inset: 0; border-radius: 20px; opacity: 0;
+  background: linear-gradient(135deg, rgba(79,110,242,0.06) 0%, rgba(139,92,246,0.06) 100%);
+  transition: opacity 0.25s;
+}
+.rr-ai-card:hover { transform: translateY(-5px); border-color: rgba(79,110,242,0.3); box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 0 1px rgba(79,110,242,0.1); }
+.rr-ai-card:hover::before { opacity: 1; }
+
+.rr-ai-card-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; margin-bottom: 18px;
+}
+.rr-ai-card-icon.blue   { background: rgba(79,110,242,0.15); border: 1px solid rgba(79,110,242,0.25); color: #93b4ff; }
+.rr-ai-card-icon.violet { background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.25); color: #c4b5fd; }
+.rr-ai-card-icon.cyan   { background: rgba(34,211,238,0.12); border: 1px solid rgba(34,211,238,0.2);  color: #67e8f9; }
+.rr-ai-card-icon.amber  { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.2);  color: #fcd34d; }
+
+.rr-ai-card h3 { font-size: 0.97rem; font-weight: 700; color: #f8fafc; margin: 0 0 9px; }
+.rr-ai-card p  { font-size: 0.84rem; color: rgba(248,250,252,0.45); line-height: 1.65; margin: 0 0 16px; }
+.rr-ai-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.8px;
+  text-transform: uppercase; padding: 4px 10px; border-radius: 20px;
+}
+.rr-ai-badge.live   { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(52,211,153,0.2); }
+.rr-ai-badge.soon   { background: rgba(245,158,11,0.1);  color: #fbbf24; border: 1px solid rgba(251,191,36,0.2); }
+.rr-ai-badge .rr-pulse { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: rr-blink 1.5s ease-in-out infinite; }
+
+.rr-ai-bottom {
+  margin-top: 48px; padding-top: 32px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  flex-wrap: wrap;
+}
+.rr-ai-tech-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 30px; padding: 7px 16px;
+  font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.5);
+}
+
+/* ════════════════════════
+   STATS SECTION
+════════════════════════ */
+.rr-stats-s {
+  background: #f8f9fb; border-top: 1px solid var(--gray-200);
+}
+.rr-stats-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px;
+  background: var(--gray-200); border-radius: 20px; overflow: hidden;
+}
+.rr-stat-item {
+  background: #fff; padding: 44px 28px; text-align: center;
+  position: relative; overflow: hidden;
+  transition: background 0.25s;
+}
+.rr-stat-item:hover { background: var(--dark); }
+.rr-stat-item:hover .rr-stat-big  { -webkit-text-fill-color: #fff; }
+.rr-stat-item:hover .rr-stat-lbl  { color: rgba(255,255,255,0.5); }
+.rr-stat-big {
+  font-size: 2.8rem; font-weight: 800; line-height: 1;
+  background: linear-gradient(135deg, var(--p) 0%, var(--p2) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; display: block; margin-bottom: 8px;
+  transition: -webkit-text-fill-color 0.25s;
+}
+.rr-stat-lbl { font-size: 0.85rem; color: var(--gray-500); font-weight: 600; transition: color 0.25s; }
+
+/* ════════════════════════
+   ABOUT / TRUST
+════════════════════════ */
+.rr-about-s { background: #fff; }
+.rr-about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+
+.rr-about-visual { position: relative; }
+.rr-about-main-img {
+  border-radius: 24px; overflow: hidden; aspect-ratio: 4/3;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.14);
+}
+.rr-about-main-img img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Floating card over image */
+.rr-about-float {
+  position: absolute; bottom: -24px; right: -24px;
+  background: #fff; border-radius: 20px;
+  padding: 16px 20px; box-shadow: 0 12px 40px rgba(0,0,0,0.14);
+  display: flex; align-items: center; gap: 14px; min-width: 200px;
+  border: 1px solid var(--gray-200);
+}
+.rr-about-float-icon {
+  width: 46px; height: 46px; border-radius: 14px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--p) 0%, var(--p2) 100%);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 1.2rem;
+}
+.rr-about-float strong { display: block; font-size: 0.95rem; color: #111827; }
+.rr-about-float span { font-size: 0.78rem; color: var(--gray-500); }
+
+/* Small stat card top-left */
+.rr-about-float-2 {
+  position: absolute; top: -20px; left: -20px;
+  background: linear-gradient(135deg, var(--p) 0%, var(--p2) 100%);
+  border-radius: 18px; padding: 14px 18px;
+  box-shadow: 0 8px 30px rgba(79,110,242,0.4);
+  text-align: center; min-width: 100px;
+}
+.rr-about-float-2 .n { font-size: 1.6rem; font-weight: 800; color: #fff; line-height: 1; }
+.rr-about-float-2 .l { font-size: 0.72rem; color: rgba(255,255,255,0.75); margin-top: 3px; font-weight: 600; }
+
+.rr-about-content .rr-s-head { text-align: left; margin-bottom: 20px; }
+.rr-about-content p { color: var(--gray-600); line-height: 1.8; margin-bottom: 16px; font-size: 0.97rem; }
+.rr-about-feats { list-style: none; padding: 0; margin: 20px 0 32px; display: flex; flex-direction: column; gap: 12px; }
+.rr-about-feats li { display: flex; align-items: center; gap: 12px; font-size: 0.92rem; color: #374151; }
+.rr-feat-icon {
+  width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;
+  background: rgba(79,110,242,0.1); border: 1px solid rgba(79,110,242,0.2);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--p); font-size: 0.85rem;
+}
+
+/* ════════════════════════
+   CTA SECTION
+════════════════════════ */
+.rr-cta-s {
+  background: var(--dark);
+  position: relative; overflow: hidden; padding: 96px 28px;
+}
+.rr-cta-s::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 50%, rgba(79,110,242,0.18) 0%, transparent 70%);
+}
+.rr-cta-inner { max-width: 680px; margin: 0 auto; text-align: center; position: relative; z-index: 1; }
+.rr-cta-s h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  color: #f8fafc; line-height: 1.15; margin: 0 0 16px;
+}
+.rr-cta-s p { color: rgba(248,250,252,0.5); font-size: 1rem; line-height: 1.7; margin: 0 0 40px; }
+.rr-cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.rr-cta-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 32px; border-radius: 50px;
+  background: linear-gradient(135deg, var(--p) 0%, var(--p2) 100%);
+  color: #fff; font-size: 0.97rem; font-weight: 700; text-decoration: none;
+  box-shadow: 0 6px 28px rgba(79,110,242,0.45);
+  transition: opacity 0.2s, transform 0.2s; font-family: inherit;
+}
+.rr-cta-primary:hover { opacity: 0.88; transform: translateY(-2px); }
+.rr-cta-ghost {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 13px 28px; border-radius: 50px;
+  border: 1px solid rgba(255,255,255,0.18);
+  color: rgba(255,255,255,0.75); font-size: 0.97rem; font-weight: 600;
+  text-decoration: none; transition: all 0.2s; font-family: inherit;
+  background: transparent;
+}
+.rr-cta-ghost:hover { border-color: rgba(255,255,255,0.4); color: #fff; background: rgba(255,255,255,0.06); }
+
+/* ════════════════════════
+   RESPONSIVE
+════════════════════════ */
+@media (max-width: 1024px) {
+  .rr-ai-grid { grid-template-columns: 1fr 1fr; }
+  .rr-cats-bento { grid-template-columns: 1fr 1fr; grid-template-rows: 200px 200px 200px; }
+  .rr-cat-tile:first-child { grid-row: span 2; grid-column: span 1; }
+}
+@media (max-width: 900px) {
+  .rr-s { padding: 72px 0; }
+  .rr-about-grid { grid-template-columns: 1fr; gap: 48px; }
+  .rr-about-float-2 { top: 12px; left: 12px; }
+  .rr-about-float { bottom: 12px; right: 12px; }
+  .rr-how-grid { grid-template-columns: 1fr; gap: 12px; }
+  .rr-how-connector { display: none; }
+  .rr-stats-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 700px) {
+  .rr-si { padding: 0 16px; }
+  .rr-cats-bento {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 160px 160px 160px;
+  }
+  .rr-cat-tile:first-child { grid-column: span 2; grid-row: span 1; }
+  .rr-hero-h1 { font-size: 2.4rem; }
+  .rr-hero-search { flex-direction: column; border-radius: 20px; padding: 14px; gap: 10px; }
+  .rr-hero-search-btn { width: 100%; justify-content: center; border-radius: 12px; }
+  .rr-hero-search input { padding: 4px 0; }
+  .rr-hero-stat-card { padding: 12px 16px; }
+  .rr-hero-stat-num { font-size: 1.2rem; }
+  .rr-ai-grid { grid-template-columns: 1fr; gap: 12px; }
+  .rr-stats-grid { grid-template-columns: 1fr 1fr; }
+  .rr-cat-wide { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 480px) {
+  .rr-hero-cats { display: none; }
+  .rr-cats-bento { grid-template-columns: 1fr; grid-template-rows: repeat(6, 160px); }
+  .rr-cat-tile:first-child { grid-column: 1; }
+  .rr-stats-grid { grid-template-columns: 1fr; }
+}
+
+/* ════════════════════════
+   DARK MODE OVERRIDES
+════════════════════════ */
+/* Section titles in light sections */
+[data-theme="dark"] .rr-s-title { color: #f1f5f9; }
+[data-theme="dark"] .rr-s-sub   { color: #64748b; }
+
+/* Categories section */
+[data-theme="dark"] .rr-cats-s { background: #0d1117; }
+[data-theme="dark"] .rr-cat-wide {
+  background: linear-gradient(135deg, #111827 0%, #1a2233 100%);
+  border-color: rgba(255,255,255,0.07);
+}
+
+/* Stats section */
+[data-theme="dark"] .rr-stats-s {
+  background: #0d1117;
+  border-top-color: rgba(255,255,255,0.06);
+}
+[data-theme="dark"] .rr-stats-grid { background: rgba(255,255,255,0.04); }
+[data-theme="dark"] .rr-stat-item { background: #111827; }
+[data-theme="dark"] .rr-stat-item:hover { background: #0a0f1a; }
+[data-theme="dark"] .rr-stat-lbl { color: #64748b; }
+
+/* About section */
+[data-theme="dark"] .rr-about-s { background: #0f1624; }
+[data-theme="dark"] .rr-about-content p { color: #94a3b8; }
+[data-theme="dark"] .rr-about-feats li { color: #cbd5e1; }
+[data-theme="dark"] .rr-about-float {
+  background: #1a2233; border-color: rgba(255,255,255,0.08);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+}
+[data-theme="dark"] .rr-about-float strong { color: #f1f5f9; }
+[data-theme="dark"] .rr-about-float span   { color: #64748b; }
+[data-theme="dark"] .rr-about-main-img { box-shadow: 0 24px 80px rgba(0,0,0,0.5); }
+
+/* Navbar in light mode — ensure visible text when on non-home pages */
+[data-theme="light"] #rr-nav .rr-nav-center-link { color: var(--gray-700); }
+[data-theme="light"] #rr-nav .rr-dropdown-toggle { color: var(--gray-800); }
+</style>
+
+<!-- Transparent navbar on hero -->
+<script>
+  document.body.classList.add('rr-home-page');
+  window.addEventListener('scroll', function() {
+    document.getElementById('rr-nav').classList.toggle('rr-nav-solid', window.scrollY > 80);
+  }, { passive: true });
+</script>
+
+<!-- ══ HERO ══ -->
+<section class="rr-hero">
+  <div class="rr-orbs">
+    <div class="rr-orb rr-orb-1"></div>
+    <div class="rr-orb rr-orb-2"></div>
+    <div class="rr-orb rr-orb-3"></div>
+  </div>
+  <div class="rr-hero-noise"></div>
+  <div class="rr-hero-grid"></div>
+
+  <div class="rr-hero-content">
+    <div class="rr-hero-pill">
+      <span class="rr-dot"></span>
+      India's most trusted stay platform
+    </div>
+
+    <h1 class="rr-hero-h1">
+      Find Your <span class="rr-g">Perfect Stay,</span><br>
+      <span class="rr-h1-dim">Anywhere You Dream</span>
+    </h1>
+
+    <p class="rr-hero-sub">
+      Discover handpicked villas, cozy apartments, beachside retreats and<br>
+      mountain hideaways — curated across India and beyond.
+    </p>
+
+    <form class="rr-hero-search" action="/listings" method="get" role="search">
+      <label for="hero-search-q" class="sr-only">Search destinations</label>
+      <input id="hero-search-q" type="text" name="q" placeholder="Search cities, destinations, or property names…" autocomplete="off" aria-label="Search destinations">
+      <button type="submit" class="rr-hero-search-btn" aria-label="Search listings"><i class="bi bi-search" aria-hidden="true"></i> Explore</button>
+    </form>
+
+    <div class="rr-hero-cats">
+      <a href="/listings?category=Beach"       class="rr-hero-cat-pill">🏖️ Beach</a>
+      <a href="/listings?category=Mountain"    class="rr-hero-cat-pill">🏔️ Mountain</a>
+      <a href="/listings?category=City"        class="rr-hero-cat-pill">🏙️ City</a>
+      <a href="/listings?category=Villa"       class="rr-hero-cat-pill">🏡 Villa</a>
+      <a href="/listings?category=Countryside" class="rr-hero-cat-pill">🌿 Countryside</a>
+      <a href="/listings?category=Apartment"   class="rr-hero-cat-pill">🏢 Apartment</a>
+    </div>
+
+    <div class="rr-hero-stats">
+      <div class="rr-hero-stat-card">
+        <div class="rr-hero-stat-num">63+</div>
+        <div class="rr-hero-stat-lbl">Properties</div>
+      </div>
+      <div class="rr-hero-stat-card">
+        <div class="rr-hero-stat-num">25+</div>
+        <div class="rr-hero-stat-lbl">Destinations</div>
+      </div>
+      <div class="rr-hero-stat-card">
+        <div class="rr-hero-stat-num">4.9★</div>
+        <div class="rr-hero-stat-lbl">Avg Rating</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rr-scroll-hint">
+    <span></span>
+    Scroll
+  </div>
+</section>
+
+<!-- ══ MARQUEE ══ -->
+<div class="rr-marquee-strip">
+  <div class="rr-marquee-track">
+    <% const items = ['Instant Booking', 'Verified Properties', 'Google Gemini AI', 'No Hidden Fees', 'Secure Payments', '24/7 Support', 'Cloudinary Media', 'MongoDB Atlas', 'Instant Booking', 'Verified Properties', 'Google Gemini AI', 'No Hidden Fees', 'Secure Payments', '24/7 Support', 'Cloudinary Media', 'MongoDB Atlas']; %>
+    <% items.forEach((item, i) => { %>
+      <span class="rr-marquee-item"><i class="bi bi-check-circle-fill" style="color:#4f6ef2;"></i> <%= item %></span>
+      <span class="rr-marquee-dot"></span>
+    <% }) %>
+  </div>
+</div>
+
+<!-- ══ CATEGORIES ══ -->
+<section class="rr-s rr-cats-s">
+  <div class="rr-si">
+    <div class="rr-s-head">
+      <div class="rr-s-tag">Browse by Type</div>
+      <h2 class="rr-s-title">Find Your Kind of <span class="rr-g">Stay</span></h2>
+      <p class="rr-s-sub">From sun-soaked beaches to misty mountain peaks — choose the vibe that matches your trip.</p>
+    </div>
+
+    <div class="rr-cats-bento">
+      <a href="/listings?category=Beach" class="rr-cat-tile reveal">
+        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80" alt="Beach" class="rr-cat-img" loading="lazy">
+        <div class="rr-cat-shade"></div>
+        <div class="rr-cat-body">
+          <div class="rr-cat-info">
+            <div class="rr-cat-emoji">🏖️</div>
+            <div class="rr-cat-name">Beach</div>
+          </div>
+          <div class="rr-cat-arrow"><i class="bi bi-arrow-right"></i></div>
+        </div>
+      </a>
+      <a href="/listings?category=Mountain" class="rr-cat-tile reveal reveal-d1">
+        <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=80" alt="Mountain" class="rr-cat-img" loading="lazy">
+        <div class="rr-cat-shade"></div>
+        <div class="rr-cat-body">
+          <div class="rr-cat-info">
+            <div class="rr-cat-emoji">🏔️</div>
+            <div class="rr-cat-name">Mountain</div>
+          </div>
+          <div class="rr-cat-arrow"><i class="bi bi-arrow-right"></i></div>
+        </div>
+      </a>
+      <a href="/listings?category=City" class="rr-cat-tile reveal reveal-d2">
+        <img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=600&q=80" alt="City" class="rr-cat-img" loading="lazy">
+        <div class="rr-cat-shade"></div>
+        <div class="rr-cat-body">
+          <div class="rr-cat-info">
+            <div class="rr-cat-emoji">🏙️</div>
+            <div class="rr-cat-name">City</div>
+          </div>
+          <div class="rr-cat-arrow"><i class="bi bi-arrow-right"></i></div>
+        </div>
+      </a>
+      <a href="/listings?category=Countryside" class="rr-cat-tile reveal reveal-d3">
+        <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=600&q=80" alt="Countryside" class="rr-cat-img" loading="lazy">
+        <div class="rr-cat-shade"></div>
+        <div class="rr-cat-body">
+          <div class="rr-cat-info">
+            <div class="rr-cat-emoji">🌿</div>
+            <div class="rr-cat-name">Countryside</div>
+          </div>
+          <div class="rr-cat-arrow"><i class="bi bi-arrow-right"></i></div>
+        </div>
+      </a>
+      <a href="/listings?category=Apartment" class="rr-cat-tile reveal reveal-d4">
+        <img src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=600&q=80" alt="Apartment" class="rr-cat-img" loading="lazy">
+        <div class="rr-cat-shade"></div>
+        <div class="rr-cat-body">
+          <div class="rr-cat-info">
+            <div class="rr-cat-emoji">🏢</div>
+            <div class="rr-cat-name">Apartment</div>
+          </div>
+          <div class="rr-cat-arrow"><i class="bi bi-arrow-right"></i></div>
+        </div>
+      </a>
+    </div>
+
+    <div class="rr-cats-extra reveal" style="margin-top:14px;">
+      <a href="/listings?category=Villa" class="rr-cat-wide">
+        <div class="rr-cat-wide-left">
+          <div class="rr-cat-wide-icon">🏡</div>
+          <div>
+            <h3>Luxury Villas</h3>
+            <p>Private pools, personal butlers, and unforgettable experiences across India</p>
+          </div>
+        </div>
+        <span class="rr-cat-wide-cta"><i class="bi bi-arrow-right"></i> Explore Villas</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ HOW IT WORKS ══ -->
+<section class="rr-s rr-how-s">
+  <div class="rr-si">
+    <div class="rr-s-head">
+      <div class="rr-s-tag">Simple & Fast</div>
+      <h2 class="rr-s-title">How RoomRover <span class="rr-g">Works</span></h2>
+      <p class="rr-s-sub">Book your perfect stay in three easy steps — no hidden fees, no complications.</p>
+    </div>
+    <div class="rr-how-grid">
+      <div class="rr-how-connector"></div>
+      <div class="rr-how-step reveal reveal-d1">
+        <div class="rr-how-num">Step 01</div>
+        <div class="rr-how-icon-wrap">🔍</div>
+        <h3>Search & Discover</h3>
+        <p>Browse thousands of verified properties by location, category, price, or dates. Use AI-powered filters to find exactly what you need.</p>
+      </div>
+      <div class="rr-how-step reveal reveal-d2">
+        <div class="rr-how-num">Step 02</div>
+        <div class="rr-how-icon-wrap">📅</div>
+        <h3>Book Instantly</h3>
+        <p>Select your dates, pick your guests, and confirm in seconds. Real-time availability — no waiting, no back-and-forth with hosts.</p>
+      </div>
+      <div class="rr-how-step reveal reveal-d3">
+        <div class="rr-how-num">Step 03</div>
+        <div class="rr-how-icon-wrap">✈️</div>
+        <h3>Enjoy Your Stay</h3>
+        <p>Pack up and go. Track all bookings from your Trips dashboard — check-in details, host contact, and receipts, all in one place.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ AI FEATURES ══ -->
+<section class="rr-s rr-ai-s">
+  <div class="rr-si">
+    <div class="rr-s-head">
+      <div class="rr-s-tag">✦ Powered by AI</div>
+      <h2 class="rr-s-title">The Smartest Way to <span class="rr-g">Book</span></h2>
+      <p class="rr-s-sub">We use the latest AI to make every step of your journey faster, smarter, and more personal.</p>
+    </div>
+    <div class="rr-ai-grid">
+      <div class="rr-ai-card reveal reveal-d1">
+        <div class="rr-ai-card-icon blue"><i class="bi bi-chat-dots-fill"></i></div>
+        <h3>Rover AI Assistant</h3>
+        <p>Chat with Rover — powered by Google Gemini 2.5 Flash. Get instant answers about bookings, listings, cancellations, and travel tips anytime.</p>
+        <span class="rr-ai-badge live"><span class="rr-pulse"></span> Live Now</span>
+      </div>
+      <div class="rr-ai-card reveal reveal-d2">
+        <div class="rr-ai-card-icon violet"><i class="bi bi-search-heart"></i></div>
+        <h3>Natural Language Search</h3>
+        <p>Type "cozy beach stay under ₹3000" and we'll find exactly what you mean — not just keyword matches. Semantic search built in.</p>
+        <span class="rr-ai-badge soon">Coming Soon</span>
+      </div>
+      <div class="rr-ai-card reveal reveal-d3">
+        <div class="rr-ai-card-icon cyan"><i class="bi bi-stars"></i></div>
+        <h3>Personalised Picks</h3>
+        <p>AI learns your preferences over time and surfaces listings you'll love — before you even search. Gets smarter every visit.</p>
+        <span class="rr-ai-badge soon">Coming Soon</span>
+      </div>
+      <div class="rr-ai-card reveal reveal-d4">
+        <div class="rr-ai-card-icon amber"><i class="bi bi-graph-up-arrow"></i></div>
+        <h3>Price Intelligence</h3>
+        <p>AI monitors price trends and alerts you when a listing drops to its best price — so you always know when to book and when to wait.</p>
+        <span class="rr-ai-badge soon">Coming Soon</span>
+      </div>
+    </div>
+    <div class="rr-ai-bottom">
+      <span class="rr-ai-tech-chip"><i class="bi bi-cpu"></i> Google Gemini 2.5 Flash</span>
+      <span class="rr-ai-tech-chip"><i class="bi bi-cloud-fill"></i> Cloudinary AI</span>
+      <span class="rr-ai-tech-chip"><i class="bi bi-database-fill"></i> MongoDB Atlas</span>
+      <span class="rr-ai-tech-chip"><i class="bi bi-shield-fill-check"></i> Secure by Design</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ STATS ══ -->
+<section class="rr-s rr-stats-s">
+  <div class="rr-si">
+    <div class="rr-s-head">
+      <div class="rr-s-tag">By the Numbers</div>
+      <h2 class="rr-s-title">RoomRover at a <span class="rr-g">Glance</span></h2>
+    </div>
+    <div class="rr-stats-grid">
+      <div class="rr-stat-item reveal reveal-d1">
+        <span class="rr-stat-big">63+</span>
+        <div class="rr-stat-lbl">Handpicked Properties</div>
+      </div>
+      <div class="rr-stat-item reveal reveal-d2">
+        <span class="rr-stat-big">25+</span>
+        <div class="rr-stat-lbl">Cities & Destinations</div>
+      </div>
+      <div class="rr-stat-item reveal reveal-d3">
+        <span class="rr-stat-big">6</span>
+        <div class="rr-stat-lbl">Stay Categories</div>
+      </div>
+      <div class="rr-stat-item reveal reveal-d4">
+        <span class="rr-stat-big">∞</span>
+        <div class="rr-stat-lbl">Adventures Waiting</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ABOUT ══ -->
+<section class="rr-s rr-about-s" id="about">
+  <div class="rr-si">
+    <div class="rr-about-grid">
+      <div class="rr-about-visual reveal-left">
+        <div class="rr-about-main-img">
+          <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=900&q=80" alt="About RoomRover" loading="lazy">
+        </div>
+        <div class="rr-about-float-2">
+          <div class="n">4.9★</div>
+          <div class="l">Avg Rating</div>
+        </div>
+        <div class="rr-about-float">
+          <div class="rr-about-float-icon"><i class="bi bi-shield-check"></i></div>
+          <div>
+            <strong>Verified Listings</strong>
+            <span>Every property hand-reviewed</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="rr-about-content reveal-right">
+        <div class="rr-s-head">
+          <div class="rr-s-tag">About Us</div>
+          <h2 class="rr-s-title">India's Home for <span class="rr-g">Unique Stays</span></h2>
+        </div>
+        <p>RoomRover was built with one simple idea: finding a great place to stay should be effortless. We connect travellers with genuine, handpicked properties across India and beyond.</p>
+        <p>We believe every journey deserves a home that feels right — and every host deserves a platform that actually works for them.</p>
+        <ul class="rr-about-feats">
+          <li><div class="rr-feat-icon"><i class="bi bi-check-lg"></i></div> Verified, quality-checked listings across India</li>
+          <li><div class="rr-feat-icon"><i class="bi bi-check-lg"></i></div> Instant booking — no approval delays</li>
+          <li><div class="rr-feat-icon"><i class="bi bi-check-lg"></i></div> Transparent pricing with zero hidden charges</li>
+          <li><div class="rr-feat-icon"><i class="bi bi-check-lg"></i></div> AI-powered assistant available 24/7</li>
+        </ul>
+        <a href="/listings" class="rr-cta-primary" style="display:inline-flex;">
+          <i class="bi bi-compass"></i> Explore All Listings
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CTA ══ -->
+<section class="rr-cta-s">
+  <div class="rr-cta-inner">
+    <h2>Own a <span class="rr-g">Great Space</span>?<br>Start Earning Today.</h2>
+    <p>Join thousands of hosts sharing their homes on RoomRover. Set your own price, manage your calendar, and welcome guests from across India.</p>
+    <div class="rr-cta-btns">
+      <a href="/listings/new" class="rr-cta-primary"><i class="bi bi-plus-circle"></i> List Your Place</a>
+      <a href="/listings"     class="rr-cta-ghost"><i class="bi bi-compass"></i> Browse Listings</a>
+    </div>
+  </div>
+</section>

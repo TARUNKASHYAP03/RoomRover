@@ -429,15 +429,35 @@
       .footer-container {
         grid-template-columns: 1fr;
       }
-      
+
       .footer-col {
         margin-bottom: 20px;
       }
-      
+
       .footer-title {
         margin-bottom: 15px;
       }
     }
+
+    /* Dark mode overrides for help page */
+    [data-theme="dark"] .help-section {
+      background: #1a2233; color: #e2e8f0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    [data-theme="dark"] .hero h1 { color: #f1f5f9; }
+    [data-theme="dark"] .hero p { color: #94a3b8; }
+    [data-theme="dark"] .faq h2,
+    [data-theme="dark"] .contact-us h2 { color: #f1f5f9; }
+    [data-theme="dark"] .faq-item h3 { background: #0f1624; color: #cbd5e1; }
+    [data-theme="dark"] .faq-item p { color: #94a3b8; }
+    [data-theme="dark"] .contact-us p { color: #94a3b8; }
+    [data-theme="dark"] .contact-form input,
+    [data-theme="dark"] .contact-form textarea {
+      background: #0f1624; border-color: rgba(255,255,255,0.1);
+      color: #e2e8f0;
+    }
+    [data-theme="dark"] .contact-form input::placeholder,
+    [data-theme="dark"] .contact-form textarea::placeholder { color: #475569; }
   </style>
 
   <script>

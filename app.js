@@ -153,7 +153,7 @@ app.use("/", userRoutes);
 
 // Home route
 app.get("/", (req, res) => {
-  res.redirect("/listings");
+  res.render("home.ejs");
 });
 
 // Listings routes
@@ -176,7 +176,7 @@ app.get("/listings", async (req, res) => {
     }
     if (guests) filter.guests = { $gte: Number(guests) };
 
-    const allListings = await Listing.find(filter);
+    const allListings = await Listing.find(filter).populate("reviews", "rating");
     res.render("listings/index.ejs", { allListings, filters: req.query });
   } catch (err) {
     req.flash("error", "Failed to load listings");
@@ -412,22 +412,104 @@ app.get("/makeadmin/:userid", isLoggedIn, isAdmin, async (req, res) => {
   }
 });
 
-// Chatbot route
-app.post("/chatbot", express.json(), (req, res) => {
-  const { message } = req.body;
-  let reply = "Sorry, I didn't understand that.";
+// Wishlist page
+app.get("/wishlist", (req, res) => {
+  res.render("wishlist.ejs");
+});
 
-  if (!message) {
-    reply = "Please enter a message.";
-  } else if (message.toLowerCase().includes("hello")) {
-    reply = `Hello! How can I help you today?`;
-  } else if (message.toLowerCase().includes("booking")) {
-    reply = "You can view your bookings on the Trips page or create a new booking from any listing.";
-  } else if (message.toLowerCase().includes("help")) {
-    reply = "I'm here to help! You can ask about listings, bookings, or your account.";
+// Wishlist API — returns listing data for given IDs
+app.get("/api/listings", async (req, res) => {
+  try {
+    const ids = (req.query.ids || "").split(",").filter(Boolean);
+    if (!ids.length) return res.json([]);
+    const listings = await Listing.find({ _id: { $in: ids } })
+      .select("title location country price image category");
+    res.json(listings);
+  } catch (err) {
+    res.json([]);
+  }
+});
+
+// Admin dashboard
+app.get("/admin", isLoggedIn, isAdmin, async (req, res) => {
+  try {
+    const [totalListings, totalUsers, allBookings] = await Promise.all([
+      Listing.countDocuments(),
+      User.countDocuments(),
+      Booking.find().populate("listing", "price location image title"),
+    ]);
+
+    const totalBookings = allBookings.length;
+    const totalRevenue = allBookings.reduce((sum, b) => {
+      if (b.listing?.price) {
+        const nights = Math.max(1, Math.ceil((new Date(b.endDate) - new Date(b.startDate)) / (1000 * 60 * 60 * 24)));
+        return sum + b.listing.price * nights;
+      }
+      return sum;
+    }, 0);
+
+    const recentBookings = await Booking.find()
+      .populate("listing", "title price location image")
+      .populate("user", "username")
+      .sort({ createdAt: -1 })
+      .limit(10);
+
+    res.render("admin/dashboard.ejs", { totalListings, totalUsers, totalBookings, totalRevenue, recentBookings });
+  } catch (err) {
+    req.flash("error", "Failed to load admin dashboard");
+    res.redirect("/listings");
+  }
+});
+
+// Auth status — used by static HTML pages (help.html, careers.html, terms.html)
+app.get("/api/me", (req, res) => {
+  if (req.user) {
+    res.json({ loggedIn: true, username: req.user.username });
+  } else {
+    res.json({ loggedIn: false });
+  }
+});
+
+// Chatbot route — Google Gemini 2.5 Flash (free tier)
+app.post("/chatbot", express.json(), async (req, res) => {
+  const { message } = req.body;
+  if (!message) return res.json({ reply: "Please enter a message." });
+
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey || apiKey === "your_gemini_api_key_here") {
+    return res.json({ reply: "⚙️ AI is not set up yet. Add your GEMINI_API_KEY in .env to enable real AI replies." });
   }
 
-  res.json({ reply });
+  try {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          system_instruction: {
+            parts: [{
+              text: "You are Rover, a friendly AI assistant for RoomRover — an Indian accommodation booking platform. Help users with bookings, listings, cancellations, travel tips, and platform questions. Keep replies short (2-3 sentences), warm, and in plain English. Do not use markdown or bullet points."
+            }]
+          },
+          contents: [{ parts: [{ text: message }] }],
+          generationConfig: { maxOutputTokens: 180, temperature: 0.7 }
+        })
+      }
+    );
+    const data = await response.json();
+    if (!response.ok) {
+      const errMsg = data.error?.message || "Unknown Gemini API error";
+      console.error("Gemini API error:", response.status, errMsg);
+      return res.json({ reply: "I'm having a little trouble connecting. Please try again in a moment!" });
+    }
+    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim()
+      || "I'm not sure how to answer that. Try asking about bookings or listings!";
+    res.json({ reply });
+  } catch (err) {
+    console.error("Chatbot fetch error:", err.message);
+    res.json({ reply: "Network issue on my end. Please try again shortly!" });
+  }
 });
 
 // Error handlers

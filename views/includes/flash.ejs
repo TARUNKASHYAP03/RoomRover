@@ -1,15 +1,50 @@
-<% if (Array.isArray(success) && success.length && success[0]) { %>
-  <div class="alert alert-success alert-dismissible fade show mx-auto" role="alert" id="flash-message" style="max-width: 500px;">
-    <%= success[0] %>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-<% } %>
+<style>
+  .rr-flash { position: fixed; top: 80px; right: 20px; z-index: 9998; display: flex; flex-direction: column; gap: 8px; max-width: 360px; }
+  .rr-flash-msg {
+    display: flex; align-items: center; gap: 10px;
+    padding: 13px 16px; border-radius: 10px;
+    font-size: 0.9rem; font-weight: 500;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    animation: rr-slide-in 0.3s ease;
+    position: relative;
+  }
+  @keyframes rr-slide-in {
+    from { opacity: 0; transform: translateX(20px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  .rr-flash-success { background: #fff; border-left: 4px solid #10b981; color: #065f46; }
+  .rr-flash-error   { background: #fff; border-left: 4px solid #ef4444; color: #991b1b; }
+  [data-theme="dark"] .rr-flash-success { background: #1a2233; color: #6ee7b7; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+  [data-theme="dark"] .rr-flash-error   { background: #1a2233; color: #fca5a5; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+  .rr-flash-msg i { font-size: 1rem; }
+  .rr-flash-close {
+    margin-left: auto; background: none; border: none;
+    cursor: pointer; font-size: 1rem; color: inherit; opacity: 0.5;
+    padding: 0; line-height: 1;
+  }
+  .rr-flash-close:hover { opacity: 1; }
+</style>
+
+<div class="rr-flash">
+  <% if (Array.isArray(success) && success.length && success[0]) { %>
+    <div class="rr-flash-msg rr-flash-success" id="rr-flash-s">
+      <i class="bi bi-check-circle-fill"></i>
+      <span><%= success[0] %></span>
+      <button class="rr-flash-close" onclick="this.parentElement.remove()">&times;</button>
+    </div>
+  <% } %>
+  <% if (Array.isArray(error) && error.length && error[0]) { %>
+    <div class="rr-flash-msg rr-flash-error" id="rr-flash-e">
+      <i class="bi bi-exclamation-circle-fill"></i>
+      <span><%= error[0] %></span>
+      <button class="rr-flash-close" onclick="this.parentElement.remove()">&times;</button>
+    </div>
+  <% } %>
+</div>
+
 <script>
-  // Remove flash message after 3 seconds
-  setTimeout(() => {
-    const flashMessage = document.getElementById('flash-message');
-    if (flashMessage) {
-      flashMessage.remove();
-    }
-  }, 3000);
+  ['rr-flash-s','rr-flash-e'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) setTimeout(function() { el.style.opacity='0'; el.style.transition='opacity 0.4s'; setTimeout(function(){ el.remove(); }, 400); }, 4000);
+  });
 </script>

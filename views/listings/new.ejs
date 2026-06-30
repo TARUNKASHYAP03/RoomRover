@@ -1,377 +1,190 @@
-<% layout("layouts/boilerplate") %>
-<body style="background-color: #f8fafc">
-  <!-- Animated Background Elements -->
-  <div class="position-fixed top-0 end-0" style="z-index: -1;">
-    <div style="width: 300px; height: 300px; background: radial-gradient(circle, rgba(106,17,203,0.1) 0%, rgba(255,255,255,0) 70%); transform: translate(100px,-100px);"></div>
+<%- layout("layouts/boilerplate") %>
+<style>
+  .rr-form-page { max-width: 720px; margin: 0 auto; padding: 40px 24px 80px; }
+  .rr-form-header {
+    text-align: center; margin-bottom: 36px;
+  }
+  .rr-form-header h1 { font-size: 1.9rem; color: var(--navy); margin-bottom: 6px; }
+  .rr-form-header p { color: var(--gray-600); }
+  .rr-form-card {
+    background: var(--white); border-radius: var(--radius-lg);
+    border: var(--border); padding: 36px; box-shadow: var(--shadow-sm);
+  }
+  .rr-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .rr-upload-zone {
+    border: 2px dashed var(--gray-300); border-radius: var(--radius);
+    padding: 36px 20px; text-align: center; cursor: pointer;
+    transition: var(--transition); background: var(--gray-50);
+  }
+  .rr-upload-zone:hover, .rr-upload-zone.drag-over {
+    border-color: var(--navy); background: var(--gray-100);
+  }
+  .rr-upload-zone i { font-size: 2rem; color: var(--gray-400); margin-bottom: 8px; display: block; }
+  .rr-upload-zone p { font-size: 0.88rem; color: var(--gray-500); margin: 4px 0; }
+  #rr-img-preview { display: none; margin-bottom: 12px; position: relative; }
+  #rr-img-preview img {
+    width: 100%; height: 180px; object-fit: cover;
+    border-radius: var(--radius-sm); border: var(--border);
+  }
+  #rr-img-preview button {
+    position: absolute; top: 8px; right: 8px;
+    background: rgba(0,0,0,0.6); color: #fff; border: none;
+    border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-size: 0.9rem;
+  }
+  .rr-char-counter { font-size: 0.78rem; color: var(--gray-500); float: right; }
+  .rr-form-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; padding-top: 24px; border-top: var(--border); }
+
+  /* Dark mode */
+  [data-theme="dark"] .rr-form-page { background: #0f1624; }
+  [data-theme="dark"] .rr-form-header h1 { color: #f1f5f9; }
+  [data-theme="dark"] .rr-form-header p { color: #64748b; }
+  [data-theme="dark"] .rr-form-card {
+    background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.07);
+    box-shadow: 0 4px 32px rgba(0,0,0,0.5);
+  }
+  [data-theme="dark"] .rr-upload-zone {
+    border-color: rgba(255,255,255,0.12); background: rgba(255,255,255,0.03);
+  }
+  [data-theme="dark"] .rr-upload-zone:hover {
+    border-color: #4f6ef2; background: rgba(79,110,242,0.06);
+  }
+  [data-theme="dark"] .rr-upload-zone i { color: #475569; }
+  [data-theme="dark"] .rr-upload-zone p { color: #475569; }
+
+  @media (max-width: 560px) {
+    .rr-form-card { padding: 20px; }
+    .rr-row { grid-template-columns: 1fr; }
+    .rr-form-page { padding: 24px 16px 60px; }
+  }
+</style>
+
+<div class="rr-form-page">
+  <div class="rr-form-header">
+    <h1>List your property</h1>
+    <p>Share your space and start earning with RoomRover</p>
   </div>
-  <div class="position-fixed bottom-0 start-0" style="z-index: -1;">
-    <div style="width: 400px; height: 400px; background: radial-gradient(circle, rgba(37,117,252,0.1) 0%, rgba(255,255,255,0) 70%); transform: translate(-150px,150px);"></div>
-  </div>
 
-  <div class="container my-5">
-    <div class="row justify-content-center">
-      <div class="col-lg-8">
-        <!-- Floating Card with Glass Morphism Effect -->
-        <div class="card border-0 rounded-4 overflow-hidden shadow-lg" style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3);">
-          <!-- Card Header with Parallax Effect -->
-          <div class="card-header py-4 position-relative overflow-hidden" style="background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);">
-            <div class="position-absolute w-100 h-100" style="background: url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80') center/cover; opacity: 0.15; top: 0; left: 0;"></div>
-            <div class="text-center position-relative">
-              <h2 class="h1 mb-2 text-white fw-bold">Create Your Dream Listing</h2>
-              <p class="mb-0 text-white-75">Turn your property into someone's perfect getaway</p>
-            </div>
-          </div>
-          
-          <!-- Card Body with Animated Form -->
-          <div class="card-body px-4 py-4">
-            <form action="/listings" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
-              <!-- Title Section with Floating Label -->
-              <div class="form-floating mb-4">
-                <input
-                  type="text"
-                  name="listing[title]"
-                  id="title"
-                  required
-                  class="form-control border-0 border-bottom rounded-0 shadow-none"
-                  placeholder="Beautiful beachfront villa"
-                  style="background: transparent; border-color: #e0e6ed !important;"
-                />
-                <label for="title" class="fw-medium text-muted">Listing Title*</label>
-                <div class="progress" style="height: 2px;">
-                  <div class="progress-bar" role="progressbar" style="width: 0%; background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%); transition: width 0.3s ease;" id="title-progress"></div>
-                </div>
-              </div>
+  <div class="rr-form-card">
+    <form action="/listings" method="POST" enctype="multipart/form-data" id="newListingForm">
 
-              <!-- Description Section with Character Counter -->
-              <div class="mb-4">
-                <label for="description" class="form-label fw-medium text-dark d-flex justify-content-between">
-                  <span>Description*</span>
-                  <span class="text-muted fs-7"><span id="char-count">0</span>/500</span>
-                </label>
-                <textarea
-                  name="listing[description]"
-                  id="description"
-                  required
-                  class="form-control"
-                  rows="5"
-                  placeholder="Describe what makes your place special..."
-                  style="border-radius: 12px; min-height: 120px;"
-                  maxlength="500"
-                ></textarea>
-                <div class="form-text mt-1">Tip: Highlight unique amenities and nearby attractions</div>
-              </div>
+      <div class="form-group">
+        <label class="form-label">Listing title *</label>
+        <input type="text" name="listing[title]" class="form-control"
+          placeholder="e.g. Cozy beachfront villa in Goa" required maxlength="80">
+      </div>
 
-              <!-- Price & Location - Floating Cards -->
-              <div class="row g-3 mb-4">
-                <div class="col-md-6">
-                  <div class="p-3 h-100 rounded-3" style="background-color: rgba(106,17,203,0.03); border: 1px dashed rgba(106,17,203,0.2);">
-                    <label for="price" class="form-label fw-medium text-dark d-flex align-items-center">
-                      <i class="bi bi-currency-rupee me-2"></i> Nightly Price*
-                    </label>
-                    <input
-                      type="number"
-                      name="listing[price]"
-                      id="price"
-                      required
-                      min="0"
-                      step="100"
-                      class="form-control border-0 shadow-none bg-transparent px-0"
-                      placeholder="2500"
-                      style="font-size: 1.25rem; font-weight: 600; color: #6a11cb;"
-                    />
-                    <div class="form-text">Competitive pricing attracts more guests</div>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="p-3 h-100 rounded-3" style="background-color: rgba(37,117,252,0.03); border: 1px dashed rgba(37,117,252,0.2);">
-                    <label for="location" class="form-label fw-medium text-dark d-flex align-items-center">
-                      <i class="bi bi-geo-alt me-2"></i> Location*
-                    </label>
-                    <div class="input-group border-0">
-                      <input
-                        type="text"
-                        name="listing[location]"
-                        id="location"
-                        required
-                        class="form-control border-0 shadow-none bg-transparent px-0"
-                        placeholder="Goa"
-                        style="font-size: 1.25rem; font-weight: 600; color: #2575fc;"
-                      />
-                      <button class="btn btn-sm" type="button" style="color: #2575fc;">
-                        <i class="bi bi-geo"></i>
-                      </button>
-                    </div>
-                    <div class="form-text">Visible to guests after booking</div>
-                  </div>
-                </div>
-              </div>
+      <div class="form-group">
+        <label class="form-label">
+          Description *
+          <span class="rr-char-counter"><span id="desc-count">0</span>/500</span>
+        </label>
+        <textarea name="listing[description]" id="description" class="form-control"
+          placeholder="Describe what makes your place special — unique features, nearby attractions, house rules…"
+          rows="5" required maxlength="500"></textarea>
+      </div>
 
-              <!-- Country Select with Flag Picker -->
-              <div class="mb-4">
-                <label for="country" class="form-label fw-medium text-dark">Country*</label>
-                <div class="input-group">
-                  <span class="input-group-text bg-light" id="flag-container" style="width: 45px;">
-                    <span id="selected-flag" class="fi fi-in fis" style="font-size: 1.2rem;"></span>
-                  </span>
-                  <select
-                    name="listing[country]"
-                    id="country"
-                    required
-                    class="form-select"
-                    style="padding-left: 15px;"
-                  >
-                    <option value="India" selected>India</option>
-                    <option value="United States">United States</option>
-                    <option value="Canada">Canada</option>
-                    <option value="Australia">Australia</option>
-                    <option value="United Kingdom">United Kingdom</option>
-                    <option value="Germany">Germany</option>
-                    <option value="France">France</option>
-                    <option value="Japan">Japan</option>
-                    <option value="China">China</option>
-                    <option value="Brazil">Brazil</option>
-                  </select>
-                </div>
-              </div>
-
-              <!-- Image Upload with Preview -->
-              <div class="mb-4">
-                <label class="form-label fw-medium text-dark">Property Images</label>
-                <div class="border rounded-3 p-3 text-center" style="background-color: #f9fafc; border-style: dashed !important;">
-                  <input type="hidden" name="listing[image][url]" id="image_url">
-                  <div id="image-preview" class="mb-3 d-none">
-                    <img src="" alt="Preview" class="img-thumbnail rounded-3" style="max-height: 200px;">
-                  </div>
-                  <div id="upload-area" class="py-4">
-                    <i class="bi bi-cloud-arrow-up fs-1 text-muted mb-2"></i>
-                    <h5 class="mb-2">Drag & drop photos here</h5>
-                    <p class="text-muted mb-3">or click to browse</p>
-                    <input
-                      type="file"
-                      name="image"
-                      id="image"
-                      class="d-none"
-                      accept="image/*"
-                    />
-                    <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3" onclick="document.getElementById('image').click()">
-                      Select Files
-                    </button>
-                  </div>
-                </div>
-                <div class="form-text">First image will be featured (max 5MB each)</div>
-              </div>
-
-              <!-- Form Submission with Animation -->
-              <div class="d-flex justify-content-between align-items-center mt-5 pt-4 border-top">
-                <a href="/listings" class="btn btn-outline-secondary px-4 rounded-pill">
-                  <i class="bi bi-arrow-left me-2"></i>Cancel
-                </a>
-                <button type="submit" class="btn btn-primary px-4 rounded-pill fw-medium position-relative overflow-hidden" style="background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); border: none;">
-                  <span class="position-relative z-index-1">
-                    <i class="bi bi-magic me-2"></i>Create Listing
-                  </span>
-                  <span class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%); opacity: 0; transition: opacity 0.3s ease;"></span>
-                </button>
-              </div>
-            </form>
-          </div>
+      <div class="rr-row">
+        <div class="form-group">
+          <label class="form-label">Price per night (₹) *</label>
+          <input type="number" name="listing[price]" class="form-control"
+            placeholder="2500" min="0" step="50" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Location *</label>
+          <input type="text" name="listing[location]" class="form-control"
+            placeholder="e.g. Goa" required>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Floating Notification -->
-  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-    <div id="success-toast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="d-flex">
-        <div class="toast-body">
-          <i class="bi bi-check-circle-fill me-2"></i> Your listing has been created successfully!
+      <div class="rr-row">
+        <div class="form-group">
+          <label class="form-label">Country *</label>
+          <select name="listing[country]" class="form-control" required>
+            <option value="India" selected>India</option>
+            <option value="United States">United States</option>
+            <option value="Canada">Canada</option>
+            <option value="Australia">Australia</option>
+            <option value="United Kingdom">United Kingdom</option>
+            <option value="Germany">Germany</option>
+            <option value="France">France</option>
+            <option value="Japan">Japan</option>
+            <option value="Brazil">Brazil</option>
+          </select>
         </div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select name="listing[category]" class="form-control">
+            <option value="">Select type</option>
+            <option value="Beach">Beach</option>
+            <option value="Mountain">Mountain</option>
+            <option value="City">City</option>
+            <option value="Countryside">Countryside</option>
+            <option value="Apartment">Apartment</option>
+            <option value="Villa">Villa</option>
+          </select>
+        </div>
       </div>
-    </div>
+
+      <div class="form-group">
+        <label class="form-label">Property photo</label>
+        <div class="rr-upload-zone" id="dropZone" onclick="document.getElementById('imageInput').click()">
+          <div id="rr-img-preview">
+            <img id="preview-img" src="" alt="Preview">
+            <button type="button" onclick="event.stopPropagation();clearImage()" title="Remove">×</button>
+          </div>
+          <div id="upload-placeholder">
+            <i class="bi bi-cloud-arrow-up"></i>
+            <p><strong>Click to upload</strong> or drag & drop</p>
+            <p>JPG, PNG — max 5MB</p>
+          </div>
+        </div>
+        <input type="file" id="imageInput" name="image" accept="image/*" class="d-none">
+      </div>
+
+      <div class="rr-form-footer">
+        <a href="/listings" class="btn btn-outline">
+          <i class="bi bi-x-lg"></i> Cancel
+        </a>
+        <button type="submit" class="btn btn-gold btn-lg">
+          <i class="bi bi-plus-circle"></i> Create listing
+        </button>
+      </div>
+    </form>
   </div>
+</div>
 
-  <!-- Custom Styling and JavaScript -->
-  <style>
-    /* Floating label animation */
-    .form-floating label {
-      transition: all 0.2s ease;
-    }
-    
-    /* Interactive elements */
-    #upload-area {
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    
-    #upload-area:hover {
-      background-color: rgba(106,17,203,0.05) !important;
-    }
-    
-    /* Button hover effect */
-    .btn-primary:hover span:last-child {
-      opacity: 1 !important;
-    }
-    
-    /* Country flag styling */
-    .fi {
-      border-radius: 3px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-    }
-    
-    /* Custom scrollbar for textarea */
-    textarea::-webkit-scrollbar {
-      width: 6px;
-    }
-    
-    textarea::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 10px;
-    }
-    
-    textarea::-webkit-scrollbar-thumb {
-      background: linear-gradient(#6a11cb, #2575fc);
-      border-radius: 10px;
-    }
-    
-    /* Animation classes */
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-5px); }
-      100% { transform: translateY(0px); }
-    }
-    
-    .floating {
-      animation: float 3s ease-in-out infinite;
-    }
-  </style>
+<script>
+  // Char counter
+  const desc = document.getElementById('description');
+  const cnt = document.getElementById('desc-count');
+  desc.addEventListener('input', () => { cnt.textContent = desc.value.length; });
 
-  <script>
-    // Character counter for description
-    const description = document.getElementById('description');
-    const charCount = document.getElementById('char-count');
-    
-    description.addEventListener('input', () => {
-      charCount.textContent = description.value.length;
-    });
-    
-    // Title progress indicator
-    const titleInput = document.getElementById('title');
-    const titleProgress = document.getElementById('title-progress');
-    
-    titleInput.addEventListener('input', () => {
-      const progress = Math.min((titleInput.value.length / 50) * 100, 100);
-      titleProgress.style.width = `${progress}%`;
-    });
-    
-    // Image preview functionality
-    const imageInput = document.getElementById('image');
-    const imagePreview = document.getElementById('image-preview');
-    const uploadArea = document.getElementById('upload-area');
-    const previewImg = imagePreview.querySelector('img');
-    
-    imageInput.addEventListener('change', (e) => {
-      if (e.target.files.length > 0) {
-        const file = e.target.files[0];
-        if (file.size > 5 * 1024 * 1024) {
-          alert('File size should be less than 5MB');
-          return;
-        }
-        
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          previewImg.src = event.target.result;
-          imagePreview.classList.remove('d-none');
-          uploadArea.classList.add('d-none');
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-    
-    // Drag and drop for images
-    const dropArea = document.getElementById('upload-area');
-    
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-      dropArea.addEventListener(eventName, preventDefaults, false);
-    });
-    
-    function preventDefaults(e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    
-    ['dragenter', 'dragover'].forEach(eventName => {
-      dropArea.addEventListener(eventName, highlight, false);
-    });
-    
-    ['dragleave', 'drop'].forEach(eventName => {
-      dropArea.addEventListener(eventName, unhighlight, false);
-    });
-    
-    function highlight() {
-      dropArea.style.backgroundColor = 'rgba(106,17,203,0.1)';
-    }
-    
-    function unhighlight() {
-      dropArea.style.backgroundColor = '';
-    }
-    
-    dropArea.addEventListener('drop', handleDrop, false);
-    
-    function handleDrop(e) {
-      const dt = e.dataTransfer;
-      const files = dt.files;
-      imageInput.files = files;
-      const event = new Event('change');
-      imageInput.dispatchEvent(event);
-    }
-    
-    // Country flag changer
-    const countrySelect = document.getElementById('country');
-    const flagContainer = document.getElementById('selected-flag');
-    
-    countrySelect.addEventListener('change', () => {
-      const country = countrySelect.value.toLowerCase();
-      let countryCode;
-      
-      switch(country) {
-        case 'india': countryCode = 'in'; break;
-        case 'united states': countryCode = 'us'; break;
-        case 'canada': countryCode = 'ca'; break;
-        case 'australia': countryCode = 'au'; break;
-        case 'united kingdom': countryCode = 'gb'; break;
-        case 'germany': countryCode = 'de'; break;
-        case 'france': countryCode = 'fr'; break;
-        case 'japan': countryCode = 'jp'; break;
-        case 'china': countryCode = 'cn'; break;
-        case 'brazil': countryCode = 'br'; break;
-        default: countryCode = 'in';
-      }
-      
-      flagContainer.className = `fi fi-${countryCode} fis`;
-    });
-    
-    // Form submission animation
-    const form = document.querySelector('form');
-    const successToast = new bootstrap.Toast(document.getElementById('success-toast'));
-    
-    form.addEventListener('submit', (e) => {
-      // In a real app, you would handle actual form submission here
-      e.preventDefault();
-      
-      // Simulate successful submission
-      setTimeout(() => {
-        successToast.show();
-        // Reset form after success
-        setTimeout(() => {
-          form.reset();
-          imagePreview.classList.add('d-none');
-          uploadArea.classList.remove('d-none');
-          charCount.textContent = '0';
-          titleProgress.style.width = '0%';
-        }, 2000);
-      }, 1500);
-    });
-  </script>
-</body>
+  // Image preview
+  const imgInput = document.getElementById('imageInput');
+  const preview = document.getElementById('rr-img-preview');
+  const previewImg = document.getElementById('preview-img');
+  const placeholder = document.getElementById('upload-placeholder');
+
+  imgInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { alert('File must be under 5MB'); return; }
+    const reader = new FileReader();
+    reader.onload = ev => { previewImg.src = ev.target.result; preview.style.display = 'block'; placeholder.style.display = 'none'; };
+    reader.readAsDataURL(file);
+  });
+
+  function clearImage() {
+    imgInput.value = ''; previewImg.src = '';
+    preview.style.display = 'none'; placeholder.style.display = 'block';
+  }
+
+  // Drag & drop
+  const zone = document.getElementById('dropZone');
+  ['dragenter','dragover'].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.add('drag-over'); }));
+  ['dragleave','drop'].forEach(ev => zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.remove('drag-over'); }));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    if (e.dataTransfer.files.length) { imgInput.files = e.dataTransfer.files; imgInput.dispatchEvent(new Event('change')); }
+  });
+</script>

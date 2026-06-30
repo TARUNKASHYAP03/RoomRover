@@ -1,0 +1,232 @@
+<%- layout("layouts/boilerplate") %>
+<style>
+  .rr-wishlist-wrap { max-width: 1280px; margin: 0 auto; padding: 40px 24px 64px; }
+  .rr-wishlist-header { margin-bottom: 32px; }
+  .rr-wishlist-header h1 { font-size: 1.75rem; color: var(--navy); margin: 0 0 6px; }
+  .rr-wishlist-header p { color: var(--gray-500); margin: 0; }
+
+  .rr-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 28px;
+  }
+
+  /* Card styles (same as listings index) */
+  .rr-card {
+    background: var(--white); border-radius: var(--radius-lg);
+    border: var(--border); overflow: hidden;
+    transition: var(--transition); position: relative;
+  }
+  .rr-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-3px); }
+  .rr-card-img-wrap {
+    position: relative; width: 100%; padding-top: 68%; overflow: hidden;
+    background: var(--gray-100);
+  }
+  .rr-card-img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; transition: transform 0.4s ease;
+  }
+  .rr-card:hover .rr-card-img { transform: scale(1.04); }
+  .rr-card-cat-badge {
+    position: absolute; top: 12px; left: 12px;
+    background: rgba(26,35,50,0.75); backdrop-filter: blur(4px);
+    color: #fff; font-size: 0.68rem; font-weight: 600;
+    padding: 3px 9px; border-radius: 20px; letter-spacing: 0.3px;
+  }
+  .rr-card-remove {
+    position: absolute; top: 12px; right: 12px;
+    width: 34px; height: 34px; border-radius: 50%;
+    background: rgba(255,255,255,0.92); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: var(--transition); box-shadow: var(--shadow-sm); backdrop-filter: blur(2px); z-index: 2;
+  }
+  .rr-card-remove:hover { transform: scale(1.15); background: #fee2e2; }
+  .rr-card-remove i { font-size: 1rem; color: #ef4444; }
+  .rr-card-body { padding: 14px 16px 14px; }
+  .rr-card-location { font-size: 0.8rem; color: var(--gray-500); display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
+  .rr-card-title { font-size: 0.95rem; font-weight: 600; color: var(--gray-900); margin-bottom: 10px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .rr-card-bottom { display: flex; align-items: center; justify-content: space-between; }
+  .rr-card-price { font-size: 1.05rem; font-weight: 700; color: var(--navy); }
+  .rr-card-price span { font-weight: 400; color: var(--gray-500); font-size: 0.88rem; }
+
+  /* ── Empty state ── */
+  .rr-wishlist-empty {
+    text-align: center; padding: 80px 20px;
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+  }
+  .rr-wishlist-empty-icon {
+    width: 80px; height: 80px; background: var(--gray-100);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; color: var(--gray-300);
+  }
+  .rr-wishlist-empty h2 { font-size: 1.4rem; color: var(--navy); margin: 0; }
+  .rr-wishlist-empty p { color: var(--gray-500); margin: 0; max-width: 320px; }
+
+  /* ── Loading skeleton ── */
+  .rr-skeleton {
+    background: var(--white); border-radius: var(--radius-lg); border: var(--border); overflow: hidden;
+  }
+  .rr-skeleton-img { width: 100%; padding-top: 68%; background: linear-gradient(90deg, var(--gray-100) 25%, var(--gray-200) 50%, var(--gray-100) 75%); background-size: 200%; animation: rr-shimmer 1.4s infinite; }
+  .rr-skeleton-body { padding: 14px 16px 16px; }
+  .rr-skeleton-line { height: 12px; border-radius: 6px; background: linear-gradient(90deg, var(--gray-100) 25%, var(--gray-200) 50%, var(--gray-100) 75%); background-size: 200%; animation: rr-shimmer 1.4s infinite; margin-bottom: 10px; }
+  .rr-skeleton-line.w80 { width: 80%; }
+  .rr-skeleton-line.w60 { width: 60%; }
+  .rr-skeleton-line.w40 { width: 40%; }
+  @keyframes rr-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+  @media (max-width: 768px) {
+    .rr-wishlist-wrap { padding: 24px 16px 48px; }
+    .rr-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+  }
+  @media (max-width: 480px) {
+    .rr-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Dark mode */
+  [data-theme="dark"] .rr-wishlist-header h1 { color: #f1f5f9; }
+  [data-theme="dark"] .rr-wishlist-header p { color: #64748b; }
+  [data-theme="dark"] .rr-card { background: #1a2233; border-color: rgba(255,255,255,0.06); }
+  [data-theme="dark"] .rr-card:hover { box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(79,110,242,0.2); }
+  [data-theme="dark"] .rr-card-img-wrap { background: #0f1624; }
+  [data-theme="dark"] .rr-card-title { color: #f1f5f9; }
+  [data-theme="dark"] .rr-card-location { color: #94a3b8; }
+  [data-theme="dark"] .rr-card-price { color: #93c5fd; }
+  [data-theme="dark"] .rr-card-price span { color: #64748b; }
+  [data-theme="dark"] .rr-card-remove { background: rgba(15,22,36,0.85); }
+  [data-theme="dark"] .rr-wishlist-empty h2 { color: #f1f5f9; }
+  [data-theme="dark"] .rr-wishlist-empty p { color: #64748b; }
+  [data-theme="dark"] .rr-wishlist-empty-icon { background: #1a2233; color: #475569; }
+  [data-theme="dark"] .rr-skeleton { background: #1a2233; border-color: rgba(255,255,255,0.06); }
+</style>
+
+<div class="rr-wishlist-wrap">
+  <div class="rr-wishlist-header">
+    <h1><i class="bi bi-heart-fill" style="color:#ef4444;margin-right:8px;font-size:1.4rem;vertical-align:middle;"></i>Your Wishlist</h1>
+    <p id="wishlistSubtitle">Loading saved places…</p>
+  </div>
+
+  <!-- Skeleton loading state -->
+  <div class="rr-grid" id="skeletonGrid">
+    <% for (let i = 0; i < 3; i++) { %>
+      <div class="rr-skeleton">
+        <div class="rr-skeleton-img"></div>
+        <div class="rr-skeleton-body">
+          <div class="rr-skeleton-line w60"></div>
+          <div class="rr-skeleton-line w80"></div>
+          <div class="rr-skeleton-line w40"></div>
+        </div>
+      </div>
+    <% } %>
+  </div>
+
+  <!-- Cards will be injected here -->
+  <div class="rr-grid" id="wishlistGrid" style="display:none;"></div>
+
+  <!-- Empty state -->
+  <div class="rr-wishlist-empty" id="wishlistEmpty" style="display:none;">
+    <div class="rr-wishlist-empty-icon"><i class="bi bi-heart"></i></div>
+    <h2>Nothing saved yet</h2>
+    <p>Tap the ♡ on any listing to save it here for later.</p>
+    <a href="/listings" class="btn btn-primary">Explore Stays</a>
+  </div>
+</div>
+
+<script>
+const WISHLIST_KEY = 'rr_wishlist';
+
+function getWishlist() {
+  try { return JSON.parse(localStorage.getItem(WISHLIST_KEY)) || []; }
+  catch { return []; }
+}
+
+function removeFromWishlist(id) {
+  let list = getWishlist().filter(x => x !== id);
+  localStorage.setItem(WISHLIST_KEY, JSON.stringify(list));
+  document.querySelector(`.rr-card[data-id="${id}"]`)?.remove();
+  const remaining = document.querySelectorAll('#wishlistGrid .rr-card').length;
+  document.getElementById('wishlistSubtitle').textContent =
+    remaining + ' saved place' + (remaining !== 1 ? 's' : '');
+  if (remaining === 0) {
+    document.getElementById('wishlistGrid').style.display = 'none';
+    document.getElementById('wishlistEmpty').style.display = 'flex';
+    document.getElementById('wishlistSubtitle').textContent = '0 saved places';
+  }
+  updateNavBadge();
+}
+
+function updateNavBadge() {
+  const count = getWishlist().length;
+  const badge = document.getElementById('rr-wishlist-badge');
+  if (badge) { badge.textContent = count || ''; badge.style.display = count ? 'flex' : 'none'; }
+}
+
+function buildCard(l) {
+  const imgSrc = l.image?.url || l.image || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&q=80';
+  const price = Number(l.price).toLocaleString('en-IN');
+  return `
+    <div class="rr-card reveal" data-id="${l._id}">
+      <a href="/listings/${l._id}" style="text-decoration:none;color:inherit;display:block;">
+        <div class="rr-card-img-wrap">
+          <img src="${imgSrc}" alt="${l.title}" class="rr-card-img" loading="lazy">
+          ${l.category ? `<span class="rr-card-cat-badge">${l.category}</span>` : ''}
+          <button class="rr-card-remove" onclick="event.preventDefault(); removeFromWishlist('${l._id}')">
+            <i class="bi bi-heart-fill"></i>
+          </button>
+        </div>
+        <div class="rr-card-body">
+          <div class="rr-card-location"><i class="bi bi-geo-alt"></i> ${l.location}, ${l.country}</div>
+          <div class="rr-card-title">${l.title}</div>
+          <div class="rr-card-bottom">
+            <div class="rr-card-price">₹${price} <span>/ night</span></div>
+          </div>
+        </div>
+      </a>
+    </div>`;
+}
+
+async function loadWishlist() {
+  const ids = getWishlist();
+  const skeletonGrid = document.getElementById('skeletonGrid');
+  const wishlistGrid = document.getElementById('wishlistGrid');
+  const wishlistEmpty = document.getElementById('wishlistEmpty');
+  const subtitle = document.getElementById('wishlistSubtitle');
+
+  if (ids.length === 0) {
+    skeletonGrid.style.display = 'none';
+    wishlistEmpty.style.display = 'flex';
+    subtitle.textContent = '0 saved places';
+    updateNavBadge();
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/listings?ids=' + ids.join(','));
+    const listings = await res.json();
+
+    skeletonGrid.style.display = 'none';
+
+    if (listings.length === 0) {
+      // IDs in localStorage but DB has nothing (deleted)
+      localStorage.removeItem(WISHLIST_KEY);
+      wishlistEmpty.style.display = 'flex';
+      subtitle.textContent = '0 saved places';
+    } else {
+      wishlistGrid.innerHTML = listings.map(buildCard).join('');
+      wishlistGrid.style.display = 'grid';
+      subtitle.textContent = listings.length + ' saved place' + (listings.length !== 1 ? 's' : '');
+
+      // Trigger reveal animations
+      setTimeout(() => {
+        wishlistGrid.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+      }, 60);
+    }
+  } catch (err) {
+    skeletonGrid.style.display = 'none';
+    wishlistEmpty.style.display = 'flex';
+    subtitle.textContent = 'Could not load saved places';
+  }
+  updateNavBadge();
+}
+
+document.addEventListener('DOMContentLoaded', loadWishlist);
+</script>

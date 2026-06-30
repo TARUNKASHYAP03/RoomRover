@@ -1,249 +1,135 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RoomRover Footer</title>
-    <!-- Font Awesome for Social Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <style>
-        /* Reset default styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<style>
+  .rr-footer {
+    background: var(--navy);
+    color: #94a3b8;
+    margin-top: auto;
+    padding: 56px 0 0;
+    font-size: 0.88rem;
+    line-height: 1.7;
+  }
+  .rr-footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px 40px;
+  }
 
-        body {
-            font-family: 'Roboto', 'Arial', sans-serif;
-            background-color: #f5f5f5;
-        }
+  /* Logo — pure text, no icon box */
+  .rr-footer-brand .rr-logo {
+    display: inline-flex; align-items: center;
+    font-weight: 800; font-size: 1.35rem;
+    letter-spacing: -0.5px;
+    color: #fff; margin-bottom: 14px;
+    text-decoration: none;
+  }
+  .rr-footer-brand .rr-logo em { color: var(--gold); font-style: normal; }
 
-        /* Footer Styling */
-        .airbnb-footer {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
-            color: #ffffff;
-            padding: 50px 20px;
-            line-height: 1.6;
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
-        }
+  .rr-footer-brand p { max-width: 280px; color: #94a3b8; font-size: 0.88rem; line-height: 1.65; }
+  .rr-footer-socials { display: flex; gap: 10px; margin-top: 18px; }
+  .rr-footer-socials a {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: rgba(255,255,255,0.07);
+    display: flex; align-items: center; justify-content: center;
+    color: #94a3b8; font-size: 1rem; transition: all 0.2s;
+    text-decoration: none;
+  }
+  .rr-footer-socials a:hover { background: var(--gold); color: var(--navy); }
 
-        .footer-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 30px;
-            max-width: 1280px;
-            margin: 0 auto;
-            padding-bottom: 30px;
-        }
+  .rr-footer-col h3 {
+    color: #fff; font-size: 0.78rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.8px;
+    margin-bottom: 16px;
+  }
+  .rr-footer-col ul { list-style: none; }
+  .rr-footer-col ul li { margin-bottom: 10px; }
+  .rr-footer-col ul li a {
+    color: #94a3b8; text-decoration: none; transition: color 0.2s;
+  }
+  .rr-footer-col ul li a:hover { color: var(--gold); }
 
-        .footer-section h3 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: #ffffff;
-            position: relative;
-            padding-bottom: 10px;
-        }
+  .rr-footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.07);
+    padding: 18px 24px;
+    max-width: 1280px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .rr-footer-bottom p { color: #64748b; font-size: 0.82rem; margin: 0; }
+  .rr-footer-bottom-links { display: flex; gap: 20px; }
+  .rr-footer-bottom-links a {
+    color: #64748b; font-size: 0.82rem; transition: color 0.2s; text-decoration: none;
+  }
+  .rr-footer-bottom-links a:hover { color: var(--gold); }
 
-        .footer-section h3::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 50px;
-            height: 2px;
-            background-color: #ff5a5f;
-        }
+  @media (max-width: 900px) {
+    .rr-footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px) {
+    .rr-footer-grid { grid-template-columns: 1fr; gap: 28px; }
+    .rr-footer-bottom { flex-direction: column; align-items: flex-start; }
+  }
+</style>
 
-        .footer-section ul {
-            list-style: none;
-        }
+<footer class="rr-footer">
+  <div class="rr-footer-grid">
 
-        .footer-section ul li {
-            margin-bottom: 12px;
-        }
+    <!-- Brand -->
+    <div class="rr-footer-brand">
+      <a href="/" class="rr-logo">Room<em>Rover</em></a>
+      <p>Discover and book unique stays across India. Your perfect home away from home is just a search away.</p>
+      <div class="rr-footer-socials">
+        <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+        <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+        <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+        <a href="https://t.me" target="_blank" rel="noopener" aria-label="Telegram"><i class="bi bi-telegram"></i></a>
+      </div>
+    </div>
 
-        .footer-section ul li a {
-            color: #d3d3d3;
-            text-decoration: none;
-            font-size: 0.95rem;
-            transition: color 0.3s ease, transform 0.3s ease;
-            display: inline-block;
-        }
+    <!-- Support -->
+    <div class="rr-footer-col">
+      <h3>Support</h3>
+      <ul>
+        <li><a href="/help.html">Help Center</a></li>
+        <li><a href="/help.html#safety">Safety Information</a></li>
+        <li><a href="/help.html#cancellations">Cancellation</a></li>
+        <li><a href="/help.html#contact">Report Issue</a></li>
+      </ul>
+    </div>
 
-        .footer-section ul li a:hover {
-            color: #ff5a5f;
-            transform: translateX(8px);
-        }
+    <!-- Hosting -->
+    <div class="rr-footer-col">
+      <h3>Hosting</h3>
+      <ul>
+        <li><a href="/listings/new">List your place</a></li>
+        <li><a href="/help.html#host-protection">Host Protection</a></li>
+        <li><a href="/help.html">Resources</a></li>
+        <li><a href="/help.html">Community</a></li>
+      </ul>
+    </div>
 
-        .footer-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1280px;
-            margin: 30px auto 0;
-            padding-top: 25px;
-            border-top: 1px solid #444444;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
+    <!-- Company -->
+    <div class="rr-footer-col">
+      <h3>Company</h3>
+      <ul>
+        <li><a href="/#about">About Us</a></li>
+        <li><a href="/careers.html">Careers</a></li>
+        <li><a href="/terms.html">Terms & Privacy</a></li>
+        <li><a href="/help.html">Contact</a></li>
+      </ul>
+    </div>
 
-        .footer-legal {
-            display: flex;
-            gap: 20px;
-            font-size: 0.9rem;
-            align-items: center;
-        }
+  </div>
 
-        .footer-legal span {
-            color: #d3d3d3;
-        }
+  <div class="rr-footer-bottom">
+    <p>&copy; <span id="rr-year"></span> RoomRover, Inc. All rights reserved.</p>
+    <div class="rr-footer-bottom-links">
+      <a href="/terms.html">Privacy</a>
+      <a href="/terms.html">Terms</a>
+      <a href="/listings">Explore</a>
+    </div>
+  </div>
+</footer>
 
-        .footer-legal a {
-            color: #d3d3d3;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .footer-legal a:hover {
-            color: #ff5a5f;
-        }
-
-        .footer-social {
-            display: flex;
-            gap: 20px;
-        }
-
-        .footer-social a {
-            color: #ffffff;
-            font-size: 1.8rem;
-            transition: color 0.3s ease, transform 0.3s ease;
-        }
-
-        .footer-social a:hover {
-            color: #ff5a5f;
-            transform: scale(1.15) rotate(5deg);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .footer-container {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-
-            .footer-section h3::after {
-                left: 50%;
-                transform: translateX(-50%);
-            }
-
-            .footer-section ul li a:hover {
-                transform: none;
-            }
-
-            .footer-bottom {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .footer-legal {
-                flex-direction: column;
-                gap: 12px;
-            }
-
-            .footer-social {
-                margin-top: 15px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .airbnb-footer {
-                padding: 30px 15px;
-            }
-
-            .footer-section h3 {
-                font-size: 1.1rem;
-            }
-
-            .footer-section ul li a {
-                font-size: 0.85rem;
-            }
-
-            .footer-social a {
-                font-size: 1.5rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <footer class="airbnb-footer" aria-label="Footer navigation">
-        <div class="footer-container">
-            <div class="footer-section" role="region" aria-labelledby="support-heading">
-                <h3 id="support-heading">Support</h3>
-                <ul>
-                    <li><a href="/help" aria-label="Visit Help Center">Help Center</a></li>
-                    <li><a href="/safety" aria-label="Learn about safety information">Safety Information</a></li>
-                    <li><a href="/cancellation" aria-label="Explore cancellation options">Cancellation Options</a></li>
-                    <li><a href="/report" aria-label="Report a neighborhood concern">Report Neighborhood Concern</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-section" role="region" aria-labelledby="community-heading">
-                <h3 id="community-heading">Community</h3>
-                <ul>
-                    <li><a href="/disaster" aria-label="Learn about disaster relief">Disaster Relief</a></li>
-                    <li><a href="/support-refugees" aria-label="Support refugees">Support Refugees</a></li>
-                    <li><a href="/combat-discrimination" aria-label="Combating discrimination">Combating Discrimination</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-section" role="region" aria-labelledby="hosting-heading">
-                <h3 id="hosting-heading">Hosting</h3>
-                <ul>
-                    <li><a href="/host" aria-label="Try hosting with RoomRover">Try Hosting</a></li>
-                    <li><a href="/protection" aria-label="Learn about RoomRover Cover">RoomRover Cover</a></li>
-                    <li><a href="/resources" aria-label="Access hosting resources">Hosting Resources</a></li>
-                    <li><a href="/community" aria-label="Join the community forum">Community Forum</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-section" role="region" aria-labelledby="roomrover-heading">
-                <h3 id="roomrover-heading">RoomRover</h3>
-                <ul>
-                    <li><a href="/newsroom" aria-label="Visit RoomRover newsroom">Newsroom</a></li>
-                    <li><a href="/features" aria-label="Explore new features">New Features</a></li>
-                    <li><a href="/careers" aria-label="View career opportunities">Careers</a></li>
-                    <li><a href="/investors" aria-label="Information for investors">Investors</a></li>
-                </ul>
-            </div>
-        </div>
-        
-        <div class="footer-bottom">
-            <div class="footer-legal">
-                <span>© <span id="current-year"></span> RoomRover, Inc.</span>
-                <a href="/privacy" aria-label="Read our privacy policy">Privacy</a>
-                <a href="/terms" aria-label="Read our terms of service">Terms</a>
-                <a href="/sitemap" aria-label="View site map">Sitemap</a>
-            </div>
-            
-            <div class="footer-social">
-                <a href="https://www.linkedin.com/company/roomrover/" target="_blank" aria-label="Follow RoomRover on LinkedIn">
-                    <i class="fa-brands fa-linkedin"></i>
-                </a>
-                <a href="https://twitter.com/roomrover" target="_blank" aria-label="Follow RoomRover on Twitter">
-                    <i class="fa-brands fa-square-x-twitter"></i>
-                </a>
-                <a href="https://www.telegram.me/roomrover" target="_blank" aria-label="Join RoomRover on Telegram">
-                    <i class="fa-brands fa-telegram"></i>
-                </a>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Dynamically set the current year
-        document.getElementById('current-year').textContent = new Date().getFullYear();
-    </script>
-</body>
-</html>
+<script>document.getElementById('rr-year').textContent = new Date().getFullYear();</script>
