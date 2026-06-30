@@ -110,7 +110,7 @@
     }
     .toc ul li a:hover { background: var(--gray-200); color: var(--navy); }
     .toc ul li a.active { background: var(--navy); color: #fff; }
-    .toc-divider { height: 1px; background: var(--gray-200); margin: 10px 0; }
+    .toc-divider { height: 1px; background: var(--gray-200); margin: 10px 0; list-style: none; }
 
     /* ── CONTENT ── */
     .doc-content { min-width: 0; }
@@ -146,6 +146,9 @@
       font-size: 0.95rem; font-weight: 700; color: var(--navy);
       margin: 20px 0 8px;
     }
+    /* Utilities (replace inline styles) */
+    .doc-section ul li strong { color: var(--navy); }
+    .mt-6 { margin-top: 6px; }
 
     .highlight-box {
       background: rgba(201,168,76,0.07); border: 1px solid rgba(201,168,76,0.25);
@@ -229,12 +232,12 @@
         <li><a href="#payments">Payments</a></li>
         <li><a href="#conduct">User Conduct</a></li>
         <li><a href="#liability">Liability</a></li>
-        <div class="toc-divider"></div>
+        <li class="toc-divider" aria-hidden="true"></li>
         <li><a href="#privacy">Privacy Policy</a></li>
         <li><a href="#data">Data We Collect</a></li>
         <li><a href="#cookies">Cookies</a></li>
         <li><a href="#rights">Your Rights</a></li>
-        <div class="toc-divider"></div>
+        <li class="toc-divider" aria-hidden="true"></li>
         <li><a href="#contact-legal">Contact Us</a></li>
       </ul>
     </div>
@@ -367,9 +370,9 @@
       <h2>Cookies & Tracking</h2>
       <p>RoomRover uses cookies and similar tracking technologies to enhance your experience on the Platform.</p>
       <ul>
-        <li><strong style="color:var(--navy)">Essential cookies</strong> — Required for the Platform to function (sessions, authentication)</li>
-        <li><strong style="color:var(--navy)">Analytics cookies</strong> — Help us understand how users interact with the Platform</li>
-        <li><strong style="color:var(--navy)">Preference cookies</strong> — Remember your settings such as language preference</li>
+        <li><strong>Essential cookies</strong> — Required for the Platform to function (sessions, authentication)</li>
+        <li><strong>Analytics cookies</strong> — Help us understand how users interact with the Platform</li>
+        <li><strong>Preference cookies</strong> — Remember your settings such as language preference</li>
       </ul>
       <p>You can control cookies through your browser settings. Disabling essential cookies may affect Platform functionality.</p>
     </div>
@@ -379,11 +382,11 @@
       <h2>Your Rights</h2>
       <p>As a user of RoomRover, you have the following rights regarding your personal data:</p>
       <ul>
-        <li><strong style="color:var(--navy)">Access</strong> — Request a copy of all personal data we hold about you</li>
-        <li><strong style="color:var(--navy)">Correction</strong> — Update or correct inaccurate personal information</li>
-        <li><strong style="color:var(--navy)">Deletion</strong> — Request deletion of your account and associated data</li>
-        <li><strong style="color:var(--navy)">Portability</strong> — Receive your data in a machine-readable format</li>
-        <li><strong style="color:var(--navy)">Objection</strong> — Opt out of certain data processing activities</li>
+        <li><strong>Access</strong> — Request a copy of all personal data we hold about you</li>
+        <li><strong>Correction</strong> — Update or correct inaccurate personal information</li>
+        <li><strong>Deletion</strong> — Request deletion of your account and associated data</li>
+        <li><strong>Portability</strong> — Receive your data in a machine-readable format</li>
+        <li><strong>Objection</strong> — Opt out of certain data processing activities</li>
       </ul>
       <p>To exercise any of these rights, contact us at the address below. We will respond within 30 days.</p>
       <div class="highlight-box">
@@ -401,7 +404,7 @@
         <div>
           <strong>RoomRover Legal & Privacy Team</strong>
           <p>Email: <a href="mailto:legal@roomrover.in">legal@roomrover.in</a> &nbsp;·&nbsp; Response time: within 2–3 business days</p>
-          <p style="margin-top:6px;">For general support, visit our <a href="/help.html">Help Center</a>.</p>
+          <p class="mt-6">For general support, visit our <a href="/help.html">Help Center</a>.</p>
         </div>
       </div>
     </div>

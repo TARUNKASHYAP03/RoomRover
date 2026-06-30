@@ -181,7 +181,7 @@
 
     /* ── FAQ ── */
     .h-faq { background: var(--white); border-radius: var(--radius-lg); border: var(--border); overflow: hidden; margin-bottom: 64px; }
-    .h-faq-tabs { display: flex; border-bottom: var(--border); overflow-x: auto; scrollbar-width: none; }
+    .h-faq-tabs { display: flex; border-bottom: var(--border); overflow-x: auto; }
     .h-faq-tabs::-webkit-scrollbar { display: none; }
     .h-tab {
       padding: 14px 22px; font-size: 0.875rem; font-weight: 600;
@@ -296,6 +296,16 @@
     .h-footer-links a:hover { color: var(--gold); }
     .h-footer-copy { font-size: 0.8rem; color: #475569; margin-top: 16px; text-align: center; max-width: 1100px; margin: 16px auto 0; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 16px; }
 
+    /* ── Utilities (replace inline styles) ── */
+    .h-mt24       { margin-top: 24px; }
+    .h-link-navy  { color: var(--navy); font-weight: 600; }
+    .h-dot        { font-size: 0.5rem; }
+    .h-note       { margin-top: 4px; font-size: 0.8rem; color: var(--g500); }
+    .h-inline-link{ display: inline-flex; align-items: center; gap: 4px; }
+    .h-ext-icon   { font-size: 0.75rem; }
+    .h-form-icon  { color: var(--gold); margin-right: 8px; }
+    .h-success-icon { font-size: 1.1rem; }
+
     /* ── Responsive ── */
     @media (max-width: 900px) {
       .h-cards { grid-template-columns: 1fr 1fr; }
@@ -356,7 +366,7 @@
       <p>Browse our help center, read FAQs, or reach out to our support team — we're always here for you.</p>
       <div class="h-search">
         <input type="text" id="heroSearch" placeholder="Search help articles…" autocomplete="off" />
-        <button type="button" onclick="filterFaq()"><i class="bi bi-search"></i></button>
+        <button type="button" onclick="filterFaq()" aria-label="Search help articles"><i class="bi bi-search"></i></button>
       </div>
     </div>
   </section>
@@ -471,7 +481,7 @@
           </div>
           <div class="h-item">
             <button class="h-item-q" onclick="toggleFaq(this)">I forgot my password — what do I do? <i class="bi bi-chevron-down"></i></button>
-            <div class="h-item-a"><p>Password reset is coming soon. For now, please contact our support team at <a href="mailto:support@roomrover.com" style="color:var(--navy);font-weight:600;">support@roomrover.com</a> and we'll help you regain access.</p></div>
+            <div class="h-item-a"><p>Password reset is coming soon. For now, please contact our support team at <a href="mailto:support@roomrover.com" class="h-link-navy">support@roomrover.com</a> and we'll help you regain access.</p></div>
           </div>
           <div class="h-item">
             <button class="h-item-q" onclick="toggleFaq(this)">How do I delete my account? <i class="bi bi-chevron-down"></i></button>
@@ -482,7 +492,7 @@
     </div>
 
     <!-- Contact -->
-    <div id="contact-section" style="margin-top: 24px;">
+    <div id="contact-section" class="h-mt24">
       <div class="h-section-hdr">
         <h2>Contact our team</h2>
         <p>We're available 24/7 — reach out any time</p>
@@ -492,11 +502,11 @@
           <div class="h-contact-card">
             <div class="h-contact-icon"><i class="bi bi-envelope-fill"></i></div>
             <div>
-              <span class="h-contact-tag tag-green"><i class="bi bi-circle-fill" style="font-size:0.5rem;"></i> Fastest</span>
+              <span class="h-contact-tag tag-green"><i class="bi bi-circle-fill h-dot"></i> Fastest</span>
               <h4>Email Support</h4>
               <p>For general inquiries &amp; account help</p>
               <a href="mailto:support@roomrover.com">support@roomrover.com</a>
-              <p style="margin-top:4px;font-size:0.8rem;color:var(--g500);">Reply within 2 hours</p>
+              <p class="h-note">Reply within 2 hours</p>
             </div>
           </div>
           <div class="h-contact-card">
@@ -506,7 +516,7 @@
               <h4>Phone Support</h4>
               <p>For urgent help and emergencies</p>
               <a href="tel:+919105153165">+91 91051 53165</a>
-              <p style="margin-top:4px;font-size:0.8rem;color:var(--g500);">Available round the clock</p>
+              <p class="h-note">Available round the clock</p>
             </div>
           </div>
           <div class="h-contact-card">
@@ -515,14 +525,14 @@
               <span class="h-contact-tag tag-gold">Bot</span>
               <h4>Rover Assistant</h4>
               <p>Instant answers via our chatbot</p>
-              <a href="/listings" style="display:inline-flex;align-items:center;gap:4px;">Open on any page <i class="bi bi-box-arrow-up-right" style="font-size:0.75rem;"></i></a>
-              <p style="margin-top:4px;font-size:0.8rem;color:var(--g500);">8 AM – 10 PM IST</p>
+              <a href="/listings" class="h-inline-link">Open on any page <i class="bi bi-box-arrow-up-right h-ext-icon"></i></a>
+              <p class="h-note">8 AM – 10 PM IST</p>
             </div>
           </div>
         </div>
 
         <div class="h-form-card">
-          <h3><i class="bi bi-send" style="color:var(--gold);margin-right:8px;"></i>Send us a message</h3>
+          <h3><i class="bi bi-send h-form-icon"></i>Send us a message</h3>
           <form id="helpForm" autocomplete="off">
             <div class="h-form-row">
               <div class="h-form-group">
@@ -553,7 +563,7 @@
               <i class="bi bi-send-fill"></i> Send message
             </button>
             <div class="h-success" id="hSuccess">
-              <i class="bi bi-check-circle-fill" style="font-size:1.1rem;"></i>
+              <i class="bi bi-check-circle-fill h-success-icon"></i>
               Thank you! We'll respond within 2 hours.
             </div>
           </form>
